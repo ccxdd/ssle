@@ -60,11 +60,4 @@ extension UIAlertController {
             UIViewController.currentVC?.present(vc: alert)
         }
     }
-    
-    class func photoChose(edit: Bool = false, scale: UIImage.ScaleType? = nil, closure: @escaping (UIImage) -> Void) {
-        _ = Photos.mediaFrom(.imgOpen(edit: edit, scale: scale), .imgCapture(edit: edit, scale: scale)) { (result) in
-            guard case let .img(img) = result else { return }
-            closure(img)
-        }
-    }
 }
