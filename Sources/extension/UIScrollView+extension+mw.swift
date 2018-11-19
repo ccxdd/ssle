@@ -28,7 +28,7 @@ extension UIScrollView {
         }
     }
     
-    func headerRefresh(style: RefreshControl.Style = .normal , closure: @escaping () -> Void) {
+    func headerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
         if headerRefreshCtrl != nil {
             headerRefreshCtrl?.callback = closure
             return
@@ -38,8 +38,8 @@ extension UIScrollView {
         let ctrl: RefreshControl
         
         switch style {
-        case .normal:
-            ctrl = UIView.xib(HeaderRefreshIndactor.self)!
+        case .xib(let type):
+            ctrl = UIView.xib(type)!
         case let .custom(c):
             ctrl = c as! RefreshControl
         }
@@ -50,7 +50,7 @@ extension UIScrollView {
         headerRefreshCtrl?.callback = closure
     }
     
-    func footerRefresh(style: RefreshControl.Style = .normal , closure: @escaping () -> Void) {
+    func footerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
         if footerRefreshCtrl != nil {
             footerRefreshCtrl?.callback = closure
             return
@@ -60,8 +60,8 @@ extension UIScrollView {
         let ctrl: RefreshControl
         
         switch style {
-        case .normal:
-            ctrl = UIView.xib(FooterRefreshIndactor.self)!
+        case .xib(let type):
+            ctrl = UIView.xib(type)!
         case let .custom(c):
             ctrl = c as! RefreshControl
         }
@@ -165,7 +165,7 @@ extension RefreshControl: RefreshControlDelegate {
     @objc func refreshing() {}
 }
 
-class RefreshControl: UIView {
+public class RefreshControl: UIView {
     
     enum Status {
         case normal, prepare, refreshing
@@ -180,7 +180,8 @@ class RefreshControl: UIView {
     }
     
     enum Style {
-        case normal, custom(RefreshControlDelegate)
+        case xib(RefreshControl.Type)
+        case custom(RefreshControlDelegate)
     }
     
     weak var scrollView: UIScrollView!
@@ -206,11 +207,11 @@ class RefreshControl: UIView {
         return status == .refreshing
     }
     
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath = keyPath, (keyPath == obContentOffset || keyPath == obContentSize) else {
             return
         }
@@ -258,7 +259,7 @@ class RefreshControl: UIView {
         }
     }
     
-    override func willMove(toSuperview newSuperview: UIView?) {
+    override public func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         if newSuperview == nil {
             self.superview?.removeObserver(self, forKeyPath: obContentOffset)

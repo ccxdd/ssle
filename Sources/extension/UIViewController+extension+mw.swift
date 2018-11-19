@@ -9,11 +9,15 @@
 import UIKit
 
 extension UIViewController {
-    enum DismissBgType {
+    public enum DismissBgType {
         case vc, nav, tab
     }
-    enum AddViewType {
+    public enum AddViewType {
         case top, above(UIView), below(UIView)
+    }
+    
+    public enum AppModule: String {
+        case unknown
     }
     
     static func storyboard(_ module: AppModule, identifier: String? = nil, initial: Bool = false) -> UIViewController {
