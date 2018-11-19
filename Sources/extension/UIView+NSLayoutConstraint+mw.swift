@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum LayoutDimension {
+public enum LayoutDimension {
     case width, height, none
     
     var toNSLayoutAttribute: NSLayoutConstraint.Attribute {
@@ -20,7 +20,7 @@ enum LayoutDimension {
     }
 }
 
-enum LayoutXAxis {
+public enum LayoutXAxis {
     case left, leading, trailing, right, centerX, none
     
     var toNSLayoutAttribute: NSLayoutConstraint.Attribute {
@@ -35,7 +35,7 @@ enum LayoutXAxis {
     }
 }
 
-enum LayoutYAxis {
+public enum LayoutYAxis {
     case top, bottom, centerY, firstBaseline, lastBaseline, none
     
     var toNSLayoutAttribute: NSLayoutConstraint.Attribute {
@@ -51,7 +51,7 @@ enum LayoutYAxis {
 }
 
 extension UIView {
-    var lcm: LayoutConstraintManager {
+    public var lcm: LayoutConstraintManager {
         guard let lcm = objc_getAssociatedObject(self, &LCDMKey) as? LayoutConstraintManager else {
             let lcm = LayoutConstraintManager()
             lcm.weakSelf = self
@@ -65,19 +65,19 @@ extension UIView {
 }
 
 extension NSLayoutConstraint {
-    func v2(_ secondItem: UIView?) {
+    public func v2(_ secondItem: UIView?) {
         (firstItem as? UIView)?.lcm.lc(a1: firstAttribute, a2: secondAttribute, v2: secondItem, c: constant, m: multiplier, relation: relation)
     }
     
-    func a2(_ attribute: NSLayoutConstraint.Attribute) {
+    public func a2(_ attribute: NSLayoutConstraint.Attribute) {
         (firstItem as? UIView)?.lcm.lc(a1: firstAttribute, a2: attribute, v2: secondItem as? UIView, c: constant, m: multiplier, relation: relation)
     }
     
-    func relation(_ r: NSLayoutConstraint.Relation) {
+    public func relation(_ r: NSLayoutConstraint.Relation) {
         (firstItem as? UIView)?.lcm.lc(a1: firstAttribute, a2: secondAttribute, v2: secondItem as? UIView, c: constant, m: multiplier, relation: r)
     }
     
-    func m(_ multiplier: CGFloat) {
+    public func m(_ multiplier: CGFloat) {
         (firstItem as? UIView)?.lcm.lc(a1: firstAttribute, a2: secondAttribute, v2: secondItem as? UIView, c: constant, m: multiplier, relation: relation)
     }
 }
@@ -85,12 +85,12 @@ extension NSLayoutConstraint {
 
 private var LCDMKey: Void?
 
-class LayoutConstraintManager {
+public final class LayoutConstraintManager {
     weak var weakSelf: UIView!
     fileprivate weak var tempSecondView: UIView?
     fileprivate var existLCs: [String: NSLayoutConstraint] = [:]
     
-    @discardableResult func allLCs() -> [String: NSLayoutConstraint] {
+    @discardableResult public func allLCs() -> [String: NSLayoutConstraint] {
         let superView = weakSelf.superview!
         existLCs.removeAll()
         for lc in weakSelf.constraints {
@@ -119,7 +119,7 @@ class LayoutConstraintManager {
         return existLCs
     }
     
-    func find(_ a1: NSLayoutConstraint.Attribute, v2: AnyObject? = nil, a2: NSLayoutConstraint.Attribute? = nil) -> NSLayoutConstraint? {
+    public func find(_ a1: NSLayoutConstraint.Attribute, v2: AnyObject? = nil, a2: NSLayoutConstraint.Attribute? = nil) -> NSLayoutConstraint? {
         guard !existLCs.isEmpty else { return nil }
         let addr1 = unsafeBitCast(weakSelf, to: Int.self)
         let key: String
@@ -139,90 +139,90 @@ class LayoutConstraintManager {
         return existLCs[key]
     }
     
-    @discardableResult func t(_ c: CGFloat = 0, a2: LayoutYAxis = .top, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func t(_ c: CGFloat = 0, a2: LayoutYAxis = .top, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .top, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func l(_ c: CGFloat = 0, a2: LayoutXAxis = .left, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func l(_ c: CGFloat = 0, a2: LayoutXAxis = .left, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .left, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func b(_ c: CGFloat = 0, a2: LayoutYAxis = .bottom, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func b(_ c: CGFloat = 0, a2: LayoutYAxis = .bottom, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .bottom, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func r(_ c: CGFloat = 0, a2: LayoutXAxis = .right, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func r(_ c: CGFloat = 0, a2: LayoutXAxis = .right, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .right, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func top(_ c: CGFloat = 0, vc: UIViewController) -> Self {
+    @discardableResult public func top(_ c: CGFloat = 0, vc: UIViewController) -> Self {
         let addLC = weakSelf.topAnchor.constraint(equalTo: vc.topLayoutGuide.bottomAnchor, constant: c)
         lc(a1: addLC.firstAttribute, a2: addLC.secondAttribute, v1: addLC.firstItem, v2: addLC.secondItem, c: addLC.constant, m: addLC.multiplier, relation: addLC.relation)
         return self
     }
     
-    @discardableResult func bottom(_ c: CGFloat = 0, vc: UIViewController) -> Self {
+    @discardableResult public func bottom(_ c: CGFloat = 0, vc: UIViewController) -> Self {
         let addLC = vc.bottomLayoutGuide.topAnchor.constraint(equalTo: weakSelf.bottomAnchor, constant: c)
         lc(a1: addLC.firstAttribute, a2: addLC.secondAttribute, v1: addLC.firstItem, v2: addLC.secondItem, c: addLC.constant, m: addLC.multiplier, relation: addLC.relation)
         return self
     }
     
-    @discardableResult func lead(_ c: CGFloat = 0, a2: LayoutXAxis = .leading, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func lead(_ c: CGFloat = 0, a2: LayoutXAxis = .leading, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .leading, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func trail(_ c: CGFloat = 0, a2: LayoutXAxis = .trailing, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func trail(_ c: CGFloat = 0, a2: LayoutXAxis = .trailing, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .trailing, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func w(_ c: CGFloat = 0, a2: LayoutDimension = .none ,m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+    @discardableResult public func w(_ c: CGFloat = 0, a2: LayoutDimension = .none ,m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         lc(a1: .width, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func ww(_ c: CGFloat = 0, a2: LayoutDimension = .width ,m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+    @discardableResult public func ww(_ c: CGFloat = 0, a2: LayoutDimension = .width ,m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         lc(a1: .width, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func h(_ c: CGFloat = 0, a2: LayoutDimension = .none ,m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+    @discardableResult public func h(_ c: CGFloat = 0, a2: LayoutDimension = .none ,m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         lc(a1: .height, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func hh(_ c: CGFloat = 0, a2: LayoutDimension = .height, m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+    @discardableResult public func hh(_ c: CGFloat = 0, a2: LayoutDimension = .height, m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         lc(a1: .height, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func midX(_ c: CGFloat = 0, a2: LayoutXAxis = .centerX, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func midX(_ c: CGFloat = 0, a2: LayoutXAxis = .centerX, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .centerX, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func midY(_ c: CGFloat = 0, a2: LayoutYAxis = .centerY, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
+    @discardableResult public func midY(_ c: CGFloat = 0, a2: LayoutYAxis = .centerY, relation: NSLayoutConstraint.Relation = .equal, m: CGFloat = 1) -> Self {
         lc(a1: .centerY, a2: a2.toNSLayoutAttribute, c: c, m: m, relation: relation)
         return self
     }
     
-    @discardableResult func v2(_ view: UIView?) -> Self {
+    @discardableResult public func v2(_ view: UIView?) -> Self {
         tempSecondView = view
         return self
     }
     
-    @discardableResult func edge() -> Self {
+    @discardableResult public func edge() -> Self {
         t().l().b().r()
         return self
     }
     
     @discardableResult
-    func lc(a1: NSLayoutConstraint.Attribute, a2: NSLayoutConstraint.Attribute = .notAnAttribute, v1: AnyObject? = nil, v2: AnyObject? = nil,
+    public func lc(a1: NSLayoutConstraint.Attribute, a2: NSLayoutConstraint.Attribute = .notAnAttribute, v1: AnyObject? = nil, v2: AnyObject? = nil,
             c: CGFloat = 0, m: CGFloat = 1, relation: NSLayoutConstraint.Relation = .equal) -> NSLayoutConstraint? {
         let lc: NSLayoutConstraint
         let firstObj: AnyObject = v1 ?? weakSelf
@@ -256,7 +256,7 @@ class LayoutConstraintManager {
     }
     
     @discardableResult
-    func update(on: UIView? = nil, duration: TimeInterval = 0, animations: (() -> Void)? = nil, completion: (() -> Void)? = nil) -> Self {
+    public func update(on: UIView? = nil, duration: TimeInterval = 0, animations: (() -> Void)? = nil, completion: (() -> Void)? = nil) -> Self {
         allLCs()
         let updateView = on ?? weakSelf.superview
         if duration > 0 {
@@ -275,7 +275,7 @@ class LayoutConstraintManager {
 }
 
 extension NSLayoutConstraint.Attribute {
-    var desc: String {
+    public var desc: String {
         switch self {
         case .left: return "left"
         case .right: return "right"

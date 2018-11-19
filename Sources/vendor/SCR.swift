@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct SCR {
+public struct SCR {
     static let H = UIScreen.main.bounds.height
     static let W = UIScreen.main.bounds.width
     static let B = UIScreen.main.bounds
@@ -35,7 +35,7 @@ struct SCR {
 }
 
 extension CGFloat {
-    func one(_ denominator: CGFloat?) -> CGFloat {
+    public func one(_ denominator: CGFloat?) -> CGFloat {
         guard let d = denominator, d > 0 else { return self }
         return self / d;
     }

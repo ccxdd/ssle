@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 extension UIAlertController {
-    class func alert(title: String?, message: String? = nil, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
+    public class func alert(title: String?, message: String? = nil, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         for (idx, title) in buttons.enumerated() {
             let style: UIAlertAction.Style = destructive == idx ? .destructive : .default
@@ -24,7 +24,7 @@ extension UIAlertController {
         }
     }
     
-    class func sheet(title: String? = nil, message: String? = nil, buttons: [String], closure: ((Int) -> Void)? = nil) {
+    public class func sheet(title: String? = nil, message: String? = nil, buttons: [String], closure: ((Int) -> Void)? = nil) {
         let sheet = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         for (idx, title) in buttons.enumerated() {
             let action = UIAlertAction(title: title, style: .default, handler: { (action) in
@@ -39,7 +39,7 @@ extension UIAlertController {
         }
     }
     
-    static func alertPwd(title: String?, message: String? = nil, placeholder: String?, buttons: String..., destructive: Int = -1,
+    public static func alertPwd(title: String?, message: String? = nil, placeholder: String?, buttons: String..., destructive: Int = -1,
                          closure: ((String, Int) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addTextField { (field) in

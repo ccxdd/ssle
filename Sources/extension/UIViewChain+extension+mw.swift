@@ -9,41 +9,41 @@
 import UIKit
 
 extension UIView {
-    func bg(_ c: UIColor?) -> Self {
+    public func bg(_ c: UIColor?) -> Self {
         backgroundColor = c
         return self
     }
 }
 
 extension UIButton {
-    func title(_ t: String?, state: UIControl.State = .normal) -> Self {
+    public func title(_ t: String?, state: UIControl.State = .normal) -> Self {
         setTitle(t, for: state)
         return self
     }
     
-    func titleColor(_ c: UIColor?, state: UIControl.State = .normal) -> Self {
+    public func titleColor(_ c: UIColor?, state: UIControl.State = .normal) -> Self {
         setTitleColor(c, for: state)
         return self
     }
     
-    func font(_ f: UIFont) -> Self {
+    public func font(_ f: UIFont) -> Self {
         titleLabel?.font = f
         return self
     }
 }
 
 extension UILabel {
-    func text(_ t: String?) -> Self {
+    public func text(_ t: String?) -> Self {
         text = t
         return self
     }
     
-    func textColor(_ c: UIColor?) -> Self {
+    public func textColor(_ c: UIColor?) -> Self {
         textColor = c
         return self
     }
     
-    func font(_ f: UIFont) -> Self {
+    public func font(_ f: UIFont) -> Self {
         font = f
         return self
     }

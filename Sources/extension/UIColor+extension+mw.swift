@@ -17,7 +17,7 @@ extension UIColor {
         return UIColor(r:Int(arc4random_uniform(256)), g:Int(arc4random_uniform(256)), b:Int(arc4random_uniform(256)), a:alpha)
     }
     
-    convenience init(r: Int, g: Int, b: Int, a: CGFloat = 1.0) {
+    public convenience init(r: Int, g: Int, b: Int, a: CGFloat = 1.0) {
         assert(r >= 0 && r <= 255, "Invalid red component")
         assert(g >= 0 && g <= 255, "Invalid green component")
         assert(b >= 0 && b <= 255, "Invalid blue component")
@@ -25,11 +25,11 @@ extension UIColor {
         self.init(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: a)
     }
     
-    convenience init(hex:Int, alpha: CGFloat = 1.0) {
+    public convenience init(hex:Int, alpha: CGFloat = 1.0) {
         self.init(r:(hex >> 16) & 0xff, g:(hex >> 8) & 0xff, b:hex & 0xff, a: alpha)
     }
     
-    func alpha(_ a: CGFloat) -> UIColor {
+    public func alpha(_ a: CGFloat) -> UIColor {
         return withAlphaComponent(a)
     }
 }

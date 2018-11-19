@@ -21,7 +21,7 @@ final class ButtonAddition {
 
 extension UIButton {
     
-    @IBOutlet var enabledChangeFields: [UITextField]? {
+    @IBOutlet public var enabledChangeFields: [UITextField]? {
         set {
             addition.enabledFields = newValue
         }
@@ -39,7 +39,7 @@ extension UIButton {
         return a
     }
     
-    func refreshEnabled() {
+    public func refreshEnabled() {
         guard let fields = enabledChangeFields else { return }
         let discontentArr = fields.filter { !$0.inputValid && $0.isHidden == false && $0.superview?.isHidden == false }
         isEnabled = discontentArr.isEmpty && (addition.enabledConditionClosure?() ?? true)

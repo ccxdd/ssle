@@ -26,7 +26,7 @@ public enum CallbackCategory {
 private var NSObjectCallbackManagerKey: Void?
 
 extension NSObject {
-    var cbm: CallbackManager {
+    public var cbm: CallbackManager {
         let cbm: CallbackManager
         if let c = objc_getAssociatedObject(self, &NSObjectCallbackManagerKey) as? CallbackManager {
             cbm = c
@@ -38,7 +38,7 @@ extension NSObject {
     }
 }
 
-class CallbackManager {
+public final class CallbackManager {
     private var actual: Any?
     private var optional: Any?
     private var left: Any?
@@ -48,39 +48,39 @@ class CallbackManager {
     private var present: Any?
     private var noParamClosure: NoParamClosure?
     
-    func empty(c: NoParamClosure?) {
+    public func empty(c: NoParamClosure?) {
         noParamClosure = c
     }
     
-    func actual<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
+    public func actual<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
         actual = c
     }
     
-    func optional<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
+    public func optional<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
         optional = c
     }
     
-    func left<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
+    public func left<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
         left = c
     }
     
-    func right<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
+    public func right<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
         right = c
     }
     
-    func tap<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
+    public func tap<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
         tapGes = c
     }
     
-    func push<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
+    public func push<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
         push = c
     }
     
-    func present<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
+    public func present<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
         present = c
     }
     
-    func exec<T>(c: CallbackCategory, p: T? = nil) {
+    public func exec<T>(c: CallbackCategory, p: T? = nil) {
         switch c {
         case .actual:
             (actual as? GenericsActualParamClosure)?(p!)

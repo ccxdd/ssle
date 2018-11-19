@@ -10,7 +10,7 @@ import UIKit
 
 extension UIScrollView {
     
-    var headerRefreshCtrl: RefreshControl? {
+    public var headerRefreshCtrl: RefreshControl? {
         get {
             return objc_getAssociatedObject(self, &HeaderRefreshKey) as? RefreshControl
         }
@@ -19,7 +19,7 @@ extension UIScrollView {
         }
     }
     
-    var footerRefreshCtrl: RefreshControl? {
+    public var footerRefreshCtrl: RefreshControl? {
         get {
             return objc_getAssociatedObject(self, &FooterRefreshKey) as? RefreshControl
         }
@@ -28,7 +28,7 @@ extension UIScrollView {
         }
     }
     
-    func headerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
+    public func headerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
         if headerRefreshCtrl != nil {
             headerRefreshCtrl?.callback = closure
             return
@@ -50,7 +50,7 @@ extension UIScrollView {
         headerRefreshCtrl?.callback = closure
     }
     
-    func footerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
+    public func footerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
         if footerRefreshCtrl != nil {
             footerRefreshCtrl?.callback = closure
             return
@@ -74,7 +74,7 @@ extension UIScrollView {
         footerRefreshCtrl?.callback = closure
     }
     
-    func startHeaderRefresh(_ mode: RefreshControl.Mode = .always) {
+    public func startHeaderRefresh(_ mode: RefreshControl.Mode = .always) {
         switch mode {
         case .always:break
         case .empty:
@@ -94,7 +94,7 @@ extension UIScrollView {
         })
     }
     
-    func endHeaderRefresh() {
+    public func endHeaderRefresh() {
         guard let refreshCtrl = headerRefreshCtrl, refreshCtrl.status != .normal else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { 
             endAnimation()
@@ -111,7 +111,7 @@ extension UIScrollView {
         }
     }
     
-    func startFooterRefresh() {
+    public func startFooterRefresh() {
         guard let refreshCtrl = footerRefreshCtrl, refreshCtrl.status != .refreshing else { return }
         DispatchQueue.main.async {
             refreshCtrl.status = .prepare
@@ -124,7 +124,7 @@ extension UIScrollView {
         }
     }
     
-    func endFooterRefresh() {
+    public func endFooterRefresh() {
         guard let refreshCtrl = footerRefreshCtrl, refreshCtrl.status != .normal else { return }
         contentInset.bottom = refreshCtrl.initialInsetBottom ?? 0
         contentOffset.y += contentSize.height > frame.height ? refreshCtrl.frame.height : 0
@@ -132,7 +132,7 @@ extension UIScrollView {
         refreshCtrl.initialInsetBottom = nil
     }
     
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         switch self {
         case let scrollView as UITableView:
             return scrollView.totalCount() == 0
@@ -149,7 +149,7 @@ private var FooterRefreshKey: Void?
 private var obContentOffset = "contentOffset"
 private var obContentSize = "contentSize"
 
-protocol RefreshControlDelegate {
+public protocol RefreshControlDelegate {
     var ctrlHeight: CGFloat { get }
     func normal()
     func prepare()
@@ -157,34 +157,33 @@ protocol RefreshControlDelegate {
 }
 
 extension RefreshControl: RefreshControlDelegate {
-    @objc var ctrlHeight: CGFloat {
+    @objc public var ctrlHeight: CGFloat {
         return 0
     }
-    @objc func normal() {}
-    @objc func prepare() {}
-    @objc func refreshing() {}
+    @objc public func normal() {}
+    @objc public func prepare() {}
+    @objc public func refreshing() {}
 }
 
 public class RefreshControl: UIView {
-    
-    enum Status {
+    public enum Status {
         case normal, prepare, refreshing
     }
     
-    enum Category {
+    public enum Category {
         case header, footer
     }
     
-    enum Mode {
+    public enum Mode {
         case empty, always, condition(Bool)
     }
     
-    enum Style {
+    public enum Style {
         case xib(RefreshControl.Type)
         case custom(RefreshControlDelegate)
     }
     
-    weak var scrollView: UIScrollView!
+    weak public var scrollView: UIScrollView!
     fileprivate var type: RefreshControl.Category = .header
     fileprivate var callback: (() -> Void)?
     fileprivate var initialInsetTop: CGFloat?
@@ -203,7 +202,7 @@ public class RefreshControl: UIView {
         }
     }
     
-    var isRefreshing: Bool {
+    public var isRefreshing: Bool {
         return status == .refreshing
     }
     

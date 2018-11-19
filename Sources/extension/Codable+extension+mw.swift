@@ -9,7 +9,7 @@
 import Foundation
 
 extension Encodable {
-    func tJSONString(prettyPrinted: Bool = false) -> String? {
+    public func tJSONString(prettyPrinted: Bool = false) -> String? {
         do {
             let encoder = JSONEncoder()
             if prettyPrinted {
@@ -25,7 +25,7 @@ extension Encodable {
 }
 
 extension Data {
-    func tModel<T>(_ model: T.Type) -> T? where T: Decodable {
+    public func tModel<T>(_ model: T.Type) -> T? where T: Decodable {
         let decoder = JSONDecoder()
         do {
             let result = try decoder.decode(model, from: self)
@@ -36,7 +36,7 @@ extension Data {
         }
     }
     
-    func tJSONString() -> String? {
+    public func tJSONString() -> String? {
         do {
             let jsonObj = try JSONSerialization.jsonObject(with: self)
             let jsonData = try JSONSerialization.data(withJSONObject: jsonObj, options: .prettyPrinted)
@@ -49,7 +49,7 @@ extension Data {
 }
 
 extension Data {
-    var tString: String? {
+    public var tString: String? {
         guard let s = String(data: self, encoding: .utf8) else { return nil }
         return s as String
     }
