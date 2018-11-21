@@ -157,15 +157,15 @@ public protocol RefreshControlDelegate {
 }
 
 extension RefreshControl: RefreshControlDelegate {
-    @objc public var ctrlHeight: CGFloat {
+    @objc open var ctrlHeight: CGFloat {
         return 0
     }
-    @objc public func normal() {}
-    @objc public func prepare() {}
-    @objc public func refreshing() {}
+    @objc open func normal() {}
+    @objc open func prepare() {}
+    @objc open func refreshing() {}
 }
 
-public class RefreshControl: UIView {
+open class RefreshControl: UIView {
     public enum Status {
         case normal, prepare, refreshing
     }
@@ -183,13 +183,13 @@ public class RefreshControl: UIView {
         case custom(RefreshControlDelegate)
     }
     
-    weak public var scrollView: UIScrollView!
+    public weak var scrollView: UIScrollView!
     fileprivate var type: RefreshControl.Category = .header
     fileprivate var callback: (() -> Void)?
     fileprivate var initialInsetTop: CGFloat?
     fileprivate var initialInsetBottom: CGFloat?
     
-    var status = RefreshControl.Status.normal {
+    public var status = RefreshControl.Status.normal {
         willSet {
             switch newValue {
             case .normal:
@@ -206,11 +206,7 @@ public class RefreshControl: UIView {
         return status == .refreshing
     }
     
-    override public func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath = keyPath, (keyPath == obContentOffset || keyPath == obContentSize) else {
             return
         }
@@ -258,7 +254,7 @@ public class RefreshControl: UIView {
         }
     }
     
-    override public func willMove(toSuperview newSuperview: UIView?) {
+    override open func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         if newSuperview == nil {
             self.superview?.removeObserver(self, forKeyPath: obContentOffset)

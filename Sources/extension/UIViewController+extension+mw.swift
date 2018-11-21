@@ -12,16 +12,9 @@ extension UIViewController {
     public enum DismissBgType {
         case vc, nav, tab
     }
+    
     public enum AddViewType {
         case top, above(UIView), below(UIView)
-    }
-    
-    public enum AppModule: String {
-        case unknown
-    }
-    
-    static public func storyboard(_ module: AppModule, identifier: String? = nil, initial: Bool = false) -> UIViewController {
-        return storyboard(sb: module.rawValue, identifier: identifier, initial: initial)
     }
     
     static public func storyboard(sb: String, identifier: String? = nil, initial: Bool = false) -> UIViewController {
@@ -32,12 +25,7 @@ extension UIViewController {
         return UIStoryboard(name: sb, bundle: nil).instantiateViewController(withIdentifier: vcID)
     }
     
-    static public func fromSB<T: UIViewController>(_ t: T.Type, _ module: AppModule, initial: Bool = false) -> T {
-        let id = t.toStr
-        return storyboard(sb: module.rawValue, identifier: id, initial: initial) as! T
-    }
-    
-    static var rootVC: UIViewController? {
+    public static var rootVC: UIViewController? {
         get {
             return UIApplication.shared.windows.first?.rootViewController
         }
@@ -46,7 +34,7 @@ extension UIViewController {
         }
     }
     
-    static var currentVC: UIViewController? {
+    public static var currentVC: UIViewController? {
         return rootVC?.topVC()
     }
     
@@ -63,6 +51,9 @@ extension UIViewController {
         }
         vc.hidesBottomBarWhenPushed = hidesBottomBar
         vc.navigationItem.hidesBackButton = hidesBackButton
+        if #available(iOS 9.0, *) {
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        }
         navigationController?.pushViewController(vc, animated: animated)
     }
     

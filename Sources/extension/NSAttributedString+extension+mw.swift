@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum AttributedStyle {
+public enum AttributedStyle {
     case fs(CGFloat) //system
     case fb(CGFloat) //boldSystem
     case c(UIColor)
@@ -17,7 +17,7 @@ enum AttributedStyle {
 
 extension NSMutableAttributedString {
     @discardableResult
-    func setAttributed(styles: [AttributedStyle]) -> NSMutableAttributedString {
+    public func setAttributed(styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
         guard length > 0 else { return self }
         var attrs: [NSAttributedString.Key: Any] = [:]
         for s in styles {
@@ -37,7 +37,7 @@ extension NSMutableAttributedString {
     }
     
     @discardableResult
-    func prefix(_ str: String, _ styles: [AttributedStyle] = []) -> NSMutableAttributedString {
+    public func prefix(_ str: String, _ styles: [AttributedStyle] = []) -> NSMutableAttributedString {
         guard str.count > 0 else { return self }
         let attrStr = str.attrStr.setAttributed(styles: styles)
         insert(attrStr, at: 0)
@@ -45,10 +45,36 @@ extension NSMutableAttributedString {
     }
     
     @discardableResult
-    func suffix(_ str: String, _ styles: [AttributedStyle] = []) -> NSMutableAttributedString {
+    public func suffix(_ str: String, _ styles: [AttributedStyle] = []) -> NSMutableAttributedString {
         guard str.count > 0 else { return self }
         let attrStr = str.attrStr.setAttributed(styles: styles)
         append(attrStr)
+        return self
+    }
+    
+    @discardableResult
+    public func find(_ str: String, styles: [AttributedStyle] = []) -> NSMutableAttributedString {
+        guard str.count > 0 else { return self }
+        let range = (string as NSString).range(of: str)
+        guard range.length > 0 else { return self }
+        setAttributed(styles: styles, range: range)
+        return self
+    }
+    
+    @discardableResult
+    public func replace(source: String, target: String, styles: [AttributedStyle] = []) -> NSMutableAttributedString {
+        guard source.count > 0 else { return self }
+        let content = string
+        var range = (content as NSString).range(of: source, range: NSRange(location: 0, length: content.count))
+        while range.length > 0 {
+            if styles.count > 0 {
+                replaceCharacters(in: range, with: target.attrStr.setAttributed(styles: styles))
+            } else {
+                replaceCharacters(in: range, with: target)
+            }
+            range = (string as NSString).range(of: source, range: NSRange(location: range.location + target.count,
+                                                                          length: content.count - range.location - range.length))
+        }
         return self
     }
 }

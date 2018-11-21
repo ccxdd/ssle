@@ -10,11 +10,11 @@ import UIKit
 
 private var buttonAdditionKey: Void?
 
-final class ButtonAddition {
+public final class ButtonAddition {
     var enabledFields: [UITextField]? = []
     fileprivate var enabledConditionClosure: (() -> Bool)?
     
-    func enabledCondition(_ c: @escaping () -> Bool) {
+    public func enabledCondition(_ c: @escaping () -> Bool) {
         enabledConditionClosure = c
     }
 }
@@ -30,7 +30,7 @@ extension UIButton {
         }
     }
     
-    fileprivate var addition: ButtonAddition {
+    public  var addition: ButtonAddition {
         guard let a = objc_getAssociatedObject(self, &buttonAdditionKey) as? ButtonAddition else {
             let addition = ButtonAddition()
             objc_setAssociatedObject(self, &buttonAdditionKey, addition, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)

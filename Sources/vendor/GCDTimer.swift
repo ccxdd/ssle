@@ -8,16 +8,15 @@
 
 import UIKit
 
-class GCDTimer {
-    
-    enum TimerType {
+public class GCDTimer {
+    public enum TimerType {
         case forward(Int), reverse(Int), repeats
     }
     
     private var timer: DispatchSourceTimer?
-    private(set) var isRunning = false
+    public private(set) var isRunning = false
     
-    init(interval: DispatchTimeInterval = .seconds(1), delay: DispatchTimeInterval = .seconds(0), type: TimerType, queue: DispatchQueue = .main, handle: @escaping (Int) -> Void) {
+    public init(interval: DispatchTimeInterval = .seconds(1), delay: DispatchTimeInterval = .seconds(0), type: TimerType, queue: DispatchQueue = .main, handle: @escaping (Int) -> Void) {
         var max: Int = 0
         var count = 0
         timer = DispatchSource.makeTimerSource(queue: queue)
@@ -52,13 +51,13 @@ class GCDTimer {
     }
     
     
-    func cancel() {
+    public func cancel() {
         timer?.setEventHandler {}
         timer?.cancel()
         start()
     }
     
-    func start() {
+    public func start() {
         if !isRunning {
             timer?.resume()
             isRunning = true
@@ -66,7 +65,7 @@ class GCDTimer {
         }
     }
     
-    func stop() {
+    public func stop() {
         if isRunning {
             timer?.suspend()
             isRunning = false

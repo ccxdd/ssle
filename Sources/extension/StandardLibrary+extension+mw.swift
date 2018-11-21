@@ -343,6 +343,12 @@ extension String {
     }
 }
 
+extension Substring {
+    public var tS: String {
+        return String(self)
+    }
+}
+
 extension NSAttributedString {
     public var mutableAttrStr: NSMutableAttributedString {
         return NSMutableAttributedString(attributedString: self)
@@ -391,12 +397,24 @@ extension Data {
         }
     }
     
-    static public func load(paths: String..., dir: FileManager.SearchPathDirectory = .libraryDirectory) -> Data? {
+    public static func load(paths: String..., dir: FileManager.SearchPathDirectory = .libraryDirectory) -> Data? {
         var dirUrl = FileManager.default.urls(for: dir, in: .userDomainMask).first!
         for s in paths {
             dirUrl.appendPathComponent(s)
         }
         return try? Data(contentsOf: dirUrl)
+    }
+    
+    public static func random(len: Int) -> Data {
+        var result = ""
+        for _ in 0 ..< len * 2 {
+            result += String(Int.random(in: 0...15), radix: 16)
+        }
+        return Data(hex: result)
+    }
+    
+    public func tString(encoding: String.Encoding = .utf8) -> String? {
+        return String(data: self, encoding: encoding)
     }
 }
 
@@ -535,6 +553,29 @@ extension Bool {
 }
 
 extension CGFloat {
+    public static var pi360: CGFloat {
+        return CGFloat.pi * 2
+    }
+    
+    public static var pi270: CGFloat {
+        return CGFloat.pi * 1.5
+    }
+    
+    public static var pi90: CGFloat {
+        return CGFloat.pi / 2
+    }
+    
+    public static var pi45: CGFloat {
+        return CGFloat.pi / 4
+    }
+    
+    public static var pi30: CGFloat {
+        return CGFloat.pi / 6
+    }
+    
+    public static var pi15: CGFloat {
+        return CGFloat.pi / 12
+    }
     
     public var tI: Int {
         return Int(self)

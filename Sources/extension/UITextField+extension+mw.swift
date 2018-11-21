@@ -10,7 +10,7 @@ import UIKit
 
 private var textFieldAdditionKey: Void?
 
-private class TextFieldAddition: NSObject, UITextFieldDelegate {
+public final class TextFieldAddition: NSObject, UITextFieldDelegate {
     var min: Int = 0
     var max: Int = 4096
     var decimal: Int = -1
@@ -79,11 +79,11 @@ private class TextFieldAddition: NSObject, UITextFieldDelegate {
 }
 
 extension UITextField {
-    enum InputCategory {
+    public enum InputCategory {
         case none, decimal, digit
     }
     
-    fileprivate var addition: TextFieldAddition {
+    public var addition: TextFieldAddition {
         guard let addition = objc_getAssociatedObject(self, &textFieldAdditionKey) as? TextFieldAddition else {
             let addition = TextFieldAddition()
             addition.weakField = self
@@ -96,7 +96,7 @@ extension UITextField {
         return addition
     }
     
-    @IBOutlet var enabledButton: UIButton? {
+    @IBOutlet public var enabledButton: UIButton? {
         set {
             addition.enabledButton = newValue
         }
@@ -105,12 +105,12 @@ extension UITextField {
         }
     }
     
-    @IBAction func showPwd(_ sender: UIButton) {
+    @IBAction public func showPwd(_ sender: UIButton) {
         isSecureTextEntry = !isSecureTextEntry
         sender.isSelected = !sender.isSelected
     }
     
-    @IBInspectable var min: Int {
+    @IBInspectable public var min: Int {
         get {
             return addition.min
         }
@@ -119,7 +119,7 @@ extension UITextField {
         }
     }
     
-    @IBInspectable var max: Int {
+    @IBInspectable public var max: Int {
         get {
             return addition.max
         }
@@ -128,7 +128,7 @@ extension UITextField {
         }
     }
     
-    @IBInspectable var decimal: Int {
+    @IBInspectable public var decimal: Int {
         get {
             return addition.decimal
         }
@@ -137,11 +137,11 @@ extension UITextField {
         }
     }
     
-    var textLength: Int {
+    public var textLength: Int {
         return text?.count ?? 0
     }
     
-    var inputValid: Bool {
+    public var inputValid: Bool {
         switch addition.inputCategory {
         case .none:
             return textLength > 0 && textLength >= min && textLength <= max
@@ -150,7 +150,7 @@ extension UITextField {
         }
     }
     
-    func didChange(_ c: InputCategory = .none, closure: @escaping (String?) -> Void) {
+    public func didChange(_ c: InputCategory = .none, closure: @escaping (String?) -> Void) {
         addition.inputCategory = c
         addition.didChangeClosure = closure
         switch c {

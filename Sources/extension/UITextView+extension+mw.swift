@@ -63,7 +63,7 @@ extension UITextView {
         return addition
     }
     
-    @IBOutlet var enabledButton: UIButton? {
+    @IBOutlet public var enabledButton: UIButton? {
         set {
             addition.enabledButton = newValue
         }
@@ -72,7 +72,7 @@ extension UITextView {
         }
     }
     
-    var placeholder: String? {
+    public var placeholder: String? {
         set {
             addition.placeholderLabel.text = newValue
         }
@@ -81,11 +81,11 @@ extension UITextView {
         }
     }
     
-    var textLength: Int {
+    public var textLength: Int {
         return text.count
     }
     
-    func didChange(closure: @escaping (String) -> Void) {
+    public func didChange(closure: @escaping (String) -> Void) {
         addition.didChangeClosure = closure
     }
 }
