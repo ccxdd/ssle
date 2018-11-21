@@ -79,7 +79,8 @@ public extension String {
     }
     
     public var hexToInt: Int? {
-        return Int(self, radix: 16)
+        let trimPrefix = replacingOccurrences(of: "0x", with: "")
+        return Int(trimPrefix, radix: 16)
     }
     
     public func imageView(contentMode: UIView.ContentMode = .scaleAspectFit) -> UIImageView? {
