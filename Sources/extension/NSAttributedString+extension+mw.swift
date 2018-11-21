@@ -15,7 +15,7 @@ public enum AttributedStyle {
     case cHex(Int)
 }
 
-extension NSMutableAttributedString {
+public extension NSMutableAttributedString {
     @discardableResult
     public func setAttributed(styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
         guard length > 0 else { return self }

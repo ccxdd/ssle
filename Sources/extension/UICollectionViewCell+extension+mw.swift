@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UICollectionViewCell {
+public extension UICollectionViewCell {
     var collectionView: UICollectionView? {
         return superview as? UICollectionView
     }

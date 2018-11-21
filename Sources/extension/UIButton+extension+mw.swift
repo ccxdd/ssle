@@ -19,8 +19,7 @@ public final class ButtonAddition {
     }
 }
 
-extension UIButton {
-    
+public extension UIButton {
     @IBOutlet public var enabledChangeFields: [UITextField]? {
         set {
             addition.enabledFields = newValue

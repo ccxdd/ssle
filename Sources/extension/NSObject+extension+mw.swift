@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension NSObject {
+public extension NSObject {
     static public var toStr: String {
         return String(describing: self)
     }
@@ -31,7 +31,7 @@ extension NSObject {
 
 private var NSTextAttachmentKey: Void?
 
-extension NSTextAttachment {
+public extension NSTextAttachment {
     public var specialName: String? {
         get {
             return objc_getAssociatedObject(self, &NSTextAttachmentKey) as? String

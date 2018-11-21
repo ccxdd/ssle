@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UIColor {    
+public extension UIColor {    
     public class var random: UIColor {
         return random(alpha: 1.0)
     }

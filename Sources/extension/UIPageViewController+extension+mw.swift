@@ -10,8 +10,7 @@ import UIKit
 
 private var DataManagerKey: Void?
 
-extension UIPageViewController {
-    
+public extension UIPageViewController {
     private var dm: PageViewDataManager {
         guard let dm = objc_getAssociatedObject(self, &DataManagerKey) as? PageViewDataManager else {
             let dm = PageViewDataManager()

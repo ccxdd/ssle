@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Encodable {
+public extension Encodable {
     public func tJSONString(prettyPrinted: Bool = false) -> String? {
         do {
             let encoder = JSONEncoder()
@@ -24,7 +24,7 @@ extension Encodable {
     }
 }
 
-extension Data {
+public extension Data {
     public func tModel<T>(_ model: T.Type) -> T? where T: Decodable {
         let decoder = JSONDecoder()
         do {
@@ -46,9 +46,7 @@ extension Data {
         }
         return nil
     }
-}
-
-extension Data {
+    
     public var tString: String? {
         guard let s = String(data: self, encoding: .utf8) else { return nil }
         return s as String

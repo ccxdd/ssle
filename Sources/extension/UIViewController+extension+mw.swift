@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UIViewController {
+public extension UIViewController {
     public enum DismissBgType {
         case vc, nav, tab
     }
@@ -281,7 +281,7 @@ extension UIViewController {
     }
 }
 
-extension UITabBarController {
+public extension UITabBarController {
     override open var shouldAutorotate: Bool {
         let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
         //print("tab", result)
@@ -299,7 +299,7 @@ extension UITabBarController {
     }
 }
 
-extension UINavigationController {
+public extension UINavigationController {
     override open var shouldAutorotate: Bool {
         let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
         //print("nav", result)
@@ -317,12 +317,12 @@ extension UINavigationController {
     }
 }
 
-protocol VCRotateProtocol {
+public protocol VCRotateProtocol {
     var autoRotate: Bool { get }
     var interfaceOrientations: UIInterfaceOrientationMask { get }
 }
 
-extension UICollectionViewController {
+public extension UICollectionViewController {
     static public func defaultVC() -> Self {
         let layout = UICollectionViewFlowLayout()
         let vc = self.init(collectionViewLayout: layout)
@@ -330,7 +330,7 @@ extension UICollectionViewController {
     }
 }
 
-extension UITableViewController {
+public extension UITableViewController {
     static public func defaultVC(_ style: UITableView.Style = .plain) -> Self {
         let vc = self.init(style: style)
         return vc

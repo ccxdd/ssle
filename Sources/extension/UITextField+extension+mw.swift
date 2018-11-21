@@ -78,7 +78,7 @@ public final class TextFieldAddition: NSObject, UITextFieldDelegate {
     }
 }
 
-extension UITextField {
+public extension UITextField {
     public enum InputCategory {
         case none, decimal, digit
     }

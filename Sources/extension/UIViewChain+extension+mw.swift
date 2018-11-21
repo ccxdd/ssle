@@ -8,14 +8,14 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
     public func bg(_ c: UIColor?) -> Self {
         backgroundColor = c
         return self
     }
 }
 
-extension UIButton {
+public extension UIButton {
     public func title(_ t: String?, state: UIControl.State = .normal) -> Self {
         setTitle(t, for: state)
         return self
@@ -32,7 +32,7 @@ extension UIButton {
     }
 }
 
-extension UILabel {
+public extension UILabel {
     public func text(_ t: String?) -> Self {
         text = t
         return self

@@ -50,7 +50,7 @@ public enum LayoutYAxis {
     }
 }
 
-extension UIView {
+public extension UIView {
     public var lcm: LayoutConstraintManager {
         guard let lcm = objc_getAssociatedObject(self, &LCDMKey) as? LayoutConstraintManager else {
             let lcm = LayoutConstraintManager()
@@ -64,7 +64,7 @@ extension UIView {
     }
 }
 
-extension NSLayoutConstraint {
+public extension NSLayoutConstraint {
     public func v2(_ secondItem: UIView?) {
         (firstItem as? UIView)?.lcm.lc(a1: firstAttribute, a2: secondAttribute, v2: secondItem, c: constant, m: multiplier, relation: relation)
     }

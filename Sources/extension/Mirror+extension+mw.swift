@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension Mirror {
+public extension Mirror {
     /// to Key: String, Value: Any
     static func tSA(_ obj: Any?) -> [String: Any]? {
         guard let t = obj else { return nil }

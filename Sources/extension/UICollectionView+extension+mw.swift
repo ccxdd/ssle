@@ -338,8 +338,7 @@ private var DataManagerKey: Void?
 
 //MARK: - UICollectionView -
 
-extension UICollectionView {
-    
+public extension UICollectionView {
     fileprivate var dm: DataManager {
         if let dm = objc_getAssociatedObject(self, &DataManagerKey) as? DataManager {
             return dm

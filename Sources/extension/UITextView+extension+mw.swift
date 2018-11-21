@@ -43,7 +43,7 @@ private class TextViewAddition: NSObject, UITextViewDelegate {
     }
 }
 
-extension UITextView {
+public extension UITextView {
     fileprivate var addition: TextViewAddition {
         guard let addition = objc_getAssociatedObject(self, &textViewAdditionKey) as? TextViewAddition else {
             let addition = TextViewAddition()

@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-extension UIAlertController {
+public extension UIAlertController {
     public class func alert(title: String?, message: String? = nil, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         for (idx, title) in buttons.enumerated() {

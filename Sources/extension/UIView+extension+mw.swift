@@ -29,8 +29,7 @@ private final class UIViewAdditional {
 
 private var BorderManagerKey: Void?
 
-extension UIView {
-    
+public extension UIView {
     private var additional: UIViewAdditional {
         guard let bdm = objc_getAssociatedObject(self, &BorderManagerKey) as? UIViewAdditional else {
             let bdm = UIViewAdditional()
@@ -450,13 +449,13 @@ extension UIView {
     }
 }
 
-extension NSTextAttachment {
+public extension NSTextAttachment {
     public var attrStr: NSMutableAttributedString {
         return NSMutableAttributedString(attributedString: NSAttributedString(attachment: self))
     }
 }
 
-extension UIImage {
+public extension UIImage {
     public enum ScaleType {
         case wh(CGFloat, CGFloat)
         case w(CGFloat)
@@ -503,24 +502,7 @@ extension UIImage {
     }
 }
 
-extension UIBezierPath {
-    public func toShapeLayer(fillColor: UIColor? = nil, strokeColor: UIColor? = nil, lineWidth: CGFloat? = nil) -> CAShapeLayer {
-        let layer = CAShapeLayer()
-        layer.path = cgPath
-        layer.fillColor = fillColor?.cgColor
-        layer.strokeColor = strokeColor?.cgColor
-        layer.lineWidth = lineWidth ?? 1.0
-        return layer
-    }
-    
-    public var toLayer: CAShapeLayer {
-        let layer = CAShapeLayer()
-        layer.path = cgPath
-        return layer
-    }
-}
-
-extension CAShapeLayer {
+public extension CAShapeLayer {
     public func addTo(layer: CALayer?) -> Self {
         guard let l = layer else { return self }
         l.addSublayer(self)
@@ -564,7 +546,22 @@ extension CAShapeLayer {
     }
 }
 
-extension UIBezierPath {
+public extension UIBezierPath {
+    public func toShapeLayer(fillColor: UIColor? = nil, strokeColor: UIColor? = nil, lineWidth: CGFloat? = nil) -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        layer.path = cgPath
+        layer.fillColor = fillColor?.cgColor
+        layer.strokeColor = strokeColor?.cgColor
+        layer.lineWidth = lineWidth ?? 1.0
+        return layer
+    }
+    
+    public var toLayer: CAShapeLayer {
+        let layer = CAShapeLayer()
+        layer.path = cgPath
+        return layer
+    }
+    
     public convenience init(arcCenter center: CGPoint, radius: CGFloat, arcRadius: CGFloat, startAngle: CGFloat, endAngle: CGFloat, clockwise: Bool) {
         self.init(arcCenter: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: clockwise)
         if clockwise {
@@ -579,7 +576,7 @@ extension UIBezierPath {
     }
 }
 
-extension UITextView {
+public extension UITextView {
     public func allRange(attributed: Bool = false) -> NSRange {
         if attributed {
             return NSRange(location: 0, length: self.attributedText.length)
@@ -589,7 +586,7 @@ extension UITextView {
     }
 }
 
-extension UILabel {
+public extension UILabel {
     public func tapAttributed(text: String, completion: @escaping () -> Void) {
         isUserInteractionEnabled = true
         addTap { [weak self] (ges) in
@@ -599,7 +596,7 @@ extension UILabel {
     }
 }
 
-extension UITapGestureRecognizer {
+public extension UITapGestureRecognizer {
     public func didTapAttributedTextIn(label: UILabel, inRange targetRange: NSRange, completion: () -> Void) {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()

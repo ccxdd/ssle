@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Array {
+public extension Array {
     public func at(_ index: Int?) -> Element? {
         guard let i = index, i < count, i >= 0 else { return nil }
         return self[i]

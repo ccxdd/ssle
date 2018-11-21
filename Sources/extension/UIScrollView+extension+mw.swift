@@ -8,8 +8,7 @@
 
 import UIKit
 
-extension UIScrollView {
-    
+public extension UIScrollView {
     public var headerRefreshCtrl: RefreshControl? {
         get {
             return objc_getAssociatedObject(self, &HeaderRefreshKey) as? RefreshControl

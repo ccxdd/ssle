@@ -8,8 +8,7 @@
 
 import UIKit
 
-extension UITableView {
-    
+public extension UITableView {
     public enum CustomEditingStyle {
         case none, delete, insert, check
     }

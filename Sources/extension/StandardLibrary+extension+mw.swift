@@ -9,7 +9,7 @@
 import UIKit
 import CryptoSwift
 
-extension String {
+public extension String {
     public var image: UIImage? {
         return UIImage(named:self)
     }
@@ -343,19 +343,19 @@ extension String {
     }
 }
 
-extension Substring {
+public extension Substring {
     public var tS: String {
         return String(self)
     }
 }
 
-extension NSAttributedString {
+public extension NSAttributedString {
     public var mutableAttrStr: NSMutableAttributedString {
         return NSMutableAttributedString(attributedString: self)
     }
 }
 
-extension Data {
+public extension Data {
     public func hex() -> String {
         return map { String(format: "%02hhx", $0) }.joined()
     }
@@ -418,8 +418,7 @@ extension Data {
     }
 }
 
-extension Double {
-    
+public extension Double {
     public enum DecimalType {
         case floor, ceil, round
     }
@@ -468,7 +467,7 @@ extension Double {
     }
 }
 
-extension Float {
+public extension Float {
     public func format(_ f: String) -> String {
         return String(format: "%\(f)f", self)
     }
@@ -516,13 +515,13 @@ extension Float {
     }
 }
 
-extension TimeInterval {
+public extension TimeInterval {
     public var string: String {
         return String(Int(self))
     }
 }
 
-extension Date {
+public extension Date {
     public var tS: String {
         return format("yyyy-MM-dd HH:mm:ss")
     }
@@ -542,7 +541,7 @@ extension Date {
     }
 }
 
-extension Bool {
+public extension Bool {
     public func then(_ closure: () -> Void) {
         if self { closure() }
     }
@@ -552,7 +551,7 @@ extension Bool {
     }
 }
 
-extension CGFloat {
+public extension CGFloat {
     public static var pi360: CGFloat {
         return CGFloat.pi * 2
     }
@@ -627,7 +626,7 @@ extension CGFloat {
     }
 }
 
-extension CGPoint {
+public extension CGPoint {
     /// 0度从东面开始算
     public func tArcPoint(r: CGFloat, pi: CGFloat) -> CGPoint {
         let xx = x + cos(pi) * r
@@ -636,8 +635,7 @@ extension CGPoint {
     }
 }
 
-extension Int {
-    
+public extension Int {
     public var tCGF: CGFloat {
         return CGFloat(self)
     }
