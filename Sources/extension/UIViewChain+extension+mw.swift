@@ -9,6 +9,7 @@
 import UIKit
 
 public extension UIView {
+    @discardableResult
     public func bg(_ c: UIColor?) -> Self {
         backgroundColor = c
         return self
@@ -16,33 +17,57 @@ public extension UIView {
 }
 
 public extension UIButton {
+    @discardableResult
     public func title(_ t: String?, state: UIControl.State = .normal) -> Self {
         setTitle(t, for: state)
         return self
     }
     
+    @discardableResult
     public func titleColor(_ c: UIColor?, state: UIControl.State = .normal) -> Self {
         setTitleColor(c, for: state)
         return self
     }
     
+    @discardableResult
     public func font(_ f: UIFont) -> Self {
         titleLabel?.font = f
+        return self
+    }
+    
+    @discardableResult
+    public func img(_ i: UIImage?, state: UIControl.State = .normal) -> Self {
+        setImage(i, for: state)
+        return self
+    }
+    
+    @discardableResult
+    public func bgImg(_ i: UIImage?, state: UIControl.State = .normal) -> Self {
+        setBackgroundImage(i, for: state)
         return self
     }
 }
 
 public extension UILabel {
+    @discardableResult
     public func text(_ t: String?) -> Self {
         text = t
         return self
     }
     
+    @discardableResult
+    public func attributedText(_ t: NSAttributedString?) -> Self {
+        attributedText = t
+        return self
+    }
+    
+    @discardableResult
     public func textColor(_ c: UIColor?) -> Self {
         textColor = c
         return self
     }
     
+    @discardableResult
     public func font(_ f: UIFont) -> Self {
         font = f
         return self

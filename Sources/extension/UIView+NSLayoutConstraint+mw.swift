@@ -216,8 +216,8 @@ public final class LayoutConstraintManager {
         return self
     }
     
-    @discardableResult public func edge() -> Self {
-        t().l().b().r()
+    @discardableResult public func edge(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
+        self.t(t).l(l).b(b).r(r)
         return self
     }
     
