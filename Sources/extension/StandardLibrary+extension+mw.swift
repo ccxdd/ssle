@@ -313,7 +313,7 @@ public extension String {
         var num = false
         let len = count
         if len == 0 {
-            return "The password is empty."
+            return "Password field empty."
         }
         for i in self {
             if !abcBig {
@@ -332,14 +332,14 @@ public extension String {
         let conditionCount = [abcLow, abcBig, num, sym].filter({ $0 == true }).count
         switch conditionCount {
         case 1 where len >= 8:
-            return "The password is weak."
+            return "Weak."
         case 2 where len >= 8:
-            return "The password is not bad."
+            return "Average"
         case 3 where len >= 8:
-            return "The password is strong."
+            return "Strong"
         case 4 where len >= 8:
-            return "The password is very strong."
-        default: return "The password is very weak."
+            return "Very Strong"
+        default: return "Very Weak"
         }
     }
 }
