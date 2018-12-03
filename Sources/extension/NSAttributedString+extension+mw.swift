@@ -9,10 +9,19 @@
 import UIKit
 
 public enum AttributedStyle {
-    case fs(CGFloat) //system
-    case fb(CGFloat) //boldSystem
+    /// system
+    case fs(CGFloat)
+    /// boldSystem
+    case fb(CGFloat)
+    case fname(String, CGFloat)
     case c(UIColor)
     case cHex(Int)
+    /// baselineOffset
+    case bl(CGFloat)
+    /// lineSpace, paragraphSpacing
+    case lps(CGFloat, CGFloat)
+    case uline(NSUnderlineStyle)
+    case link(URL)
 }
 
 public extension NSMutableAttributedString {
@@ -26,13 +35,26 @@ public extension NSMutableAttributedString {
                 attrs[NSAttributedString.Key.font] = UIFont.boldSystemFont(ofSize: size)
             case .fs(let size):
                 attrs[NSAttributedString.Key.font] = UIFont.systemFont(ofSize: size)
+            case .fname(let name, let size):
+                attrs[NSAttributedString.Key.font] = UIFont(name: name, size: size)
             case .c(let c):
                 attrs[NSAttributedString.Key.foregroundColor] = c
             case .cHex(let hex):
                 attrs[NSAttributedString.Key.foregroundColor] = UIColor(hex: hex)
+            case .bl(let f):
+                attrs[NSAttributedString.Key.baselineOffset] = NSNumber(value: Double(f))
+            case .lps(let f, let f2):
+                let p = NSMutableParagraphStyle()
+                p.lineSpacing = f
+                p.paragraphSpacing = f2
+                attrs[NSAttributedString.Key.paragraphStyle] = p
+            case .uline(let s):
+                attrs[NSAttributedString.Key.underlineStyle] = s.rawValue
+            case .link(let u):
+                attrs[NSAttributedString.Key.link] = u
             }
         }
-        setAttributes(attrs, range: NSMakeRange(0, length))
+        setAttributes(attrs, range: range ?? NSMakeRange(0, length))
         return self
     }
     
