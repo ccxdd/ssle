@@ -11,35 +11,21 @@ import UIKit
 private var textViewAdditionKey: Void?
 
 private class TextViewAddition: NSObject, UITextViewDelegate {
-    var minLen: Int = Int.max
-    var maxLen: Int = 0
+    var minLen: Int = 0
+    var maxLen: Int = Int.max
     var left: CGFloat = 8
     var top: CGFloat = 8
     var didChangeClosure: ((String) -> Void)?
-    weak var weakField: UITextView!
     var placeholderLabel: UILabel!
     weak var enabledButton: UIButton?
     
-    @objc fileprivate func textViewDidChange() {
-        placeholderLabel?.isHidden = weakField.text.count > 0
-        didChangeClosure?(weakField.text)
+    func textViewDidChange(_ textView: UITextView) {
+        placeholderLabel?.isHidden = textView.text.count > 0
+        guard textView.text.count <= maxLen else {
+            textView.deleteBackward()
+            return }
+        didChangeClosure?(textView.text)
         enabledButton?.refreshEnabled()
-    }
-    
-    func checkLengthCondition() -> Bool {
-        guard let len = weakField?.text.count, len >= minLen, len <= maxLen else { return false }
-        return true
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if textView.text.count <= maxLen || maxLen == 0 {
-            return true
-        }
-        return false
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -47,7 +33,6 @@ public extension UITextView {
     fileprivate var addition: TextViewAddition {
         guard let addition = objc_getAssociatedObject(self, &textViewAdditionKey) as? TextViewAddition else {
             let addition = TextViewAddition()
-            addition.weakField = self
             let lab = UILabel().addTo(view: self)
             lab.lcm.t(addition.top).l(addition.left)
             lab.font = font
@@ -55,8 +40,6 @@ public extension UITextView {
             lab.isUserInteractionEnabled = false
             addition.placeholderLabel = lab
             delegate = addition
-            NotificationCenter.default.addObserver(addition, selector: #selector(addition.textViewDidChange),
-                                                   name: UITextView.textDidChangeNotification, object: nil)
             objc_setAssociatedObject(self, &textViewAdditionKey, addition, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return addition
         }
@@ -69,6 +52,24 @@ public extension UITextView {
         }
         get {
             return addition.enabledButton
+        }
+    }
+    
+    @IBInspectable public var minLen: Int {
+        get {
+            return addition.minLen
+        }
+        set {
+            addition.minLen = newValue
+        }
+    }
+    
+    @IBInspectable public var maxLen: Int {
+        get {
+            return addition.maxLen
+        }
+        set {
+            addition.maxLen = newValue
         }
     }
     
@@ -87,6 +88,20 @@ public extension UITextView {
     
     public func didChange(closure: @escaping (String) -> Void) {
         addition.didChangeClosure = closure
+    }
+    
+    public var inputValid: Bool {
+        return textLength > 0 && textLength >= minLen && textLength <= maxLen
+    }
+    
+    @discardableResult public func min(len: Int) -> Self {
+        addition.minLen = len
+        return self
+    }
+    
+    @discardableResult public func max(len: Int) -> Self {
+        addition.maxLen = len
+        return self
     }
 }
 

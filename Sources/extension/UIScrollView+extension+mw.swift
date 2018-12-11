@@ -145,8 +145,6 @@ public extension UIScrollView {
 
 private var HeaderRefreshKey: Void?
 private var FooterRefreshKey: Void?
-private var obContentOffset = "contentOffset"
-private var obContentSize = "contentSize"
 
 public protocol RefreshControlDelegate {
     var ctrlHeight: CGFloat { get }
@@ -206,12 +204,12 @@ open class RefreshControl: UIView {
     }
     
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard let keyPath = keyPath, (keyPath == obContentOffset || keyPath == obContentSize) else {
+        guard let keyPath = keyPath, (keyPath == #keyPath(UIScrollView.contentOffset) || keyPath == #keyPath(UIScrollView.contentSize)) else {
             return
         }
         
         switch keyPath {
-        case obContentOffset:
+        case #keyPath(UIScrollView.contentOffset):
             guard let offset = change?[.newKey] as? CGPoint, status != .refreshing, isHidden == false else { return }
             switch (type, scrollView.isDragging, status) {
             case (.header, true, _):
@@ -256,11 +254,11 @@ open class RefreshControl: UIView {
     override open func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         if newSuperview == nil {
-            self.superview?.removeObserver(self, forKeyPath: obContentOffset)
-            self.superview?.removeObserver(self, forKeyPath: obContentSize)
+            self.superview?.removeObserver(self, forKeyPath: #keyPath(UIScrollView.contentOffset))
+            self.superview?.removeObserver(self, forKeyPath: #keyPath(UIScrollView.contentSize))
         } else {
-            newSuperview?.addObserver(self, forKeyPath: obContentOffset, options: .new, context: nil)
-            newSuperview?.addObserver(self, forKeyPath: obContentSize, options: .new, context: nil)
+            newSuperview?.addObserver(self, forKeyPath: #keyPath(UIScrollView.contentOffset), options: .new, context: nil)
+            newSuperview?.addObserver(self, forKeyPath: #keyPath(UIScrollView.contentSize), options: .new, context: nil)
             scrollView = newSuperview as? UIScrollView
         }
     }

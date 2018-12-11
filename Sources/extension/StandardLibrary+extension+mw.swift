@@ -72,10 +72,10 @@ public extension String {
         }
     }
     
-    public var decimalNum: Int? {
+    public var decimalNum: Int {
         let dotArr = components(separatedBy: ".")
-        guard dotArr.count < 3 else { return nil }
-        return dotArr.at(1)?.count
+        guard dotArr.count < 3 else { return 0 }
+        return dotArr.at(1)?.count ?? 0
     }
     
     public var hexToInt: Int? {
