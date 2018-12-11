@@ -21,6 +21,9 @@ private final class TextFieldAddition: NSObject {
     
     @objc func textFieldDidChange(_ sender: UITextField) {
         var t: String = sender.text ?? ""
+        guard t.count <= maxLen else {
+            sender.deleteBackward()
+            return }
         switch inputCategory {
         case .decimal:
             guard t.isDecimal, !t.hasPrefix("."), !t.hasPrefix("00"), t.components(separatedBy: ".").count < 3 else {
@@ -34,9 +37,6 @@ private final class TextFieldAddition: NSObject {
                 sender.deleteBackward()
                 return }
         case .none:
-            guard t.count <= maxLen else {
-                sender.deleteBackward()
-                return }
             didChangeClosure?(t)
             enabledButton?.refreshEnabled()
             return
