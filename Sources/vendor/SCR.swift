@@ -21,7 +21,9 @@ public struct SCR {
     public static var statusBarHeight: CGFloat {
         return UIApplication.shared.statusBarFrame.height
     }
-    public static let iPhoneX: Bool = H == 812
+    public static var iPhoneX: Bool {
+        return H >= 812
+    }
     
     public static func H(_ multiplier: CGFloat?) -> CGFloat {
         guard let d = multiplier else { return 0 }
