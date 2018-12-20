@@ -30,6 +30,12 @@ public extension UIButton {
     }
     
     @discardableResult
+    public func tintColor(_ c: UIColor?) -> Self {
+        tintColor = c
+        return self
+    }
+    
+    @discardableResult
     public func font(_ f: UIFont) -> Self {
         titleLabel?.font = f
         return self

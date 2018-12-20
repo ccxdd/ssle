@@ -18,8 +18,8 @@ public enum AttributedStyle {
     case cHex(Int)
     /// baselineOffset
     case bl(CGFloat)
-    /// lineSpace, paragraphSpacing
-    case lps(CGFloat, CGFloat)
+    /// lineSpace, paragraphSpacing, align
+    case lps(CGFloat, CGFloat, NSTextAlignment)
     case uline(NSUnderlineStyle)
     case link(URL)
 }
@@ -43,10 +43,11 @@ public extension NSMutableAttributedString {
                 attrs[NSAttributedString.Key.foregroundColor] = UIColor(hex: hex)
             case .bl(let f):
                 attrs[NSAttributedString.Key.baselineOffset] = NSNumber(value: Double(f))
-            case .lps(let f, let f2):
+            case .lps(let f, let f2, let align):
                 let p = NSMutableParagraphStyle()
                 p.lineSpacing = f
                 p.paragraphSpacing = f2
+                p.alignment = align
                 attrs[NSAttributedString.Key.paragraphStyle] = p
             case .uline(let s):
                 attrs[NSAttributedString.Key.underlineStyle] = s.rawValue

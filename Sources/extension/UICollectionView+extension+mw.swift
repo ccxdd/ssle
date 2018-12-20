@@ -38,7 +38,7 @@ private class DataManager: NSObject, UICollectionViewDelegate, UICollectionViewD
     var willDisplayIndexPathClosure: cellAtIndexPathClosure?
     var endDisplayIndexPathClosure: cellAtIndexPathClosure?
     var didScroll: ((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?
-    var didEndDecelerating: ((_ indexPath: IndexPath?, _ item: Any?) -> Void)?
+    var didEndDecelerating: ((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?
     var didEndDragging: ((_ decelerate: Bool, _ direction: OffsetDirection, _ offsets: [CGPoint]) -> Void)?
     // banner
     fileprivate var isCircle: Bool = false
