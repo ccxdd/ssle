@@ -22,39 +22,37 @@ private final class TextFieldAddition: NSObject {
     @objc func textFieldDidChange(_ sender: UITextField) {
         var t: String = sender.text ?? ""
         guard t.count <= maxLen else {
-            errorChangeCallback(sender: sender)
+            changeCallback(sender: sender, isDelete: true)
             return }
         switch inputCategory {
         case .decimal:
             guard t.isDecimal, !t.hasPrefix("."), !t.hasPrefix("00"), t.components(separatedBy: ".").count < 3 else {
-                errorChangeCallback(sender: sender)
+                changeCallback(sender: sender, isDelete: true)
                 return }
             guard t.decimalNum <= decimalLen, decimalLen != -1 else {
-                errorChangeCallback(sender: sender)
+                changeCallback(sender: sender, isDelete: true)
                 return }
         case .digit:
             guard t.isInt else {
-                errorChangeCallback(sender: sender)
+                changeCallback(sender: sender, isDelete: true)
                 return }
         case .none:
-            didChangeClosure?(t)
-            enabledButton?.refreshEnabled()
+            changeCallback(sender: sender)
             return
         }
         if t.count == 2, t.hasPrefix("0"), t != "0." {
             sender.text = t.last?.description
-            t = sender.text!
         }
         if maxValue != nil, t.tF > maxValue!.tF {
             sender.text = maxValue
-            t = maxValue!
         }
-        didChangeClosure?(t)
-        enabledButton?.refreshEnabled()
+        changeCallback(sender: sender)
     }
     
-    private func errorChangeCallback(sender: UITextField) {
-        sender.deleteBackward()
+    private func changeCallback(sender: UITextField, isDelete: Bool = false) {
+        if isDelete {
+            sender.deleteBackward()
+        }
         didChangeClosure?(sender.text ?? "")
         enabledButton?.refreshEnabled()
     }

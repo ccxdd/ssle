@@ -21,10 +21,14 @@ private class TextViewAddition: NSObject, UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         placeholderLabel?.isHidden = textView.text.count > 0
-        guard textView.text.count <= maxLen else {
-            textView.deleteBackward()
-            return }
-        didChangeClosure?(textView.text)
+        changeCallback(sender: textView, isDelete: textView.text.count > maxLen)
+    }
+    
+    private func changeCallback(sender: UITextView, isDelete: Bool = false) {
+        if isDelete {
+            sender.deleteBackward()
+        }
+        didChangeClosure?(sender.text ?? "")
         enabledButton?.refreshEnabled()
     }
 }
