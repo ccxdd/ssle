@@ -22,19 +22,19 @@ private final class TextFieldAddition: NSObject {
     @objc func textFieldDidChange(_ sender: UITextField) {
         var t: String = sender.text ?? ""
         guard t.count <= maxLen else {
-            sender.deleteBackward()
+            errorChangeCallback(sender: sender)
             return }
         switch inputCategory {
         case .decimal:
             guard t.isDecimal, !t.hasPrefix("."), !t.hasPrefix("00"), t.components(separatedBy: ".").count < 3 else {
-                sender.deleteBackward()
+                errorChangeCallback(sender: sender)
                 return }
             guard t.decimalNum <= decimalLen, decimalLen != -1 else {
-                sender.deleteBackward()
+                errorChangeCallback(sender: sender)
                 return }
         case .digit:
             guard t.isInt else {
-                sender.deleteBackward()
+                errorChangeCallback(sender: sender)
                 return }
         case .none:
             didChangeClosure?(t)
@@ -50,6 +50,12 @@ private final class TextFieldAddition: NSObject {
             t = maxValue!
         }
         didChangeClosure?(t)
+        enabledButton?.refreshEnabled()
+    }
+    
+    private func errorChangeCallback(sender: UITextField) {
+        sender.deleteBackward()
+        didChangeClosure?(sender.text ?? "")
         enabledButton?.refreshEnabled()
     }
 }
