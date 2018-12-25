@@ -133,6 +133,9 @@ public extension UITextField {
     
     @discardableResult public func fillMax(value: String?) -> Self {
         addition.maxValue = value
+        if (text?.tF ?? 0) > (value?.tF ?? 0) {
+            text = value
+        }
         return self
     }
     
