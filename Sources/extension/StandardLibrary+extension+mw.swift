@@ -658,7 +658,7 @@ public extension Int {
     }
     
     static public func random(up: Int, down: Int = 0, equal: Bool = false) -> Int {
-        return Swift.max(Int(arc4random_uniform(UInt32(up + (equal == true ? 1 : 0)))), down)
+        return Int.random(in: equal ? down..<(up + 1) : down..<up)
     }
     
     public func random(_ down: Int = 0) -> Int {

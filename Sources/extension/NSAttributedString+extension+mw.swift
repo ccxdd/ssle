@@ -13,7 +13,11 @@ public enum AttributedStyle {
     case fs(CGFloat)
     /// boldSystem
     case fb(CGFloat)
+    /// italicSystemFont
+    case fi(CGFloat)
     case fname(String, CGFloat)
+    /// UIFont
+    case font(UIFont)
     case c(UIColor)
     case cHex(Int)
     /// baselineOffset
@@ -22,6 +26,8 @@ public enum AttributedStyle {
     case lps(CGFloat, CGFloat, NSTextAlignment)
     case uline(NSUnderlineStyle)
     case link(URL)
+    /// 字间距
+    case kern(CGFloat)
 }
 
 public extension NSMutableAttributedString {
@@ -35,8 +41,12 @@ public extension NSMutableAttributedString {
                 attrs[NSAttributedString.Key.font] = UIFont.boldSystemFont(ofSize: size)
             case .fs(let size):
                 attrs[NSAttributedString.Key.font] = UIFont.systemFont(ofSize: size)
+            case .fi(let size):
+                attrs[NSAttributedString.Key.font] = UIFont.italicSystemFont(ofSize: size)
             case .fname(let name, let size):
                 attrs[NSAttributedString.Key.font] = UIFont(name: name, size: size)
+            case .font(let font):
+                attrs[NSAttributedString.Key.font] = font
             case .c(let c):
                 attrs[NSAttributedString.Key.foregroundColor] = c
             case .cHex(let hex):
@@ -53,6 +63,8 @@ public extension NSMutableAttributedString {
                 attrs[NSAttributedString.Key.underlineStyle] = s.rawValue
             case .link(let u):
                 attrs[NSAttributedString.Key.link] = u
+            case .kern(let len):
+                attrs[NSAttributedString.Key.kern] = len
             }
         }
         setAttributes(attrs, range: range ?? NSMakeRange(0, length))
@@ -60,23 +72,34 @@ public extension NSMutableAttributedString {
     }
     
     @discardableResult
-    public func prefix(_ str: String, _ styles: [AttributedStyle] = []) -> NSMutableAttributedString {
-        guard str.count > 0 else { return self }
-        let attrStr = str.attrStr.setAttributed(styles: styles)
-        insert(attrStr, at: 0)
+    public func prefix(_ str: String, _ styles: [AttributedStyle] = []) -> Self {
+        insert(str, at: 0, styles: styles)
         return self
     }
     
     @discardableResult
-    public func suffix(_ str: String, _ styles: [AttributedStyle] = []) -> NSMutableAttributedString {
-        guard str.count > 0 else { return self }
-        let attrStr = str.attrStr.setAttributed(styles: styles)
-        append(attrStr)
+    public func suffix(_ str: String, _ styles: [AttributedStyle] = []) -> Self {
+        insert(str, at: length, styles: styles)
         return self
     }
     
     @discardableResult
-    public func find(_ str: String, styles: [AttributedStyle] = []) -> NSMutableAttributedString {
+    func insert(_ str: String, at: Int, styles: [AttributedStyle] = []) -> Self {
+        guard str.count > 0 else { return self }
+        let attrStr = str.attrStr.setAttributed(styles: styles)
+        insert(attrStr, at: at)
+        return self
+    }
+    
+    @discardableResult
+    func insert(attrStr: NSAttributedString?, at: Int) -> Self {
+        guard let attrStr = attrStr else { return self }
+        insert(attrStr, at: at)
+        return self
+    }
+    
+    @discardableResult
+    public func find(_ str: String, styles: [AttributedStyle] = []) -> Self {
         guard str.count > 0 else { return self }
         let range = (string as NSString).range(of: str)
         guard range.length > 0 else { return self }
@@ -85,7 +108,7 @@ public extension NSMutableAttributedString {
     }
     
     @discardableResult
-    public func replace(source: String, target: String, styles: [AttributedStyle] = []) -> NSMutableAttributedString {
+    public func replace(source: String, target: String, styles: [AttributedStyle] = []) -> Self {
         guard source.count > 0 else { return self }
         let content = string
         var range = (content as NSString).range(of: source, range: NSRange(location: 0, length: content.count))

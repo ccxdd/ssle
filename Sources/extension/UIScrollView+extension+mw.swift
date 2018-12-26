@@ -93,7 +93,7 @@ public extension UIScrollView {
         })
     }
     
-    public func endHeaderRefresh() {
+    public func endHeaderRefresh(reloadEmptyStyle: Bool = false) {
         guard let refreshCtrl = headerRefreshCtrl, refreshCtrl.status != .normal else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { 
             endAnimation()
@@ -105,7 +105,9 @@ public extension UIScrollView {
             }, completion: { (end) in
                 refreshCtrl.status = .normal
                 refreshCtrl.initialInsetTop = nil
-                self.asTo(UICollectionView.self)?.reloadDataEmptyStyle()
+                if reloadEmptyStyle {
+                    self.asTo(UICollectionView.self)?.reloadDataEmptyStyle()
+                }
             })
         }
     }

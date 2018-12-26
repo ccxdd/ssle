@@ -14,8 +14,8 @@ public extension Array {
         return self[i]
     }
     
-    public func range(from: Int?, to: Int?) -> [Element]? {
-        guard let f = from, let t = to, f <= t, f >= 0, t < count else { return nil }
+    public func range(from: Int?, to: Int?, nilSelf: Bool = false) -> [Element]? {
+        guard let f = from, let t = to, f <= t, f >= 0, t < count else { return nilSelf ? self : nil }
         return Array(self[f...t])
     }
     
