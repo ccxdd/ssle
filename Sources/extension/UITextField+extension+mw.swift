@@ -16,6 +16,8 @@ private final class TextFieldAddition: NSObject {
     var maxValue: String?
     var decimalLen: Int = -1
     var didChangeClosure: ((String) -> Void)?
+    var didBeginClosure: ((String) -> Void)?
+    var didEndClosure: ((String) -> Void)?
     var inputCategory: UITextField.InputCategory = .none
     weak var enabledButton: UIButton?
     
@@ -49,6 +51,14 @@ private final class TextFieldAddition: NSObject {
         changeCallback(sender: sender)
     }
     
+    @objc func textFieldDidBegin(_ sender: UITextField) {
+        didBeginClosure?(sender.text ?? "")
+    }
+    
+    @objc func textFieldDidEnd(_ sender: UITextField) {
+        didEndClosure?(sender.text ?? "")
+    }
+    
     private func changeCallback(sender: UITextField, isDelete: Bool = false) {
         if isDelete {
             sender.deleteBackward()
@@ -67,6 +77,8 @@ public extension UITextField {
         guard let addition = objc_getAssociatedObject(self, &textFieldAdditionKey) as? TextFieldAddition else {
             let addition = TextFieldAddition()
             addTarget(addition, action: #selector(TextFieldAddition.textFieldDidChange(_:)), for: .editingChanged)
+            addTarget(addition, action: #selector(TextFieldAddition.textFieldDidBegin(_:)), for: .editingDidBegin)
+            addTarget(addition, action: #selector(TextFieldAddition.textFieldDidEnd(_:)), for: .editingDidEnd)
             objc_setAssociatedObject(self, &textFieldAdditionKey, addition, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return addition
         }
@@ -129,6 +141,14 @@ public extension UITextField {
     
     public func didChange(closure: @escaping (String) -> Void) {
         addition.didChangeClosure = closure
+    }
+    
+    public func didBegin(closure: @escaping (String) -> Void) {
+        addition.didBeginClosure = closure
+    }
+    
+    public func didEnd(closure: @escaping (String) -> Void) {
+        addition.didEndClosure = closure
     }
     
     @discardableResult public func fillMax(value: String?) -> Self {
