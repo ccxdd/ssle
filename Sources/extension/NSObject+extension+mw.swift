@@ -13,7 +13,7 @@ public extension NSObject {
         return String(describing: self)
     }
     
-    public var toStr: String {
+    public var typeOfString: String {
         return type(of: self).toStr
     }
     

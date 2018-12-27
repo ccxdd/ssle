@@ -30,7 +30,9 @@ public extension UIViewController {
             return UIApplication.shared.windows.first?.rootViewController
         }
         set {
-            UIApplication.shared.windows.first?.rootViewController = newValue
+            DispatchQueue.main.async {
+                UIApplication.shared.windows.first?.rootViewController = newValue
+            }
         }
     }
     
@@ -45,7 +47,7 @@ public extension UIViewController {
     
     public func push(vc: UIViewController?, animated: Bool = true, hidesBottomBar: Bool = true, hidesBackButton: Bool = false, unique: Bool = false) {
         guard let vc = vc else { return }
-        if unique && navigationController?.topViewController?.toStr == vc.toStr {
+        if unique && navigationController?.topViewController?.typeOfString == vc.typeOfString {
             print("⚠️ 重复 PUSH ⚠️")
             return
         }
