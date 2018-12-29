@@ -281,6 +281,17 @@ public extension UIViewController {
     @objc private func dismissButtonAction(sender: UIButton) {
         sideOpen(false)
     }
+    
+    public func addChild(vc: UIViewController?) {
+        guard let v = vc else { return }
+        addChild(v)
+        v.didMove(toParent: self)
+    }
+    
+    public func removeChild(vc: UIViewController?) {
+        vc?.willMove(toParent: nil)
+        vc?.removeFromParent()
+    }
 }
 
 public extension UITabBarController {
