@@ -432,6 +432,24 @@ public extension UIView {
         return self
     }
     
+    @discardableResult
+    public func insertTo(view: UIView?, at: Int) -> Self {
+        view?.insertSubview(self, at: at)
+        return self
+    }
+    
+    @discardableResult
+    public func addTo(view: UIView?, above: UIView? = nil) -> Self {
+        view?.insertSubview(self, aboveSubview: above ?? self)
+        return self
+    }
+    
+    @discardableResult
+    public func addTo(view: UIView?, below: UIView? = nil) -> Self {
+        view?.insertSubview(self, belowSubview: below ?? self)
+        return self
+    }
+    
     public func moveDirection(_ pointArr: [CGPoint]) -> MoveDirection {
         guard let l = pointArr.last, let l2 = pointArr.at(pointArr.count - 2) else { return .none }
         switch (l.x - l2.x, l.y - l2.y) {
@@ -473,7 +491,7 @@ public extension UIImage {
         return textAttachment.attrStr
     }
     
-    public func scale(_ scaleType: ScaleType?, tintColor: UIColor? = nil) -> UIImage {
+    public func scale(_ scaleType: ScaleType?) -> UIImage {
         guard let type = scaleType else { return self }
         var newImg: UIImage = self
         let w: CGFloat
@@ -493,9 +511,8 @@ public extension UIImage {
             h = size.height * a
         }
         if w > 0, h > 0 {
-            UIGraphicsBeginImageContextWithOptions(CGSize(width: w, height: h), false, UIScreen.main.scale)
-            tintColor?.setFill()
-            draw(in: CGRect(x: 0, y: 0, width: w, height: h))
+            UIGraphicsBeginImageContextWithOptions(CGSize(width: w, height: h), true, UIScreen.main.scale)
+            self.draw(in: CGRect(x: 0, y: 0, width: w, height: h))
             newImg = UIGraphicsGetImageFromCurrentImageContext() ?? self
             UIGraphicsEndImageContext()
         }
@@ -504,6 +521,7 @@ public extension UIImage {
 }
 
 public extension CAShapeLayer {
+    @discardableResult
     public func addTo(layer: CALayer?) -> Self {
         guard let l = layer else { return self }
         l.addSublayer(self)

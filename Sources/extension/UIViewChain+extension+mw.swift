@@ -78,4 +78,10 @@ public extension UILabel {
         font = f
         return self
     }
+    
+    @discardableResult
+    public func align(_ a: NSTextAlignment) -> Self {
+        textAlignment = a
+        return self
+    }
 }
