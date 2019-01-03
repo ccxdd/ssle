@@ -131,10 +131,10 @@ public final class LayoutConstraintManager {
         case (.right, .right?), (.trailing, .trailing?), (.bottom, .bottom?), (.right, .centerX?), (.trailing, .centerX?), (.bottom, .centerY?):
             // v1 v2 互换
             let addr2 = unsafeBitCast(v2, to: Int.self)
-            key = a2!.desc + ":" + addr2.tS + "," + a1.desc + ":" + addr1.tS
+            key = (a2 ?? a1).desc + ":" + addr2.tS + "," + a1.desc + ":" + addr1.tS
         default:
             let addr2 = unsafeBitCast(v2, to: Int.self)
-            key = a1.desc + ":" + addr1.tS + "," + a2!.desc + ":" + addr2.tS
+            key = a1.desc + ":" + addr1.tS + "," + (a2 ?? a1).desc + ":" + addr2.tS
         }
         return existLCs[key]
     }
