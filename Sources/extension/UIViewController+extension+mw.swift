@@ -30,9 +30,7 @@ public extension UIViewController {
             return UIApplication.shared.windows.first?.rootViewController
         }
         set {
-            DispatchQueue.main.async {
-                UIApplication.shared.windows.first?.rootViewController = newValue
-            }
+            UIApplication.shared.windows.first?.rootViewController = newValue
         }
     }
     
