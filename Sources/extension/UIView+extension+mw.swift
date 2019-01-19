@@ -387,6 +387,7 @@ public extension UIView {
         tapGes.numberOfTapsRequired = taps
         tapGes.numberOfTouchesRequired = touchs
         addGestureRecognizer(tapGes)
+        isUserInteractionEnabled = true
         cbm.tap(t: UITapGestureRecognizer.self, c: closure)
     }
     
@@ -439,14 +440,14 @@ public extension UIView {
     }
     
     @discardableResult
-    public func addTo(view: UIView?, above: UIView? = nil) -> Self {
-        view?.insertSubview(self, aboveSubview: above ?? self)
+    public func insertTo(view: UIView?, above: UIView) -> Self {
+        view?.insertSubview(self, aboveSubview: above)
         return self
     }
     
     @discardableResult
-    public func addTo(view: UIView?, below: UIView? = nil) -> Self {
-        view?.insertSubview(self, belowSubview: below ?? self)
+    public func insertTo(view: UIView?, below: UIView) -> Self {
+        view?.insertSubview(self, belowSubview: below)
         return self
     }
     
@@ -607,21 +608,26 @@ public extension UITextView {
 }
 
 public extension UILabel {
-    public func tapAttributed(text: String, completion: @escaping () -> Void) {
+    public func tapAttributed(texts: String..., completion: @escaping (Int) -> Void) {
         isUserInteractionEnabled = true
         addTap { [weak self] (ges) in
             guard let s = self?.attributedText?.string else { return }
-            ges?.didTapAttributedTextIn(label: self!, inRange: (s as NSString).range(of: text), completion: completion)
+            var rangeArr: [NSRange] = []
+            for str in texts {
+                rangeArr.append((s as NSString).range(of: str))
+            }
+            ges?.didTapAttributedTextIn(label: self!, inRangeArray: rangeArr, completion: completion)
         }
     }
 }
 
 public extension UITapGestureRecognizer {
-    public func didTapAttributedTextIn(label: UILabel, inRange targetRange: NSRange, completion: () -> Void) {
+    public func didTapAttributedTextIn(label: UILabel, inRangeArray targetRanges: [NSRange], completion: (Int) -> Void) {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
         let textStorage = NSTextStorage(attributedString: label.attributedText!)
+        textStorage.addAttributes([.font: label.font], range: NSMakeRange(0, label.attributedText!.length))
         
         // Configure layoutManager and textStorage
         layoutManager.addTextContainer(textContainer)
@@ -637,9 +643,10 @@ public extension UITapGestureRecognizer {
         // Find the tapped character location and compare it to the specified range
         let locationOfTouchInLabel = location(in: label)
         let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInLabel, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-        
-        if NSLocationInRange(indexOfCharacter, targetRange) {
-            completion()
+        for (idx, range) in targetRanges.enumerated() {
+            if NSLocationInRange(indexOfCharacter, range) {
+                completion(idx)
+            }
         }
     }
 }
