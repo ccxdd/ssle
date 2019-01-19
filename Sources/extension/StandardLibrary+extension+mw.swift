@@ -15,7 +15,7 @@ public extension String {
     }
     
     public var isEmail: Bool {
-        return (contains(".") && contains("@") && !hasPrefix(".") && !hasPrefix("@") && !hasSuffix(".") && !hasSuffix("@") && !contains("@@") && !contains("..") && !contains(" ") && !hasPrefix(" ") && !hasSuffix(" "))
+        return matchRegular("^([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$")
     }
     
     public var isMobile: Bool {
@@ -340,6 +340,15 @@ public extension String {
         case 4 where len >= 8:
             return "Very Strong"
         default: return "Very Weak"
+        }
+    }
+    
+    public func matchRegular(_ pattern: String) -> Bool {
+        let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+        if let matches = regex?.matches(in: self, options: [], range: NSMakeRange(0, count)) {
+            return matches.count > 0
+        } else {
+            return false
         }
     }
 }

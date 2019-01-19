@@ -15,6 +15,7 @@ private final class TextFieldAddition: NSObject {
     var maxLen: Int = Int.max
     var maxValue: String?
     var decimalLen: Int = -1
+    var regularPattern: String?
     var didChangeClosure: ((String) -> Void)?
     var didBeginClosure: ((String) -> Void)?
     var didEndClosure: ((String) -> Void)?
@@ -126,6 +127,15 @@ public extension UITextField {
         }
     }
     
+    @IBInspectable public var regularPattern: String? {
+        get {
+            return addition.regularPattern
+        }
+        set {
+            addition.regularPattern = newValue
+        }
+    }
+    
     public var textLength: Int {
         return text?.count ?? 0
     }
@@ -133,7 +143,11 @@ public extension UITextField {
     public var inputValid: Bool {
         switch addition.inputCategory {
         case .none:
-            return textLength > 0 && textLength >= minLen && textLength <= maxLen
+            if let r = regularPattern {
+                return textLength > 0 && textLength >= minLen && textLength <= maxLen && text?.matchRegular(r) == true
+            } else {
+                return textLength > 0 && textLength >= minLen && textLength <= maxLen
+            }
         default:
             return (text?.tF ?? 0) > 0
         }
