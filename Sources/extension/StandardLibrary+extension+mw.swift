@@ -306,14 +306,14 @@ public extension String {
         return result
     }
     
-    public var passwordStrength: String {
+    public var passwordStrength: (desc: String, level: Int) {
         var abcBig = false
         var abcLow = false
         var sym = false
         var num = false
         let len = count
         if len == 0 {
-            return "Password field empty."
+            return ("Password field empty", 0)
         }
         for i in self {
             if !abcBig {
@@ -332,14 +332,14 @@ public extension String {
         let conditionCount = [abcLow, abcBig, num, sym].filter({ $0 == true }).count
         switch conditionCount {
         case 1 where len >= 8:
-            return "Weak."
+            return ("Weak", 2)
         case 2 where len >= 8:
-            return "Average"
+            return ("Average", 3)
         case 3 where len >= 8:
-            return "Strong"
+            return ("Strong", 4)
         case 4 where len >= 8:
-            return "Very Strong"
-        default: return "Very Weak"
+            return ("Very Strong", 5)
+        default: return ("Very Weak", 1)
         }
     }
     
