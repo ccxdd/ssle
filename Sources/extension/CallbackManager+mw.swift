@@ -47,6 +47,7 @@ public final class CallbackManager {
     private var push: Any?
     private var present: Any?
     private var noParamClosure: NoParamClosure?
+    var controlEventDict: [UInt: Any] = [:]
     
     public func empty(c: NoParamClosure?) {
         noParamClosure = c
