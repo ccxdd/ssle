@@ -383,6 +383,7 @@ public extension UIView {
     }
     
     public func addTap(taps: Int = 1, touchs: Int = 1, closure: @escaping (UITapGestureRecognizer?) -> Void) {
+        assert((gestureRecognizers?.count ?? 0) == 0, "Many Gestures!")
         let tapGes = UITapGestureRecognizer(target: self, action: #selector(gestureTap(_:)))
         tapGes.numberOfTapsRequired = taps
         tapGes.numberOfTouchesRequired = touchs
@@ -392,7 +393,7 @@ public extension UIView {
     }
     
     public func exeTap() {
-        cbm.exec(c: .tapGes, p: true)
+        cbm.exec(c: .tapGes, p: gestureRecognizers?.last as? UITapGestureRecognizer)
     }
     
     @objc private func gestureTap(_ sender: UITapGestureRecognizer) {

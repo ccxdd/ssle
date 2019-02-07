@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SSLE"
-  s.version      = "0.0.17"
+  s.version      = "0.0.18"
   s.summary      = "Swift Extension."
 
   # This description is used to generate tags and improve search results.

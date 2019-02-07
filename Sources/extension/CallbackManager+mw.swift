@@ -69,7 +69,7 @@ public final class CallbackManager {
         right = c
     }
     
-    public func tap<T>(t: T.Type, c: GenericsOptionalParamClosure<T>?) {
+    public func tap<T>(t: T.Type, c: GenericsActualParamClosure<T>?) {
         tapGes = c
     }
     
@@ -94,7 +94,7 @@ public final class CallbackManager {
         case .rightNavBtn:
             (right as? GenericsActualParamClosure)?(p!)
         case .tapGes:
-            (tapGes as? GenericsOptionalParamClosure)?(p)
+            (tapGes as? GenericsActualParamClosure)?(p!)
         case .push:
             (push as? GenericsOptionalParamClosure)?(p)
         case .present:

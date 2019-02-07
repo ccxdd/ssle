@@ -21,7 +21,7 @@ private final class TextFieldAddition: NSObject {
     weak var enabledButton: UIButton?
     
     @objc func textFieldDidChange(_ sender: UITextField) {
-        var t: String = sender.text ?? ""
+        let t: String = sender.text ?? ""
         guard t.count <= maxLen else {
             changeCallback(sender: sender, isDelete: true)
             return }
