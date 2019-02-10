@@ -68,6 +68,7 @@ public extension UITextField {
         guard let addition = objc_getAssociatedObject(self, &textFieldAdditionKey) as? TextFieldAddition else {
             let addition = TextFieldAddition()
             objc_setAssociatedObject(self, &textFieldAdditionKey, addition, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            event(.editingChanged) { [weak self] in self?.addition.textFieldDidChange($0 as! UITextField) }
             return addition
         }
         return addition
@@ -142,7 +143,6 @@ public extension UITextField {
     
     public func didChange(closure: @escaping (String) -> Void) {
         addition.didChangeClosure = closure
-        event(.editingChanged) { [weak self] in self?.addition.textFieldDidChange($0 as! UITextField) }
     }
     
     public func didBegin(closure: @escaping (String) -> Void) {

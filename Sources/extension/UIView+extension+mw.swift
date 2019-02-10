@@ -71,12 +71,6 @@ public extension UIView {
         }
     }
     
-    public func corner(radius: CGFloat, color: UIColor? = nil, width: CGFloat = 0) {
-        layer.cornerRadius = radius
-        layer.borderWidth = width
-        layer.borderColor = color?.cgColor
-    }
-    
     public func addBorder(style: BorderStyle, w: CGFloat = 0.5, t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0, c: UIColor? = nil) {
         let border = UIView().addTo(view: self)
         additional.borders[style]?.border?.removeFromSuperview()

@@ -68,6 +68,8 @@ private class DataManager: NSObject, UICollectionViewDelegate, UICollectionViewD
         }
     }
     fileprivate var dataEmptyStyle: UICollectionView.DataEmptyStyle = .none
+    fileprivate var isAutoDeselect: Bool = true
+    fileprivate var isSelectToggle: Bool = false
     var selectedIndexPathReload: Bool = false
     var selectedIndexPath: IndexPath?
     
@@ -118,8 +120,14 @@ private class DataManager: NSObject, UICollectionViewDelegate, UICollectionViewD
     fileprivate func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = sectionDict[indexPath.section]?.sectionData.at(indexPath.row)
         selectedAtIndexPath?(indexPath, item)
-        collectionView.deselectItem(at: indexPath, animated: true)
-        selectedIndexPath = indexPath
+        if isSelectToggle, selectedIndexPath == indexPath {
+            selectedIndexPath = nil
+        } else {
+            selectedIndexPath = indexPath
+        }
+        if isAutoDeselect {
+            collectionView.deselectItem(at: indexPath, animated: true)
+        }
         if selectedIndexPathReload {
             collectionView.reloadData()
         }
@@ -763,6 +771,18 @@ public extension UICollectionView {
     @discardableResult
     public func indexPath<T: UICollectionViewCell>(_ idxP: IndexPath, class: T.Type) -> T? {
         return cellForItem(at: idxP) as? T
+    }
+    
+    @discardableResult
+    public func autoDeselect(_ flag: Bool) -> Self {
+        dm.isAutoDeselect = flag
+        return self
+    }
+    
+    @discardableResult
+    public func selectToggle(_ flag: Bool) -> Self {
+        dm.isSelectToggle = flag
+        return self
     }
 }
 

@@ -14,6 +14,19 @@ public extension UIView {
         backgroundColor = c
         return self
     }
+    
+    @discardableResult
+    public func corner(radius: CGFloat) -> Self {
+        cornerRadius = radius
+        return self
+    }
+    
+    @discardableResult
+    public func border(color: UIColor?, w: CGFloat) -> Self {
+        layer.borderColor = color?.cgColor
+        layer.borderWidth = w
+        return self
+    }
 }
 
 public extension UIButton {
