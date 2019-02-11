@@ -461,6 +461,32 @@ public extension UIView {
             return .none
         }
     }
+    
+    public func screenshot(isContentSize: Bool = false) -> UIImage? {
+        guard frame.size.height > 0 && frame.size.width > 0 else { return nil }
+        if isContentSize, let scrollView = asTo(UIScrollView.self) {
+            UIGraphicsBeginImageContextWithOptions(frame.size, false, UIScreen.main.scale)
+            let savedContentOffset = scrollView.contentOffset
+            let savedFrame = frame
+            defer {
+                UIGraphicsEndImageContext()
+                scrollView.contentOffset = savedContentOffset
+                frame = savedFrame
+            }
+            scrollView.contentOffset = .zero
+            frame = CGRect(x: 0, y: 0, width: scrollView.contentSize.width, height: scrollView.contentSize.height)
+            let ctx: CGContext = UIGraphicsGetCurrentContext()!
+            layer.render(in: ctx)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            return image
+        } else {
+            UIGraphicsBeginImageContextWithOptions(frame.size, false, UIScreen.main.scale)
+            layer.render(in: UIGraphicsGetCurrentContext()!)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return image
+        }
+    }
 }
 
 public extension NSTextAttachment {
@@ -514,6 +540,20 @@ public extension UIImage {
             UIGraphicsEndImageContext()
         }
         return newImg
+    }
+    
+    public func saveToAlbum(_ completion: NoParamClosure? = nil) {
+        cbm.empty(c: completion)
+        UIImageWriteToSavedPhotosAlbum(self, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    @objc private func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            // we got back an error!
+            UIAlertController.alert(title: nil, message: error.description, buttons: "OK")
+        } else {
+            cbm.exec(c: .empty, p: 0)
+        }
     }
 }
 
