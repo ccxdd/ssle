@@ -465,7 +465,7 @@ public extension UIView {
     public func screenshot(isContentSize: Bool = false) -> UIImage? {
         guard frame.size.height > 0 && frame.size.width > 0 else { return nil }
         if isContentSize, let scrollView = asTo(UIScrollView.self) {
-            UIGraphicsBeginImageContextWithOptions(frame.size, false, UIScreen.main.scale)
+            UIGraphicsBeginImageContextWithOptions(scrollView.contentSize, false, UIScreen.main.scale)
             let savedContentOffset = scrollView.contentOffset
             let savedFrame = frame
             defer {
