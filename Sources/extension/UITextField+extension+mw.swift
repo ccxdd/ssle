@@ -44,7 +44,7 @@ private final class TextFieldAddition: NSObject {
         if t.count == 2, t.hasPrefix("0"), t != "0." {
             sender.text = t.last?.description
         }
-        if maxValue != nil, t.tF > maxValue!.tF {
+        if maxValue != nil, t.tD > maxValue!.tD {
             sender.text = maxValue
         }
         changeCallback(sender: sender)
@@ -137,7 +137,7 @@ public extension UITextField {
                 return textLength > 0 && textLength >= minLen && textLength <= maxLen
             }
         default:
-            return (text?.tF ?? 0) > 0
+            return (text?.tD ?? 0) > 0
         }
     }
     
@@ -159,7 +159,7 @@ public extension UITextField {
     
     @discardableResult public func fillMax(value: String?) -> Self {
         addition.maxValue = value
-        if (text?.tF ?? 0) > (value?.tF ?? 0) {
+        if (text?.tD ?? 0) > (value?.tD ?? 0) {
             text = value
         }
         return self

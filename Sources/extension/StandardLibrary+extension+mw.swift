@@ -155,11 +155,12 @@ public extension String {
         let arr = self[index(startIndex, offsetBy: i)...]
         return String(arr)
     }
-    
+
+    /// to: 当前位置不包含本身,要包含+1
     public func sub(from: Int?, to: Int?) -> String? {
         guard let f = from, let t = to, f <= count , t <= count, f >= 0, t >= 0 else { return nil }
         let range: Range<String.Index> = index(startIndex, offsetBy: f) ..< index(startIndex, offsetBy: t)
-        return String(self[range])
+        return substring(with: range)
     }
     
     public func deleteLast(_ len: Int? = 0) -> String? {
@@ -236,7 +237,7 @@ public extension String {
         let template = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         var result = ""
         for _ in 0..<lenght {
-            let s = Int.random(up: template.count)
+            let s = Int.random(in: 0 ..< template.count)
             result += template.sub(from: s, to: s + 1)!
         }
         return result
@@ -475,6 +476,14 @@ public extension Double {
     public var tCeil: Double {
         return ceil(self)
     }
+    
+    public func random(down: Double = 0, equal: Bool = false) -> Double {
+        if equal {
+            return Double.random(in: down ... self)
+        } else {
+            return Double.random(in: down ..< self)
+        }
+    }
 }
 
 public extension Float {
@@ -482,16 +491,12 @@ public extension Float {
         return String(format: "%\(f)f", self)
     }
     
-    public func random() -> Float {
-        var result: Float = 0.0
-        let denominator = self.tI.tF
-        var member = self - denominator
-        result += denominator.tI.random().tF
-        member *= 10000
-        member = member.tI.random().tF
-        member /= 10000
-        result += member
-        return result
+    public func random(down: Float = 0, equal: Bool = false) -> Float {
+        if equal {
+            return Float.random(in: down ... self)
+        } else {
+            return Float.random(in: down ..< self)
+        }
     }
     
     public var tI: Int {
@@ -610,8 +615,12 @@ public extension CGFloat {
         return description
     }
     
-    public func random() -> CGFloat {
-        return tF.random().tCGF
+    public func random(down: CGFloat = 0, equal: Bool = false) -> CGFloat {
+        if equal {
+            return CGFloat.random(in: down ... self)
+        } else {
+            return CGFloat.random(in: down ..< self)
+        }
     }
     
     public func relative(v: CGFloat) -> CGFloat {
@@ -666,12 +675,12 @@ public extension Int {
         return UnicodeScalar(self)
     }
     
-    static public func random(up: Int, down: Int = 0, equal: Bool = false) -> Int {
-        return Int.random(in: equal ? down..<(up + 1) : down..<up)
-    }
-    
-    public func random(_ down: Int = 0) -> Int {
-        return Int.random(up: self, down: down, equal: false)
+    public func random(down: Int = 0, equal: Bool = false) -> Int {
+        if equal {
+            return Int.random(in: down ... self)
+        } else {
+            return Int.random(in: down ..< self)
+        }
     }
     
     public func row(section: Int = 0) -> IndexPath {
