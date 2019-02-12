@@ -430,31 +430,26 @@ public extension Data {
 }
 
 public extension Double {
-    public enum DecimalType {
-        case floor, ceil, round
-    }
     
     public var tS: String {
-        return description
+        let str = description
+        if str.contains("e") {
+            return decimal(digits: 8).string
+        }
+        return str
     }
     
     public var decimalNum: Int {
         return tS.components(separatedBy: ".").at(1)?.count ?? 0
     }
     
-    public func decimal(_ count: Int = 0, type: DecimalType = .round) -> Double {
-        guard count > 0 else { return tI.tD }
-        let divide: Double = pow(10, Double(count))
-        let result: Double
-        switch type {
-        case .floor:
-            result = floor(divide * self) / divide
-        case .ceil:
-            result = ceil(divide * self) / divide
-        case .round:
-            result = Darwin.round(divide * self) / divide
-        }
-        return result
+    public func decimal(digits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor) -> (num: Double, string: String) {
+        let numFmt = NumberFormatter()
+        numFmt.numberStyle = .decimal
+        numFmt.maximumFractionDigits = digits
+        numFmt.roundingMode = roundingMode
+        let str = numFmt.string(from: NSNumber(value: self))!
+        return (str.tD, str)
     }
     
     public var tI: Int {
@@ -487,8 +482,13 @@ public extension Double {
 }
 
 public extension Float {
-    public func format(_ f: String) -> String {
-        return String(format: "%\(f)f", self)
+    public func decimal(digits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor) -> (num: Float, string: String) {
+        let numFmt = NumberFormatter()
+        numFmt.numberStyle = .decimal
+        numFmt.maximumFractionDigits = digits
+        numFmt.roundingMode = roundingMode
+        let str = numFmt.string(from: NSNumber(value: self))!
+        return (str.tF, str)
     }
     
     public func random(down: Float = 0, equal: Bool = false) -> Float {
@@ -522,9 +522,7 @@ public extension Float {
     public var tS: String {
         let str = description
         if str.contains("e") {
-            let numFmt = NumberFormatter()
-            numFmt.numberStyle = .decimal
-            return numFmt.string(from: NSNumber(value: self)) ?? str
+            return decimal(digits: 6).string
         }
         return str
     }
@@ -613,6 +611,15 @@ public extension CGFloat {
     
     public var tS: String {
         return description
+    }
+    
+    public func decimal(digits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor) -> (num: CGFloat, string: String) {
+        let numFmt = NumberFormatter()
+        numFmt.numberStyle = .decimal
+        numFmt.maximumFractionDigits = digits
+        numFmt.roundingMode = roundingMode
+        let str = numFmt.string(from: NSNumber(value: tD))!
+        return (str.tCGF, str)
     }
     
     public func random(down: CGFloat = 0, equal: Bool = false) -> CGFloat {
