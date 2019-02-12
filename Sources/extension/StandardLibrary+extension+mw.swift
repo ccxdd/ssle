@@ -443,13 +443,16 @@ public extension Double {
         return tS.components(separatedBy: ".").at(1)?.count ?? 0
     }
     
-    public func decimal(digits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor) -> (num: Double, string: String) {
+    /// 设置 numberStyle 会有","分隔符
+    public func decimal(digits: Int, roundingMode: NumberFormatter.RoundingMode = .floor, separator: String = ",") -> (num: Double, string: String, fmtString: String) {
         let numFmt = NumberFormatter()
         numFmt.numberStyle = .decimal
         numFmt.maximumFractionDigits = digits
         numFmt.roundingMode = roundingMode
-        let str = numFmt.string(from: NSNumber(value: self))!
-        return (str.tD, str)
+        numFmt.groupingSeparator = separator
+        let fmtStr = numFmt.string(from: NSNumber(value: self))!
+        let str = fmtStr.replacingOccurrences(of: separator, with: "")
+        return (str.tD, str, fmtStr)
     }
     
     public var tI: Int {
@@ -482,15 +485,6 @@ public extension Double {
 }
 
 public extension Float {
-    public func decimal(digits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor) -> (num: Float, string: String) {
-        let numFmt = NumberFormatter()
-        numFmt.numberStyle = .decimal
-        numFmt.maximumFractionDigits = digits
-        numFmt.roundingMode = roundingMode
-        let str = numFmt.string(from: NSNumber(value: self))!
-        return (str.tF, str)
-    }
-    
     public func random(down: Float = 0, equal: Bool = false) -> Float {
         if equal {
             return Float.random(in: down ... self)
@@ -522,7 +516,7 @@ public extension Float {
     public var tS: String {
         let str = description
         if str.contains("e") {
-            return decimal(digits: 6).string
+            return tD.decimal(digits: 6).string
         }
         return str
     }
@@ -613,13 +607,9 @@ public extension CGFloat {
         return description
     }
     
-    public func decimal(digits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor) -> (num: CGFloat, string: String) {
-        let numFmt = NumberFormatter()
-        numFmt.numberStyle = .decimal
-        numFmt.maximumFractionDigits = digits
-        numFmt.roundingMode = roundingMode
-        let str = numFmt.string(from: NSNumber(value: tD))!
-        return (str.tCGF, str)
+    public func decimal(digits: Int, roundingMode: NumberFormatter.RoundingMode = .floor, separator: String = ",") -> (num: CGFloat, string: String, fmtString: String) {
+        let result = tD.decimal(digits: digits, roundingMode: roundingMode, separator: separator)
+        return (result.num.tCGF, result.string, result.fmtString)
     }
     
     public func random(down: CGFloat = 0, equal: Bool = false) -> CGFloat {
