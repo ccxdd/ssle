@@ -160,7 +160,7 @@ public extension String {
     public func sub(from: Int?, to: Int?) -> String? {
         guard let f = from, let t = to, f <= count , t <= count, f >= 0, t >= 0 else { return nil }
         let range: Range<String.Index> = index(startIndex, offsetBy: f) ..< index(startIndex, offsetBy: t)
-        return substring(with: range)
+        return String(self[range])
     }
     
     public func deleteLast(_ len: Int? = 0) -> String? {
