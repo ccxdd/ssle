@@ -487,6 +487,20 @@ public extension UIView {
             return image
         }
     }
+    
+    public func gradientBg(colors: [UIColor], locations: [Float], start: CGPoint, end: CGPoint, frame: CGRect? = nil) {
+        let bgLayer = CAGradientLayer()
+        bgLayer.frame = frame ?? bounds
+        bgLayer.colors = colors.map({$0.cgColor})
+        bgLayer.startPoint = start
+        bgLayer.endPoint = end
+        bgLayer.locations = locations as [NSNumber]
+        layer.insertSublayer(bgLayer, at: 0)
+    }
+    
+    public func gradientLayer(_ layer: CAGradientLayer) {
+        self.layer.insertSublayer(layer, at: 0)
+    }
 }
 
 public extension NSTextAttachment {
@@ -557,6 +571,17 @@ public extension UIImage {
     }
 }
 
+public extension CALayer {
+    /// 通过mask设置
+    @discardableResult
+    public func setCorner(_ corners: UIRectCorner = .allCorners, radii: CGFloat, frame: CGRect? = nil) -> Self {
+        let maskLayer = UIBezierPath(roundedRect: frame ?? bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radii, height: radii))
+            .toShapeLayer(fillColor: .white)
+        mask = maskLayer
+        return self
+    }
+}
+
 public extension CAShapeLayer {
     @discardableResult
     public func addTo(layer: CALayer?) -> Self {
@@ -598,6 +623,56 @@ public extension CAShapeLayer {
     @discardableResult
     public func bg(c: UIColor?) -> Self {
         backgroundColor = c?.cgColor
+        return self
+    }
+}
+
+public extension CAGradientLayer {
+    @discardableResult
+    public func start(x: CGFloat, y: CGFloat) -> Self {
+        startPoint = CGPoint(x: x, y: y)
+        return self
+    }
+    
+    @discardableResult
+    public func end(x: CGFloat, y: CGFloat) -> Self {
+        endPoint = CGPoint(x: x, y: y)
+        return self
+    }
+    
+    @discardableResult
+    public func point(start: CGPoint) -> Self {
+        startPoint = start
+        return self
+    }
+    
+    @discardableResult
+    public func point(end: CGPoint) -> Self {
+        startPoint = end
+        return self
+    }
+    
+    @discardableResult
+    public func locations(_ arr: Float...) -> Self {
+        locations = arr as [NSNumber]
+        return self
+    }
+    
+    @discardableResult
+    public func colors(_ arr: UIColor...) -> Self {
+        colors = arr.map({$0.cgColor})
+        return self
+    }
+    
+    @discardableResult
+    public func frame(_ rect: CGRect) -> Self {
+        frame = rect
+        return self
+    }
+    
+    @discardableResult
+    public func frame(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) -> Self {
+        frame = CGRect(x: x, y: y, width: w, height: h)
         return self
     }
 }
