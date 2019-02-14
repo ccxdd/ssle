@@ -6,6 +6,7 @@
 //  Copyright © 2019 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public extension UIControl {
@@ -80,3 +81,4 @@ public extension UIControl {
         }
     }
 }
+#endif

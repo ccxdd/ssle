@@ -6,6 +6,7 @@
 //  Copyright © 2017年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 private var DataManagerKey: Void?
@@ -151,4 +152,5 @@ fileprivate final class PageViewDataManager: NSObject, UIPageViewControllerDataS
         return vc
     }
 }
+#endif
 

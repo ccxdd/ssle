@@ -6,6 +6,7 @@
 //  Copyright © 2018年 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public extension UIView {
@@ -98,3 +99,4 @@ public extension UILabel {
         return self
     }
 }
+#endif

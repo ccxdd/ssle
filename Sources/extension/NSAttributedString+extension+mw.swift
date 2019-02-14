@@ -6,6 +6,7 @@
 //  Copyright © 2017年 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public enum AttributedStyle {
@@ -124,3 +125,4 @@ public extension NSMutableAttributedString {
         return self
     }
 }
+#endif

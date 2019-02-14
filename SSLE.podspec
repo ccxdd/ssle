@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SSLE"
-  s.version      = "0.0.22"
+  s.version      = "0.0.23"
   s.summary      = "Swift Extension."
 
   # This description is used to generate tags and improve search results.
@@ -62,15 +62,15 @@ Pod::Spec.new do |s|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  s.platform     = :ios
+  # s.platform     = :ios
   # s.platform     = :ios, "5.0"
 
   #  When using multiple platforms
-  s.ios.deployment_target = "9.0"
-  # s.osx.deployment_target = "10.7"
-  # s.watchos.deployment_target = "2.0"
-  s.cocoapods_version = '>= 1.4.0'
   s.swift_version = "4.2"
+  s.ios.deployment_target = "9.0"
+  s.osx.deployment_target = "10.12"
+  # s.watchos.deployment_target = "3.0"
+  s.cocoapods_version = '>= 1.6.0'
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -116,8 +116,9 @@ Pod::Spec.new do |s|
   #  the lib prefix of their name.
   #
 
-  s.frameworks = "Foundation", "UIKit"
-
+  s.frameworks = "Foundation"
+  s.ios.framework  = "UIKit"
+  s.osx.framework  = "AppKit"
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
 

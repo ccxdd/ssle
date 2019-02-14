@@ -6,7 +6,11 @@
 //  Copyright © 2017年 陈晓东. All rights reserved.
 //
 
+#if canImport(UIKit)
 import UIKit
+#else
+import Foundation
+#endif
 
 public extension Mirror {
     /// to Key: String, Value: Any
@@ -26,8 +30,10 @@ public extension Mirror {
                 resultDict[i.label!] = (i.value as? Float)?.tS
             case is Double:
                 resultDict[i.label!] = (i.value as? Double)?.tS
+                #if os(iOS)
             case is UILabel:
                 break
+                #endif
             default:
                 let m = Mirror(reflecting: i.value)
                 switch m.displayStyle {
@@ -62,8 +68,10 @@ public extension Mirror {
                 resultDict[i.label!] = (i.value as? Float)?.tS
             case is Double:
                 resultDict[i.label!] = (i.value as? Double)?.tS
+                #if os(iOS)
             case is UILabel:
                 break
+                #endif
             default: break
             }
         }

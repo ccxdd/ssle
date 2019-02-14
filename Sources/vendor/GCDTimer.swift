@@ -6,7 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 public class GCDTimer {
     public enum TimerType {

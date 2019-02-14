@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public struct SCR {
@@ -76,3 +77,4 @@ extension CGFloat {
         return self / d;
     }
 }
+#endif

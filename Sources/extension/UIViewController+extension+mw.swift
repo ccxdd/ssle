@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public extension UIViewController {
@@ -292,6 +293,7 @@ public extension UIViewController {
     }
 }
 
+/*
 public extension UITabBarController {
     override open var shouldAutorotate: Bool {
         let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
@@ -332,6 +334,7 @@ public protocol VCRotateProtocol {
     var autoRotate: Bool { get }
     var interfaceOrientations: UIInterfaceOrientationMask { get }
 }
+ */
 
 public extension UICollectionViewController {
     static public func defaultVC() -> Self {
@@ -354,3 +357,4 @@ public enum PopVcType {
     case last(Int)
     case top(Int)
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2018 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 private var AdditionKey: Void?
@@ -95,3 +96,4 @@ private final class StackViewAddition {
     var index: Int = 0
     var rows: [UIStackView.Row] = []
 }
+#endif

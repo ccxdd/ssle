@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 import AVFoundation
 
@@ -61,3 +62,4 @@ public extension UIAlertController {
         }
     }
 }
+#endif

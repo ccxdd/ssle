@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public enum MoveDirection {
@@ -760,3 +761,4 @@ public extension UITapGestureRecognizer {
         }
     }
 }
+#endif

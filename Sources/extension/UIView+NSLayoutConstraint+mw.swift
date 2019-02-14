@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public enum LayoutDimension {
@@ -301,3 +302,4 @@ extension NSLayoutConstraint.Attribute {
         }
     }
 }
+#endif

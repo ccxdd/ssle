@@ -6,13 +6,20 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if canImport(UIKit)
 import UIKit
+#else
+import Foundation
+#endif
 import CryptoSwift
 
 public extension String {
+    
+    #if os(iOS)
     public var image: UIImage? {
         return UIImage(named:self)
     }
+    #endif
     
     public var isEmail: Bool {
         return matchRegular("^([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$")
@@ -83,11 +90,13 @@ public extension String {
         return Int(trimPrefix, radix: 16)
     }
     
+    #if os(iOS)
     public func imageView(contentMode: UIView.ContentMode = .scaleAspectFit) -> UIImageView? {
         let imageView = UIImageView(image: self.image)
         imageView.contentMode = .scaleAspectFit
         return UIImageView(image: self.image)
     }
+    #endif
     
     public func pinYin(_ blank: Bool = false) -> String {
         let mstr = NSMutableString.init(string: self) as CFMutableString
@@ -680,6 +689,7 @@ public extension Int {
         }
     }
     
+    #if os(iOS)
     public func row(section: Int = 0) -> IndexPath {
         return IndexPath(row: self, section: section)
     }
@@ -687,6 +697,7 @@ public extension Int {
     public func section(row: Int = 0) -> IndexPath {
         return IndexPath(row: row, section: self)
     }
+    #endif
     
     public func pointX(_ x: CGFloat = 0) -> CGPoint {
         return CGPoint(x: x, y: tCGF)

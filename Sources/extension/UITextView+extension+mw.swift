@@ -6,6 +6,7 @@
 //  Copyright © 2018 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 private var textViewAdditionKey: Void?
@@ -108,4 +109,5 @@ public extension UITextView {
         return self
     }
 }
+#endif
 

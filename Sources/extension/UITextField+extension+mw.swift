@@ -6,6 +6,7 @@
 //  Copyright © 2017年 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 private var textFieldAdditionKey: Void?
@@ -192,3 +193,4 @@ public extension UITextField {
         return self
     }
 }
+#endif

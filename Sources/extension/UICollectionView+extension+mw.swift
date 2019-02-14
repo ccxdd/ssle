@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 //MARK: - DataManager -
@@ -900,4 +901,4 @@ private struct CollectionViewSectionManager {
     var minimumInteritemSpacing: CGFloat = 0
     var rowsInSection: Int = 0
 }
-
+#endif

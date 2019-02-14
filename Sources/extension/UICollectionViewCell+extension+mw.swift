@@ -6,6 +6,7 @@
 //  Copyright © 2018年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public extension UICollectionViewCell {
@@ -17,3 +18,4 @@ public extension UICollectionViewCell {
         return collectionView?.selectedIndexPath ?? def
     }
 }
+#endif

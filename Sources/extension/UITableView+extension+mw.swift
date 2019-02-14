@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public extension UITableView {
@@ -404,4 +405,4 @@ private struct TableViewSectionManager {
     var section: Int = 0
     var rowsInSection: Int = 0
 }
-
+#endif

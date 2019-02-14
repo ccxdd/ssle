@@ -6,6 +6,7 @@
 //  Copyright © 2017年 陈晓东. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 private var buttonAdditionKey: Void?
@@ -44,3 +45,4 @@ public extension UIButton {
         isEnabled = discontentArr.isEmpty && (addition.enabledConditionClosure?() ?? true)
     }
 }
+#endif

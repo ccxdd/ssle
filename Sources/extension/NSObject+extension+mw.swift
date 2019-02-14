@@ -6,6 +6,7 @@
 //  Copyright © 2016年 ccxdd. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 public extension NSObject {
@@ -41,3 +42,4 @@ public extension NSTextAttachment {
         }
     }
 }
+#endif
