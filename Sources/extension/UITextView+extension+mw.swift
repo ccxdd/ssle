@@ -39,7 +39,8 @@ public extension UITextView {
         guard let addition = objc_getAssociatedObject(self, &textViewAdditionKey) as? TextViewAddition else {
             let addition = TextViewAddition()
             let lab = UILabel().addTo(view: self)
-            lab.lcm.t(addition.top).l(addition.left)
+            lab.numberOfLines = 0
+            lab.lcm.t(addition.top).lead(addition.left).w(frame.width - 8)
             lab.font = font
             lab.textColor = UIColor.lightGray
             lab.isUserInteractionEnabled = false
