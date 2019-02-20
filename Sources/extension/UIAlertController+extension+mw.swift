@@ -11,7 +11,7 @@ import UIKit
 import AVFoundation
 
 public extension UIAlertController {
-    public class func alert(title: String?, message: String? = nil, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
+    public class func alert(title: String? = "", message: String?, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         for (idx, title) in buttons.enumerated() {
             let style: UIAlertAction.Style = destructive == idx ? .destructive : .default
@@ -40,7 +40,7 @@ public extension UIAlertController {
         }
     }
     
-    public static func alertPwd(title: String?, message: String? = nil, placeholder: String?, buttons: String..., destructive: Int = -1,
+    public static func alertPwd(title: String? = "", message: String?, placeholder: String?, buttons: String..., destructive: Int = -1,
                          closure: ((String, Int) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addTextField { (field) in
