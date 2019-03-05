@@ -38,6 +38,7 @@ private class DataManager: NSObject, UICollectionViewDelegate, UICollectionViewD
     var selectedAtIndexPath: SelectedAtIndexPathClosure?
     var willDisplayIndexPathClosure: cellAtIndexPathClosure?
     var endDisplayIndexPathClosure: cellAtIndexPathClosure?
+    var cellIndexPathClosure: cellAtIndexPathClosure?
     var didScroll: ((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?
     var didEndDecelerating: ((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?
     var didEndDragging: ((_ decelerate: Bool, _ direction: OffsetDirection, _ offsets: [CGPoint]) -> Void)?
@@ -97,6 +98,7 @@ private class DataManager: NSObject, UICollectionViewDelegate, UICollectionViewD
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         let item = sectionDict[indexPath.section]?.sectionData.at(indexPath.row)
         (cell as? RowItemProtocol)?.setCellItem(item: item, indexPath: indexPath)
+        cellIndexPathClosure?(indexPath, item, cell)
         
         return cell
     }
@@ -660,6 +662,10 @@ public extension UICollectionView {
     
     public func selectedAtIndexPath(_ closure: SelectedAtIndexPathClosure?) {
         dm.selectedAtIndexPath = closure
+    }
+    
+    public func cellAtIndexPath(_ closure: cellAtIndexPathClosure?) {
+        dm.cellIndexPathClosure = closure
     }
     
     public func willDisplayIndexPath(_ closure: cellAtIndexPathClosure?) {
