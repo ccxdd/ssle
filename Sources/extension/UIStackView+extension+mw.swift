@@ -72,7 +72,7 @@ public extension UIStackView {
     }
     
     @discardableResult
-    public func get(row: Int) -> Self {
+    public func set(row: Int) -> Self {
         addition.index = row
         return self
     }
@@ -89,6 +89,18 @@ public extension UIStackView {
     public func hide(_ flag: Bool) -> Self {
         arrangedSubviews.at(addition.index)?.isHidden = flag
         return self
+    }
+    
+    public func viewIn(row: Int) -> UIView? {
+        return arrangedSubviews.at(row)
+    }
+    
+    public func labelIn(row: Int) -> UILabel? {
+        return arrangedSubviews.at(row)?.asTo(UILabel.self)
+    }
+    
+    public func fieldIn(row: Int) -> UITextField? {
+        return arrangedSubviews.at(row)?.asTo(UITextField.self)
     }
 }
 
