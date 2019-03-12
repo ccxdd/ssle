@@ -33,8 +33,8 @@ public extension UIStackView {
         var row = Row()
         row.rowView = UIView()
         row.contentView = v
-        row.rowView?.addSubview(v)
-        v.lcm.edge()
+        row.rowView?.addSubview(row.contentView!)
+        row.contentView?.lcm.edge()
         addArrangedSubview(row.rowView!)
         addition.rows.append(row)
         addition.index = addition.rows.count - 1
@@ -73,7 +73,9 @@ public extension UIStackView {
     
     @discardableResult
     public func set(row: Int) -> Self {
-        addition.index = row
+        if arrangedSubviews.count > row {
+            addition.index = row
+        }
         return self
     }
     
@@ -101,6 +103,17 @@ public extension UIStackView {
     
     public func fieldIn(row: Int) -> UITextField? {
         return arrangedSubviews.at(row)?.asTo(UITextField.self)
+    }
+    
+    @discardableResult
+    public func section(view: @autoclosure () -> UIView?, h: @autoclosure () -> CGFloat, data: [Any]?) -> Self {
+        guard let d = data else { return self }
+        for (idx, i) in d.enumerated() {
+            let v = view()
+            addRow(view: v).row(height: h())
+            (v as? RowItemProtocol)?.setCellItem(item: i, indexPath: [0, idx])
+        }
+        return self
     }
 }
 
