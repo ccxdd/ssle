@@ -264,14 +264,14 @@ public extension String {
         return df.date(from: self + "+0000")?.tS
     }
     
-    public func save(paths: String..., dir: FileManager.SearchPathDirectory = .libraryDirectory) -> Bool {
-        var dirUrl = FileManager.default.urls(for: dir, in: .userDomainMask).first!
-        var folder = dirUrl
+    public func save(paths: String..., dir: FileManager.SearchPathDirectory = .libraryDirectory, overwrite: Bool = false) -> Bool {
+        var fileUrl = FileManager.default.urls(for: dir, in: .userDomainMask).first!
+        var folder = fileUrl
         for s in paths.dropLast() {
             folder.appendPathComponent(s)
         }
         for s in paths {
-            dirUrl.appendPathComponent(s)
+            fileUrl.appendPathComponent(s)
         }
         var isDir: ObjCBool = true
         let createDirClosure = {
@@ -288,11 +288,19 @@ public extension String {
         } else {
             createDirClosure()
         }
-        do {
-            try write(to: dirUrl, atomically: true, encoding: .utf8)
-            return true
-        } catch {
-            print(error)
+        let fileExist = FileManager.default.fileExists(atPath: fileUrl.path)
+        switch (fileExist, overwrite) {
+        case (true, true):
+            do {
+                try write(to: fileUrl, atomically: true, encoding: .utf8)
+                return true
+            } catch {
+                print(error)
+                return false
+            }
+        case (false, _):
+            return FileManager.default.createFile(atPath: fileUrl.path, contents: data(using: .utf8))
+        case (true, false):
             return false
         }
     }
@@ -384,14 +392,14 @@ public extension Data {
         return String(data: self, encoding: .utf8)
     }
     
-    public func save(paths: String..., dir: FileManager.SearchPathDirectory = .libraryDirectory) -> Bool {
-        var dirUrl = FileManager.default.urls(for: dir, in: .userDomainMask).first!
-        var folder = dirUrl
+    public func save(paths: String..., dir: FileManager.SearchPathDirectory = .libraryDirectory, overwrite: Bool = false) -> Bool {
+        var fileUrl = FileManager.default.urls(for: dir, in: .userDomainMask).first!
+        var folder = fileUrl
         for s in paths.dropLast() {
             folder.appendPathComponent(s)
         }
         for s in paths {
-            dirUrl.appendPathComponent(s)
+            fileUrl.appendPathComponent(s)
         }
         var isDir: ObjCBool = true
         let createDirClosure = {
@@ -408,11 +416,19 @@ public extension Data {
         } else {
             createDirClosure()
         }
-        do {
-            try write(to: dirUrl)
-            return true
-        } catch {
-            print(error)
+        let fileExist = FileManager.default.fileExists(atPath: fileUrl.path)
+        switch (fileExist, overwrite) {
+        case (true, true):
+            do {
+                try write(to: fileUrl)
+                return true
+            } catch {
+                print(error)
+                return false
+            }
+        case (false, _):
+            return FileManager.default.createFile(atPath: fileUrl.path, contents: self)
+        case (true, false):
             return false
         }
     }
