@@ -293,19 +293,18 @@ public extension UIViewController {
     }
 }
 
-/*
 public extension UITabBarController {
-    override open var shouldAutorotate: Bool {
-        let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
-        //print("tab", result)
-        return result
-    }
+//    override open var shouldAutorotate: Bool {
+//        let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
+//        //print("tab", result)
+//        return result
+//    }
     
-    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        let result = (UIViewController.currentVC as? VCRotateProtocol)?.interfaceOrientations ?? [.portrait]
-        //print("tab", result)
-        return result
-    }
+//    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        let result = (UIViewController.currentVC as? VCRotateProtocol)?.interfaceOrientations ?? [.portrait]
+//        //print("tab", result)
+//        return result
+//    }
     
     override open var preferredStatusBarStyle: UIStatusBarStyle {
         return selectedViewController?.preferredStatusBarStyle ?? .default
@@ -313,28 +312,27 @@ public extension UITabBarController {
 }
 
 public extension UINavigationController {
-    override open var shouldAutorotate: Bool {
-        let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
-        //print("nav", result)
-        return result
-    }
+//    override open var shouldAutorotate: Bool {
+//        let result = (UIViewController.currentVC as? VCRotateProtocol)?.autoRotate ?? false
+//        //print("nav", result)
+//        return result
+//    }
     
-    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        let result = (UIViewController.currentVC as? VCRotateProtocol)?.interfaceOrientations ?? [.portrait]
-        //print("nav", result)
-        return result
-    }
+//    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        let result = (UIViewController.currentVC as? VCRotateProtocol)?.interfaceOrientations ?? [.portrait]
+//        //print("nav", result)
+//        return result
+//    }
     
     override open var preferredStatusBarStyle: UIStatusBarStyle {
         return topViewController?.preferredStatusBarStyle ?? .default
     }
 }
 
-public protocol VCRotateProtocol {
-    var autoRotate: Bool { get }
-    var interfaceOrientations: UIInterfaceOrientationMask { get }
-}
- */
+//public protocol VCRotateProtocol {
+//    var autoRotate: Bool { get }
+//    var interfaceOrientations: UIInterfaceOrientationMask { get }
+//}
 
 public extension UICollectionViewController {
     static public func defaultVC() -> Self {
