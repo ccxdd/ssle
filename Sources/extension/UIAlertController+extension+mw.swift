@@ -53,7 +53,6 @@ public extension UIAlertController {
                 if let text = alert.textFields?.first?.text, text.count > 0 {
                     closure?(text, idx)
                 }
-                
             })
             alert.addAction(action)
         }
