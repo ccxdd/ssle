@@ -141,16 +141,19 @@ public extension String {
     public func find(start: String, ends: [String]) -> (result: String, range: NSRange, content: String) {
         let source = self as NSString
         let startRange = source.range(of: start)
+        let zero = ("", NSMakeRange(0, 0), "")
+        guard startRange.length > 0 else { return zero }
+        let endSource = source.substring(from: startRange.location) as NSString
         for s in ends {
-            let endRange = source.range(of: s)
+            let endRange = endSource.range(of: s)
             if startRange.length != NSNotFound && endRange.location != NSNotFound {
-                let newRange = NSUnionRange(startRange, endRange)
-                let r = source.substring(with: newRange) as String
+                let newRange = NSUnionRange(startRange, NSRange(location: startRange.location + endRange.location, length: endRange.length))
+                let r = source.substring(with: newRange)
                 let c = r.replacingOccurrences(of: start, with: "").replacingOccurrences(of: s, with: "")
                 return (r, newRange, c)
             }
         }
-        return ("", NSMakeRange(0, 0), "")
+        return zero
     }
     
     public func subTo(_ idx: Int?) -> String? {
