@@ -11,17 +11,21 @@ import UIKit
 import AVFoundation
 
 public extension UIAlertController {
+    
+    public enum AlertFieldType {
+        case field(String)
+        case pwd(String)
+        case btn(String)
+        case destructive(String)
+    }
+    
     public class func alert(title: String? = "", message: String?, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        for (idx, title) in buttons.enumerated() {
-            let style: UIAlertAction.Style = destructive == idx ? .destructive : .default
-            let action = UIAlertAction(title: title, style: style, handler: { (action) in
-                closure?(idx)
-            })
-            alert.addAction(action)
+        var fields: [AlertFieldType] = []
+        for (i, b) in buttons.enumerated() {
+            fields.append(i == destructive ? .destructive(b) : .btn(b))
         }
-        DispatchQueue.main.async {
-            UIViewController.currentVC?.present(vc: alert)
+        alertCustomize(title:title, message: message, fields: fields) { _, idx in
+            closure?(idx)
         }
     }
     
@@ -41,20 +45,44 @@ public extension UIAlertController {
     }
     
     public static func alertPwd(title: String? = "", message: String?, placeholder: String?, buttons: String..., destructive: Int = -1,
-                         closure: ((String, Int) -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addTextField { (field) in
-            field.placeholder = placeholder
-            field.isSecureTextEntry = true
+                                closure: ((String, Int) -> Void)? = nil) {
+        var fields: [AlertFieldType] = [.pwd(placeholder ?? "")]
+        for (i, b) in buttons.enumerated() {
+            fields.append(i == destructive ? .destructive(b) : .btn(b))
         }
-        for (idx, title) in buttons.enumerated() {
-            let style: UIAlertAction.Style = destructive == idx ? .destructive : .default
-            let action = UIAlertAction(title: title, style: style, handler: { (action) in
-                if let text = alert.textFields?.first?.text, text.count > 0 {
-                    closure?(text, idx)
+        alertCustomize(title:title, message: message, fields: fields) { fields, idx in
+            closure?(fields.first!, idx)
+        }
+    }
+    
+    public static func alertCustomize(title: String? = "", message: String?,
+                                      fields: [AlertFieldType], closure: (([String], Int) -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        var btnTitlesArr: [String] = []
+        for f in fields {
+            switch f {
+            case .field(let text), .pwd(let text):
+                alert.addTextField { (field) in
+                    field.placeholder = text
+                    if case .pwd(_) = f {
+                        field.isSecureTextEntry = true
+                    }
                 }
-            })
-            alert.addAction(action)
+            case .btn(let text), .destructive(let text):
+                var style: UIAlertAction.Style = .default
+                if case .destructive(_) = f {
+                    style = .destructive
+                }
+                btnTitlesArr.append(text)
+                let action = UIAlertAction(title: text, style: style, handler: { (action) in
+                    var textArr: [String] = []
+                    for f in alert.textFields! {
+                        textArr.append(f.text ?? "")
+                    }
+                    closure?(textArr, btnTitlesArr.firstIndex(of: action.title!) ?? 0)
+                })
+                alert.addAction(action)
+            }
         }
         DispatchQueue.main.async {
             UIViewController.currentVC?.present(vc: alert)
