@@ -52,3 +52,9 @@ public extension Data {
         return s as String
     }
 }
+
+public extension String {
+    public func tModel<T>(_ model: T.Type) -> T? where T: Decodable {
+        return data(using: .utf8)?.tModel(model)
+    }
+}
