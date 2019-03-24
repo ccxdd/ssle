@@ -16,26 +16,26 @@ public extension UIControl {
         cbm.controlEventDict[e.rawValue] = handle
     }
     
-    @objc private func eventTouchDown(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDown.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchDownRepeat(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDownRepeat.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchDragInside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragInside.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchDragOutside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragOutside.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchDragEnter(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragEnter.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchDragExit(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragExit.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchUpInside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchUpInside.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchUpOutside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchUpOutside.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventTouchCancel(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchCancel.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventValueChanged(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.valueChanged.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventPrimaryActionTriggered(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.primaryActionTriggered.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventEditingDidBegin(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingDidBegin.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventEditingChanged(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingChanged.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventEditingDidEnd(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingDidEnd.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventEditingDidEndOnExit(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingDidEndOnExit.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventAllTouchEvents(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.allTouchEvents.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventAllEditingEvents(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.allEditingEvents.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventApplicationReserved(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.applicationReserved.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventSystemReserved(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.systemReserved.rawValue] as? GenericsActualClosure)?(sender) }
-    @objc private func eventAllEvents(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.allEvents.rawValue] as? GenericsActualClosure)?(sender) }
+    @objc private func eventTouchDown(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDown.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchDownRepeat(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDownRepeat.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchDragInside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragInside.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchDragOutside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragOutside.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchDragEnter(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragEnter.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchDragExit(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchDragExit.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchUpInside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchUpInside.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchUpOutside(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchUpOutside.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventTouchCancel(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.touchCancel.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventValueChanged(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.valueChanged.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventPrimaryActionTriggered(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.primaryActionTriggered.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventEditingDidBegin(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingDidBegin.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventEditingChanged(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingChanged.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventEditingDidEnd(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingDidEnd.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventEditingDidEndOnExit(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.editingDidEndOnExit.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventAllTouchEvents(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.allTouchEvents.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventAllEditingEvents(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.allEditingEvents.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventApplicationReserved(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.applicationReserved.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventSystemReserved(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.systemReserved.rawValue] as? GenericsClosure)?(sender) }
+    @objc private func eventAllEvents(_ sender: UIControl) { (cbm.controlEventDict[UIControl.Event.allEvents.rawValue] as? GenericsClosure)?(sender) }
     
     private static func eventToSEL(_ e: UIControl.Event) -> Selector {
         switch e {

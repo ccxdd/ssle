@@ -8,8 +8,8 @@
 
 import Foundation
 
-public typealias GenericsOptionalClosure<T> = (T?) -> Void
-public typealias GenericsActualClosure<T> = (T) -> Void
+public typealias GenericsClosure<T> = (T) -> Void
+public typealias GenericesReturnClosure<S, T> = (S) -> T
 public typealias NoParamClosure = () -> Void
 
 public enum CallbackCategory {
@@ -53,52 +53,52 @@ public final class CallbackManager {
         noParamClosure = c
     }
     
-    public func actual<T>(t: T.Type, c: GenericsActualClosure<T>?) {
+    public func actual<T>(t: T.Type, c: GenericsClosure<T>?) {
         actual = c
     }
     
-    public func optional<T>(t: T.Type, c: GenericsOptionalClosure<T>?) {
+    public func optional<T>(t: T.Type, c: GenericsClosure<T?>?) {
         optional = c
     }
     
-    public func left<T>(t: T.Type, c: GenericsActualClosure<T>?) {
+    public func left<T>(t: T.Type, c: GenericsClosure<T>?) {
         left = c
     }
     
-    public func right<T>(t: T.Type, c: GenericsActualClosure<T>?) {
+    public func right<T>(t: T.Type, c: GenericsClosure<T>?) {
         right = c
     }
     
-    public func tap<T>(t: T.Type, c: GenericsActualClosure<T>?) {
+    public func tap<T>(t: T.Type, c: GenericsClosure<T>?) {
         tapGes = c
     }
     
-    public func push<T>(t: T.Type, c: GenericsOptionalClosure<T>?) {
+    public func push<T>(t: T.Type, c: GenericsClosure<T?>?) {
         push = c
     }
     
-    public func present<T>(t: T.Type, c: GenericsOptionalClosure<T>?) {
+    public func present<T>(t: T.Type, c: GenericsClosure<T?>?) {
         present = c
     }
     
     public func exec<T>(c: CallbackCategory, p: T? = nil) {
         switch c {
         case .actual:
-            (actual as? GenericsActualClosure)?(p!)
+            (actual as? GenericsClosure)?(p!)
         case .optional:
-            (optional as? GenericsOptionalClosure)?(p)
+            (optional as? GenericsClosure)?(p)
         case .empty:
             noParamClosure?()
         case .leftNavBtn:
-            (left as? GenericsActualClosure)?(p!)
+            (left as? GenericsClosure)?(p!)
         case .rightNavBtn:
-            (right as? GenericsActualClosure)?(p!)
+            (right as? GenericsClosure)?(p!)
         case .tapGes:
-            (tapGes as? GenericsActualClosure)?(p!)
+            (tapGes as? GenericsClosure)?(p!)
         case .push:
-            (push as? GenericsOptionalClosure)?(p)
+            (push as? GenericsClosure)?(p)
         case .present:
-            (present as? GenericsOptionalClosure)?(p)
+            (present as? GenericsClosure)?(p)
         }
     }
 }

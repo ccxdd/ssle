@@ -142,7 +142,7 @@ public extension UIViewController {
         navigationItem.leftBarButtonItem = btn
     }
     
-    public func addLeftNavBar<T: UIView>(view: T, closure: @escaping GenericsOptionalClosure<Any>) {
+    public func addLeftNavBar<T: UIView>(view: T, closure: @escaping GenericsClosure<Any>) {
         let btn = UIBarButtonItem(customView: view)
         view.addTap(closure: closure)
         navigationItem.leftBarButtonItem = btn
@@ -155,7 +155,7 @@ public extension UIViewController {
         navigationItem.rightBarButtonItem = btn
     }
     
-    public func addRightNavBar<T: UIView>(view: T, closure: @escaping GenericsOptionalClosure<Any>) {
+    public func addRightNavBar<T: UIView>(view: T, closure: @escaping GenericsClosure<Any>) {
         let btn = UIBarButtonItem(customView: view)
         view.addTap(closure: closure)
         navigationItem.rightBarButtonItem = btn
