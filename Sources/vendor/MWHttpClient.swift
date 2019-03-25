@@ -106,9 +106,6 @@ public class MWHttpClient {
                 self.errorsReturn(err: .native(r))
             }
         }
-        if scrollView == nil, detail.hudMode == .always {
-            
-        }
         dataRequest = request
         return request
     }
