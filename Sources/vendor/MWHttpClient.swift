@@ -25,15 +25,15 @@ public class MWHttpClient {
     private static var customizedResponseClosure: GenericesReturnClosure<String, Codable>?
     private static var customizedErrorClosure: GenericsClosure<ResponseError>?
     
-    static func customizdResponse(closure: GenericesReturnClosure<String, Codable>?) {
+    public static func customizdResponse(closure: GenericesReturnClosure<String, Codable>?) {
         customizedResponseClosure = closure
     }
     
-    static func customizdErrors(_ closure: GenericsClosure<ResponseError>?) {
+    public static func customizdErrors(_ closure: GenericsClosure<ResponseError>?) {
         customizedErrorClosure = closure
     }
     
-    static func request(_ resStruct: MWRequestProtocol.Type, _ resParams: Codable? = nil) -> MWHttpClient {
+    public static func request(_ resStruct: MWRequestProtocol.Type, _ resParams: Codable? = nil) -> MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
         client.detail.name = "\(resStruct.self)"
@@ -46,7 +46,7 @@ public class MWHttpClient {
     }
     
     @discardableResult
-    func responseSource<S, T>(_ source: S.Type, target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable, S: Codable {
+    public func responseSource<S, T>(_ source: S.Type, target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable, S: Codable {
         guard detail.apiInfo.params.url.count > 0, !cacheValidCheck(T.self, completion: completion) else {
             endResponse()
             return nil
@@ -111,66 +111,70 @@ public class MWHttpClient {
     }
     
     @discardableResult
-    func response<T>(target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
+    public func response<T>(target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
         return responseSource(target, target: target, completion: completion)
     }
     
     @discardableResult
-    func response(completion: NoParamClosure? = nil) -> DataRequest? {
+    public func response(completion: NoParamClosure? = nil) -> DataRequest? {
         emptyResponseClosure = completion
         return response(target: EmptyResponse.self)
     }
     
     @discardableResult
-    func error(_ completion: GenericsClosure<ResponseError>? = nil) -> Self {
+    public func error(_ completion: GenericsClosure<ResponseError>? = nil) -> Self {
         errorResponseClosure = completion
         return self
     }
     
-    func cancel() {
+    public func cancel() {
         dataRequest?.cancel()
     }
     
     @discardableResult
-    func hud(_ mode: HudDisplayMode) -> Self {
+    public func hud(_ mode: HudDisplayMode) -> Self {
         detail.hudMode = mode
         return self
     }
     
     @discardableResult
-    func msg(_ mode: MessageHintMode) -> Self {
+    public func msg(_ mode: MessageHintMode) -> Self {
         detail.messageHint = mode
         return self
     }
     
     @discardableResult
-    func cache(_ sec: TimeInterval, _ policy: CachePolicy = .invalidAfterRequest) -> Self {
+    public func cache(_ sec: TimeInterval, _ policy: CachePolicy = .invalidAfterRequest) -> Self {
         guard sec > 0 else { return self }
         detail.cachePolicy = policy
         detail.cacheSeconds = sec
         return self
     }
     
-    @discardableResult func log(_ isShow: Bool) -> Self {
+    @discardableResult
+    public func log(_ isShow: Bool) -> Self {
         showLog = isShow
         return self
     }
     
     #if os(iOS)
-    @discardableResult func ctrl(_ c: UIControl?) -> Self {
+    @discardableResult
+    public func ctrl(_ c: UIControl?) -> Self {
         control = c
         control?.isUserInteractionEnabled = false
         return self
     }
     #endif
     
-    @discardableResult func timeout(_ t: TimeInterval) -> Self {
+    @discardableResult
+    public func timeout(_ t: TimeInterval) -> Self {
         detail.timeout = t
         return self
     }
     
     #if os(iOS)
-    @discardableResult func scrollView(_ v: UIScrollView) -> Self {
+    @discardableResult
+    public func scrollView(_ v: UIScrollView) -> Self {
         scrollView = v
         return self
     }
@@ -238,7 +242,7 @@ public class MWHttpClient {
     }
     
     @discardableResult
-    func clearCache() -> Self {
+    public func clearCache() -> Self {
         var dirUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
         dirUrl.appendPathComponent(folderName)
         dirUrl.appendPathComponent(detail.cacheFileName)
@@ -253,18 +257,18 @@ private let folderName: String = "RequestAPICaches"
 private let ChaCha20Key = "1DkIe-29YdK2asd-k29JwK3DssdI1-0Y"
 
 public extension MWHttpClient {
-    struct APICacheStruct<T: Codable>: Codable {
+    public struct APICacheStruct<T: Codable>: Codable {
         var timestamp: TimeInterval = Date().timeIntervalSince1970
         var data: T?
     }
     
-    struct EmptyResponse: Codable {}
+    public struct EmptyResponse: Codable {}
     
-    enum HudDisplayMode {
+    public enum HudDisplayMode {
         case none, always
     }
     
-    enum CachePolicy {
+    public enum CachePolicy {
         //有效期<=0 -> 直接请求数据，不进行缓存
         //下面不在前置条件内的都会重新请求数据并缓存使用
         //缓存存在&在有效期内 -> 仅使用缓存，不进行请求
@@ -277,11 +281,11 @@ public extension MWHttpClient {
         case afterCache
     }
     
-    enum MessageHintMode {
+    public enum MessageHintMode {
         case none, always, callbackFirst
     }
     
-    enum ResponseError {
+    public enum ResponseError {
         case decodeModel(String)
         case asTarget(String)
         case transform(String)
@@ -311,7 +315,7 @@ public extension MWHttpClient {
         }
     }
     
-    struct APIDetail {
+    public struct APIDetail {
         var name: String = ""
         var res: Codable?
         var resp: Codable?
@@ -368,7 +372,7 @@ public enum APIInfo {
     }
 }
 
-extension Data {
+public extension Data {
     func encrypt(ChaCha20Key: String) -> Data? {
         let key: Array<UInt8> = ChaCha20Key.data(using: .utf8)!.bytes
         if let encrypted = try? ChaCha20(key: key, iv: Array(key[4..<16])).encrypt(bytes) {
