@@ -13,8 +13,10 @@ public class MWHttpClient {
     fileprivate var apiProtocol: MWRequestProtocol.Type!
     var detail = APIDetail()
     var dataRequest: DataRequest?
+    #if os(iOS)
     private weak var scrollView: UIScrollView?
     private weak var control: UIControl?
+    #endif
     private var hintTimer: GCDTimer?
     private var showLog: Bool = true
     private var emptyResponseClosure: NoParamClosure?
@@ -75,7 +77,7 @@ public class MWHttpClient {
                     result = MWHttpClient.customizedResponseClosure!(jsonStr)
                 case false:
                     guard let resp = jsonStr.tModel(S.self) else {
-                        print("❌ 解析未成功", self.detail.name, self.apiProtocol.apiInfo, DEF.String(UIViewController.currentVC?.typeOfString), "❌")
+                        print("❌ 解析未成功", self.detail.name, self.apiProtocol.apiInfo, "❌")
                         self.errorsReturn(err: .decodeModel(jsonStr))
                         return
                     }
