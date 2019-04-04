@@ -372,6 +372,10 @@ public extension String {
             return false
         }
     }
+    
+    public func radix(_ r: Int) -> Int {
+        return Int(self, radix: r) ?? 0
+    }
 }
 
 public extension Substring {
@@ -732,6 +736,7 @@ public extension Int {
     
     public func radix(_ r: Int, len: Int, left: Bool = true) -> String {
         var result = String(self, radix: r)
+        result = result.count % 2 == 0 ? result : "0" + result
         let fillCount = len - result.count
         if fillCount > 0 {
             if left {
