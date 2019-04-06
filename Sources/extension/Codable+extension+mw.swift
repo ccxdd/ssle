@@ -15,7 +15,7 @@ public extension Encodable {
             if prettyPrinted {
                 encoder.outputFormatting = .prettyPrinted
             }
-            let result = try encoder.encode(self).tString
+            let result = try encoder.encode(self).tS
             return result
         } catch {
             print("❌", error, "❌")
@@ -40,16 +40,11 @@ public extension Data {
         do {
             let jsonObj = try JSONSerialization.jsonObject(with: self)
             let jsonData = try JSONSerialization.data(withJSONObject: jsonObj, options: .prettyPrinted)
-            return jsonData.tString
+            return jsonData.tS
         } catch {
             print("❌", error, "❌")
         }
         return nil
-    }
-    
-    public var tString: String? {
-        guard let s = String(data: self, encoding: .utf8) else { return nil }
-        return s as String
     }
 }
 

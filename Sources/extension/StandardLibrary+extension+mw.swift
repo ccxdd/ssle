@@ -700,6 +700,14 @@ public extension Int {
         return description
     }
     
+    public var tUInt8: UInt8 {
+        return UInt8(self)
+    }
+    
+    public var tUInt: UInt {
+        return UInt(self)
+    }
+    
     public var tUnicodeScalar: UnicodeScalar? {
         return UnicodeScalar(self)
     }
@@ -732,6 +740,22 @@ public extension Int {
     
     public func tPi() -> CGFloat {
         return self.tCGF / 180 * CGFloat.pi
+    }
+    
+    public func radix(_ r: Int, len: Int, left: Bool = true) -> String {
+        return tUInt.radix(r, len: len, left: left)
+    }
+}
+
+public extension UInt8 {
+    public var tI: Int {
+        return Int(self)
+    }
+}
+
+public extension UInt {
+    public var tI: Int {
+        return Int(self)
     }
     
     public func radix(_ r: Int, len: Int, left: Bool = true) -> String {
