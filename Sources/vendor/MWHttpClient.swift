@@ -77,7 +77,7 @@ public class MWHttpClient {
                     result = MWHttpClient.customizedResponseClosure!(jsonStr)
                 case false:
                     guard let resp = jsonStr.tModel(S.self) else {
-                        print("❌ 解析未成功", self.detail.name, self.apiProtocol.apiInfo, "❌")
+                        print("❌ 解析未成功", self.detail.name, self.apiProtocol.apiInfo, jsonStr, "❌")
                         self.errorsReturn(err: .decodeModel(jsonStr))
                         return
                     }
