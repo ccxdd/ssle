@@ -192,5 +192,9 @@ public extension UITextField {
         }
         return self
     }
+    
+    public func executeChangeClosure() {
+        addition.didChangeClosure?(text ?? "")
+    }
 }
 #endif
