@@ -405,16 +405,6 @@ public extension UIView {
         view.lcm.lead().t().b().trail()
     }
     
-    static public func xib<T: UIView>(_ t: T.Type, w: CGFloat = 0, h: CGFloat = 0) -> T? {
-        if let view = Bundle.main.loadNibNamed(t.toStr, owner: nil, options: nil)?.first as? T {
-            let h = h > 0 ? h : view.frame.height
-            let w = w > 0 ? w : view.frame.width
-            view.frame.size = CGSize(width: w, height: h)
-            return view
-        }
-        return nil
-    }
-    
     public func shadow(color: UIColor = UIColor.black, radius: CGFloat = 3, opacity: Float = 0.5, offset: CGSize = CGSize.zero) {
         layer.shadowColor = color.cgColor
         layer.shadowRadius = radius
@@ -759,6 +749,21 @@ public extension UITapGestureRecognizer {
                 completion(idx)
             }
         }
+    }
+}
+
+extension UIView: IBConstructible {}
+
+public extension IBConstructible where Self: UIView {
+    static func fromNib(w: CGFloat = 0, h: CGFloat = 0) -> Self {
+        let xib = UINib(nibName: nibName, bundle: nil)
+        guard let view = xib.instantiate(withOwner: nil, options: nil).first as? Self else {
+            fatalError("Missing view in \(nibName).xib")
+        }
+        let h = h > 0 ? h : view.frame.height
+        let w = w > 0 ? w : view.frame.width
+        view.frame.size = CGSize(width: w, height: h)
+        return view
     }
 }
 #endif

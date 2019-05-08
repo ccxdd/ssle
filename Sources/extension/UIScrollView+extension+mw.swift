@@ -39,7 +39,7 @@ public extension UIScrollView {
         
         switch style {
         case .xib(let type):
-            ctrl = UIView.xib(type)!
+            ctrl = type.fromNib()
         case let .custom(c):
             ctrl = c as! RefreshControl
         }
@@ -61,7 +61,7 @@ public extension UIScrollView {
         
         switch style {
         case .xib(let type):
-            ctrl = UIView.xib(type)!
+            ctrl = type.fromNib()
         case let .custom(c):
             ctrl = c as! RefreshControl
         }

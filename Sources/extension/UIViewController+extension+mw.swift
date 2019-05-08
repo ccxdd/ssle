@@ -18,14 +18,6 @@ public extension UIViewController {
         case top, above(UIView), below(UIView)
     }
     
-    static public func storyboard(sb: String, identifier: String? = nil, initial: Bool = false) -> UIViewController {
-        let vcID = identifier ?? String(describing: self)
-        if initial {
-            return UIStoryboard(name: sb, bundle: nil).instantiateInitialViewController()!
-        }
-        return UIStoryboard(name: sb, bundle: nil).instantiateViewController(withIdentifier: vcID)
-    }
-    
     public static var rootVC: UIViewController? {
         get {
             return UIApplication.shared.windows.first?.rootViewController
@@ -354,5 +346,42 @@ public enum PopVcType {
     case vc(UIViewController)
     case last(Int)
     case top(Int)
+}
+
+public protocol IBConstructible: AnyObject {
+    static var nibName: String { get }
+}
+
+public extension IBConstructible {
+    static var nibName: String {
+        return String(describing: Self.self)
+    }
+}
+
+extension UIViewController: IBConstructible {}
+
+public extension IBConstructible where Self: UIViewController {
+    static func fromSB(name: String, initial: Bool = false) -> Self {
+        let storyboard = UIStoryboard(name: name, bundle: nil)
+        if initial {
+            guard let viewController = storyboard.instantiateInitialViewController() as? Self else {
+                fatalError("Missing view controller in \(name).storyboard")
+            }
+            return viewController
+        } else {
+            guard let viewController = storyboard.instantiateViewController(withIdentifier: nibName) as? Self else {
+                fatalError("Missing view controller in \(name).storyboard")
+            }
+            return viewController
+        }
+    }
+    
+    static func storyboard(sb: String, identifier: String? = nil, initial: Bool = false) -> Self {
+        let vcID = identifier ?? nibName
+        if initial {
+            return UIStoryboard(name: sb, bundle: nil).instantiateInitialViewController() as! Self
+        }
+        return UIStoryboard(name: sb, bundle: nil).instantiateViewController(withIdentifier: vcID) as! Self
+    }
 }
 #endif

@@ -172,7 +172,7 @@ private class DataManager: NSObject, UICollectionViewDelegate, UICollectionViewD
     fileprivate func calcSectionAndRowSize(setting: SectionAndRowSetting, indexPath: IndexPath, isSection: Bool = false) -> CGSize {
         
         guard let aClass = setting.className, setting.autoSizeCondition.count > 0 else { return setting.size }
-        guard let cell = UIView.xib(aClass) else { return setting.size }
+        let cell = aClass.fromNib()
         
         var w_priority = UILayoutPriority.required
         var h_priority = UILayoutPriority.fittingSizeLevel

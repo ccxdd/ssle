@@ -280,7 +280,7 @@ private class DataManager: NSObject, UITableViewDelegate, UITableViewDataSource 
     
     fileprivate func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let headerClass = sectionDict[section]?.headerSetting.className {
-            let header = UIView.xib(headerClass)
+            let header = headerClass.fromNib()
             (header as? SectionItemProtocol)?.setViewItem(item: sectionDict[section]?.headerSetting.item, section: section)
             return header
         }
@@ -289,7 +289,7 @@ private class DataManager: NSObject, UITableViewDelegate, UITableViewDataSource 
     
     fileprivate func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if let footerClass = sectionDict[section]?.footerSetting.className {
-            let footer = UIView.xib(footerClass)
+            let footer = footerClass.fromNib()
             (footer as? SectionItemProtocol)?.setViewItem(item: sectionDict[section]?.footerSetting.item, section: section)
             return footer
         }
