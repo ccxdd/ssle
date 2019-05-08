@@ -26,7 +26,7 @@ public enum CallbackCategory {
 private var NSObjectCallbackManagerKey: Void?
 
 public extension NSObject {
-    public var cbm: CallbackManager {
+    var cbm: CallbackManager {
         let cbm: CallbackManager
         if let c = objc_getAssociatedObject(self, &NSObjectCallbackManagerKey) as? CallbackManager {
             cbm = c

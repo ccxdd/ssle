@@ -113,7 +113,7 @@ fileprivate final class PageViewDataManager: NSObject, UIPageViewControllerDataS
     var vcArray: [UIViewController] = []
     var collectionView: UICollectionView?
     
-    public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         let idx = currentIndex
         if idx >= maxCount - 1 {
             return nil
@@ -123,7 +123,7 @@ fileprivate final class PageViewDataManager: NSObject, UIPageViewControllerDataS
         return vc
     }
     
-    public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         let idx = currentIndex
         if idx <= 0 {
             return nil
@@ -134,7 +134,7 @@ fileprivate final class PageViewDataManager: NSObject, UIPageViewControllerDataS
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        guard let vc = pageViewController.viewControllers?.first, let idx = vcArray.index(of: vc) else { return }
+        guard let vc = pageViewController.viewControllers?.first, let idx = vcArray.firstIndex(of: vc) else { return }
         currentIndex = idx
         didChangeClosure?(idx, vc)
         collectionView?.selectedIndexPath = idx.row()

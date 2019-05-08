@@ -10,15 +10,15 @@
 import UIKit
 
 public extension UIViewController {
-    public enum DismissBgType {
+    enum DismissBgType {
         case vc, nav, tab
     }
     
-    public enum AddViewType {
+    enum AddViewType {
         case top, above(UIView), below(UIView)
     }
     
-    public static var rootVC: UIViewController? {
+    static var rootVC: UIViewController? {
         get {
             return UIApplication.shared.windows.first?.rootViewController
         }
@@ -27,16 +27,16 @@ public extension UIViewController {
         }
     }
     
-    public static var currentVC: UIViewController? {
+    static var currentVC: UIViewController? {
         return rootVC?.topVC()
     }
     
     @discardableResult
-    public func find<T: UIViewController>(t: T.Type) -> T? {
+    func find<T: UIViewController>(t: T.Type) -> T? {
         return navigationController?.viewControllers.reversed().filter { $0.isKind(of: t) }.first as? T
     }
     
-    public func push(vc: UIViewController?, animated: Bool = true, hidesBottomBar: Bool = true, hidesBackButton: Bool = false, unique: Bool = false) {
+    func push(vc: UIViewController?, animated: Bool = true, hidesBottomBar: Bool = true, hidesBackButton: Bool = false, unique: Bool = false) {
         guard let vc = vc else { return }
         if unique && navigationController?.topViewController?.typeOfString == vc.typeOfString {
             print("⚠️ 重复 PUSH ⚠️")
@@ -50,12 +50,12 @@ public extension UIViewController {
         navigationController?.pushViewController(vc, animated: animated)
     }
     
-    public func present(vc: UIViewController?, animated: Bool = true, completion: (() -> Void)? = nil) {
+    func present(vc: UIViewController?, animated: Bool = true, completion: (() -> Void)? = nil) {
         guard let vc = vc else { return }
         present(vc, animated: animated, completion: completion)
     }
     
-    public func topVC() -> UIViewController? {
+    func topVC() -> UIViewController? {
         switch self {
         case is UITabBarController:
             return (self as? UITabBarController)?.selectedViewController?.topVC()
@@ -66,7 +66,7 @@ public extension UIViewController {
         }
     }
     
-    public func openDismissBg(type: DismissBgType = .vc, duration: TimeInterval = 0.3, bgColor: UIColor = UIColor.black,
+    func openDismissBg(type: DismissBgType = .vc, duration: TimeInterval = 0.3, bgColor: UIColor = UIColor.black,
                        alpha: CGFloat = 0.5, addType: AddViewType = .top, endClosure: NoParamClosure? = nil) {
         let backView = UIView()
         backView.alpha = 0
@@ -100,7 +100,7 @@ public extension UIViewController {
         }
     }
     
-    public func closeDismissBg(type: DismissBgType = .vc, duration: TimeInterval = 0.3, completion: NoParamClosure? = nil) {
+    func closeDismissBg(type: DismissBgType = .vc, duration: TimeInterval = 0.3, completion: NoParamClosure? = nil) {
         let vc: UIViewController?
         switch type {
         case .vc:
@@ -120,40 +120,40 @@ public extension UIViewController {
         }
     }
     
-    public func addLeftNavBar(image: UIImage, renderMode: UIImage.RenderingMode = .automatic, click: @escaping (UIBarButtonItem) -> Void) {
+    func addLeftNavBar(image: UIImage, renderMode: UIImage.RenderingMode = .automatic, click: @escaping (UIBarButtonItem) -> Void) {
         let btn = UIBarButtonItem.init(image: image, style: .plain, target: self,
                                        action: #selector(navBarLeftAction(sender:)))
         btn.cbm.left(t: UIBarButtonItem.self, c: click)
         navigationItem.leftBarButtonItem = btn
     }
     
-    public func addLeftNavBar(title: String, click: @escaping (UIBarButtonItem) -> Void) {
+    func addLeftNavBar(title: String, click: @escaping (UIBarButtonItem) -> Void) {
         let btn = UIBarButtonItem(title: title, style: .plain, target: self,
                                   action: #selector(navBarLeftAction(sender:)))
         btn.cbm.left(t: UIBarButtonItem.self, c: click)
         navigationItem.leftBarButtonItem = btn
     }
     
-    public func addLeftNavBar<T: UIView>(view: T, closure: @escaping GenericsClosure<Any>) {
+    func addLeftNavBar<T: UIView>(view: T, closure: @escaping GenericsClosure<Any>) {
         let btn = UIBarButtonItem(customView: view)
         view.addTap(closure: closure)
         navigationItem.leftBarButtonItem = btn
     }
     
-    public func addRightNavBar(image: UIImage, renderMode: UIImage.RenderingMode = .automatic, click: @escaping (UIBarButtonItem) -> Void) {
+    func addRightNavBar(image: UIImage, renderMode: UIImage.RenderingMode = .automatic, click: @escaping (UIBarButtonItem) -> Void) {
         let btn = UIBarButtonItem.init(image: image, style: .plain, target: self,
                                        action: #selector(navBarRightAction(sender:)))
         btn.cbm.right(t: UIBarButtonItem.self, c: click)
         navigationItem.rightBarButtonItem = btn
     }
     
-    public func addRightNavBar<T: UIView>(view: T, closure: @escaping GenericsClosure<Any>) {
+    func addRightNavBar<T: UIView>(view: T, closure: @escaping GenericsClosure<Any>) {
         let btn = UIBarButtonItem(customView: view)
         view.addTap(closure: closure)
         navigationItem.rightBarButtonItem = btn
     }
     
-    public func addRightNavBar(title: String, click: @escaping (UIBarButtonItem) -> Void) {
+    func addRightNavBar(title: String, click: @escaping (UIBarButtonItem) -> Void) {
         let btn = UIBarButtonItem(title: title, style: .plain, target: self,
                                   action: #selector(navBarRightAction(sender:)))
         btn.cbm.right(t: UIBarButtonItem.self, c: click)
@@ -168,7 +168,7 @@ public extension UIViewController {
         sender.cbm.exec(c: .rightNavBtn, p: sender)
     }
     
-    public func popVC(_ animated: Bool = true, type: PopVcType? = nil) {
+    func popVC(_ animated: Bool = true, type: PopVcType? = nil) {
         guard let type = type else {
             _ = navigationController?.popViewController(animated: animated)
             return
@@ -202,21 +202,21 @@ public extension UIViewController {
     }
     
     @discardableResult
-    public func popToRootVC(_ animated: Bool = true) -> [UIViewController]? {
+    func popToRootVC(_ animated: Bool = true) -> [UIViewController]? {
         return self.navigationController?.popToRootViewController(animated: animated)
     }
     
-    public func toNav(_ navClass: UINavigationController.Type = UINavigationController.self, modalStyle: UIModalPresentationStyle = .fullScreen) -> UINavigationController {
+    func toNav(_ navClass: UINavigationController.Type = UINavigationController.self, modalStyle: UIModalPresentationStyle = .fullScreen) -> UINavigationController {
         let navVC = navClass.init(rootViewController: self)
         navVC.modalPresentationStyle = modalStyle
         return navVC
     }
     
-    @IBAction public func dismissVC() {
+    @IBAction func dismissVC() {
         dismiss(animated: true, completion: nil)
     }
     
-    public func navBar(titleColor: UIColor? = nil, font: UIFont? = nil, tintColor: UIColor? = nil, barColor: UIColor? = nil, transparent: Bool = false) {
+    func navBar(titleColor: UIColor? = nil, font: UIFont? = nil, tintColor: UIColor? = nil, barColor: UIColor? = nil, transparent: Bool = false) {
         guard let bar = navigationController?.navigationBar else { return }
         var titleAttrs: [NSAttributedString.Key: Any] = [:]
         if let color = titleColor {
@@ -241,7 +241,7 @@ public extension UIViewController {
         bar.isTranslucent = barColor != nil ? false : true
     }
     
-    public func sideMode(sideView: UIView?, w: CGFloat, tabBar: Bool = false, dismissBg: UIColor? = UIColor.black.alpha(0.5)) {
+    func sideMode(sideView: UIView?, w: CGFloat, tabBar: Bool = false, dismissBg: UIColor? = UIColor.black.alpha(0.5)) {
         guard let v = sideView else { return }
         view.viewWithTag(10000001)?.removeFromSuperview()
         view.viewWithTag(10000002)?.removeFromSuperview()
@@ -258,7 +258,7 @@ public extension UIViewController {
         view.addSubview(v)
     }
     
-    public func sideOpen(_ isOpen: Bool, duration: TimeInterval = 0.3, completion: ((Bool) -> Void)? = nil) {
+    func sideOpen(_ isOpen: Bool, duration: TimeInterval = 0.3, completion: ((Bool) -> Void)? = nil) {
         guard let btn = view.viewWithTag(10000001), let sideView = view.viewWithTag(10000002) else { return }
         btn.isHidden = !isOpen
         sideView.isHidden = false
@@ -273,13 +273,13 @@ public extension UIViewController {
         sideOpen(false)
     }
     
-    public func addChild(vc: UIViewController?) {
+    func addChild(vc: UIViewController?) {
         guard let v = vc else { return }
         addChild(v)
         v.didMove(toParent: self)
     }
     
-    public func removeChild(vc: UIViewController?) {
+    func removeChild(vc: UIViewController?) {
         vc?.willMove(toParent: nil)
         vc?.removeFromParent()
     }
@@ -327,7 +327,7 @@ public extension UINavigationController {
 //}
 
 public extension UICollectionViewController {
-    static public func defaultVC() -> Self {
+    static func defaultVC() -> Self {
         let layout = UICollectionViewFlowLayout()
         let vc = self.init(collectionViewLayout: layout)
         return vc
@@ -335,7 +335,7 @@ public extension UICollectionViewController {
 }
 
 public extension UITableViewController {
-    static public func defaultVC(_ style: UITableView.Style = .plain) -> Self {
+    static func defaultVC(_ style: UITableView.Style = .plain) -> Self {
         let vc = self.init(style: style)
         return vc
     }

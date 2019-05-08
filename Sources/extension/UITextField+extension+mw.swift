@@ -61,7 +61,7 @@ private final class TextFieldAddition: NSObject {
 }
 
 public extension UITextField {
-    public enum InputCategory {
+    enum InputCategory {
         case none, decimal, digit
     }
     
@@ -75,7 +75,7 @@ public extension UITextField {
         return addition
     }
     
-    @IBOutlet public var enabledButton: UIButton? {
+    @IBOutlet var enabledButton: UIButton? {
         set {
             addition.enabledButton = newValue
         }
@@ -84,12 +84,12 @@ public extension UITextField {
         }
     }
     
-    @IBAction public func showPwd(_ sender: UIButton) {
+    @IBAction func showPwd(_ sender: UIButton) {
         isSecureTextEntry = !isSecureTextEntry
         sender.isSelected = !sender.isSelected
     }
     
-    @IBInspectable public var minLen: Int {
+    @IBInspectable var minLen: Int {
         get {
             return addition.minLen
         }
@@ -98,7 +98,7 @@ public extension UITextField {
         }
     }
     
-    @IBInspectable public var maxLen: Int {
+    @IBInspectable var maxLen: Int {
         get {
             return addition.maxLen
         }
@@ -107,7 +107,7 @@ public extension UITextField {
         }
     }
     
-    @IBInspectable public var decimal: Int {
+    @IBInspectable var decimal: Int {
         get {
             return addition.decimalLen
         }
@@ -116,7 +116,7 @@ public extension UITextField {
         }
     }
     
-    @IBInspectable public var regularPattern: String? {
+    @IBInspectable var regularPattern: String? {
         get {
             return addition.regularPattern
         }
@@ -125,11 +125,11 @@ public extension UITextField {
         }
     }
     
-    public var textLength: Int {
+    var textLength: Int {
         return text?.count ?? 0
     }
     
-    public var inputValid: Bool {
+    var inputValid: Bool {
         switch addition.inputCategory {
         case .none:
             if let r = regularPattern {
@@ -142,23 +142,23 @@ public extension UITextField {
         }
     }
     
-    public func didChange(closure: @escaping (String) -> Void) {
+    func didChange(closure: @escaping (String) -> Void) {
         addition.didChangeClosure = closure
     }
     
-    public func didBegin(closure: @escaping (String) -> Void) {
+    func didBegin(closure: @escaping (String) -> Void) {
         event(.editingDidBegin) { [weak self] t in
             closure(self?.text ?? "")
         }
     }
     
-    public func didEnd(closure: @escaping (String) -> Void) {
+    func didEnd(closure: @escaping (String) -> Void) {
         event(.editingDidEnd) { [weak self] t in
             closure(self?.text ?? "")
         }
     }
     
-    @discardableResult public func fillMax(value: String?) -> Self {
+    @discardableResult func fillMax(value: String?) -> Self {
         addition.maxValue = value
         if (text?.tD ?? 0) > (value?.tD ?? 0) {
             text = value
@@ -166,22 +166,22 @@ public extension UITextField {
         return self
     }
     
-    @discardableResult public func min(len: Int) -> Self {
+    @discardableResult func min(len: Int) -> Self {
         addition.minLen = len
         return self
     }
     
-    @discardableResult public func max(len: Int) -> Self {
+    @discardableResult func max(len: Int) -> Self {
         addition.maxLen = len
         return self
     }
     
-    @discardableResult public func decimal(len: Int) -> Self {
+    @discardableResult func decimal(len: Int) -> Self {
         addition.decimalLen = len
         return self
     }
     
-    @discardableResult public func input(categary: InputCategory) -> Self {
+    @discardableResult func input(categary: InputCategory) -> Self {
         addition.inputCategory = categary
         switch categary {
         case .decimal:
@@ -193,7 +193,7 @@ public extension UITextField {
         return self
     }
     
-    public func executeChangeClosure() {
+    func executeChangeClosure() {
         addition.didChangeClosure?(text ?? "")
     }
 }

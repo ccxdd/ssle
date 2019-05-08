@@ -10,19 +10,19 @@
 import UIKit
 
 public extension NSObject {
-    static public var toStr: String {
+    static var toStr: String {
         return String(describing: self)
     }
     
-    public var typeOfString: String {
+    var typeOfString: String {
         return type(of: self).toStr
     }
     
-    public func asTo<T: NSObject>(_ typeName: T.Type) -> T? {
+    func asTo<T: NSObject>(_ typeName: T.Type) -> T? {
         return self as? T
     }
     
-    public func asNotTo<T: NSObject>(_ typeName: T.Type) -> Self? {
+    func asNotTo<T: NSObject>(_ typeName: T.Type) -> Self? {
         if !isKind(of: typeName) {
             return self
         }
@@ -33,7 +33,7 @@ public extension NSObject {
 private var NSTextAttachmentKey: Void?
 
 public extension NSTextAttachment {
-    public var specialName: String? {
+    var specialName: String? {
         get {
             return objc_getAssociatedObject(self, &NSTextAttachmentKey) as? String
         }

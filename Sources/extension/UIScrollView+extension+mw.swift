@@ -10,7 +10,7 @@
 import UIKit
 
 public extension UIScrollView {
-    public var headerRefreshCtrl: RefreshControl? {
+    var headerRefreshCtrl: RefreshControl? {
         get {
             return objc_getAssociatedObject(self, &HeaderRefreshKey) as? RefreshControl
         }
@@ -19,7 +19,7 @@ public extension UIScrollView {
         }
     }
     
-    public var footerRefreshCtrl: RefreshControl? {
+    var footerRefreshCtrl: RefreshControl? {
         get {
             return objc_getAssociatedObject(self, &FooterRefreshKey) as? RefreshControl
         }
@@ -28,7 +28,7 @@ public extension UIScrollView {
         }
     }
     
-    public func headerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
+    func headerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
         if headerRefreshCtrl != nil {
             headerRefreshCtrl?.callback = closure
             return
@@ -50,7 +50,7 @@ public extension UIScrollView {
         headerRefreshCtrl?.callback = closure
     }
     
-    public func footerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
+    func footerRefresh(style: RefreshControl.Style, closure: @escaping () -> Void) {
         if footerRefreshCtrl != nil {
             footerRefreshCtrl?.callback = closure
             return
@@ -74,7 +74,7 @@ public extension UIScrollView {
         footerRefreshCtrl?.callback = closure
     }
     
-    public func startHeaderRefresh(_ mode: RefreshControl.Mode = .always) {
+    func startHeaderRefresh(_ mode: RefreshControl.Mode = .always) {
         switch mode {
         case .always:break
         case .empty:
@@ -94,7 +94,7 @@ public extension UIScrollView {
         })
     }
     
-    public func endHeaderRefresh(reloadEmptyStyle: Bool = false) {
+    func endHeaderRefresh(reloadEmptyStyle: Bool = false) {
         guard let refreshCtrl = headerRefreshCtrl, refreshCtrl.status != .normal else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { 
             endAnimation()
@@ -113,7 +113,7 @@ public extension UIScrollView {
         }
     }
     
-    public func startFooterRefresh() {
+    func startFooterRefresh() {
         guard let refreshCtrl = footerRefreshCtrl, refreshCtrl.status != .refreshing else { return }
         DispatchQueue.main.async {
             refreshCtrl.status = .prepare
@@ -126,7 +126,7 @@ public extension UIScrollView {
         }
     }
     
-    public func endFooterRefresh() {
+    func endFooterRefresh() {
         guard let refreshCtrl = footerRefreshCtrl, refreshCtrl.status != .normal else { return }
         contentInset.bottom = refreshCtrl.initialInsetBottom ?? 0
         contentOffset.y += contentSize.height > frame.height ? refreshCtrl.frame.height : 0
@@ -134,7 +134,7 @@ public extension UIScrollView {
         refreshCtrl.initialInsetBottom = nil
     }
     
-    public var isEmpty: Bool {
+    var isEmpty: Bool {
         switch self {
         case let scrollView as UITableView:
             return scrollView.totalCount() == 0

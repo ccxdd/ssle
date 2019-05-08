@@ -10,7 +10,7 @@
 import UIKit
 
 public extension UITableView {
-    public enum CustomEditingStyle {
+    enum CustomEditingStyle {
         case none, delete, insert, check
     }
     
@@ -26,7 +26,7 @@ public extension UITableView {
         }
     }
     
-    public func registerCell(_ cellClass:UITableViewCell.Type, category: RegisterCategory) {
+    func registerCell(_ cellClass:UITableViewCell.Type, category: RegisterCategory) {
         let identifier = String(describing: cellClass)
         switch category {
         case .nib:
@@ -39,7 +39,7 @@ public extension UITableView {
     }
     
     @discardableResult
-    public func header(_ sectionClass: UIView.Type, category: RegisterCategory = .nib, section: Int = -1) -> Self {
+    func header(_ sectionClass: UIView.Type, category: RegisterCategory = .nib, section: Int = -1) -> Self {
         if section >= 0 {
             dm.currentSection = section
         }
@@ -49,7 +49,7 @@ public extension UITableView {
     }
     
     @discardableResult
-    public func footer(_ sectionClass: UIView.Type, category: RegisterCategory = .nib, section: Int = -1) -> Self {
+    func footer(_ sectionClass: UIView.Type, category: RegisterCategory = .nib, section: Int = -1) -> Self {
         if section >= 0 {
             dm.currentSection = section
         }
@@ -59,7 +59,7 @@ public extension UITableView {
     }
     
     @discardableResult
-    public func cell(_ cellClass:UITableViewCell.Type, category: RegisterCategory = .nib, section: Int = -1) -> Self {
+    func cell(_ cellClass:UITableViewCell.Type, category: RegisterCategory = .nib, section: Int = -1) -> Self {
         registerCell(cellClass, category: category)
         if section >= 0 {
             dm.currentSection = section
@@ -70,46 +70,46 @@ public extension UITableView {
     }
     
     @discardableResult
-    public func cellSize(w: CGFloat = SCR.W, h:CGFloat, auto: [AutoSize] = []) -> Self {
+    func cellSize(w: CGFloat = SCR.W, h:CGFloat, auto: [AutoSize] = []) -> Self {
         dm.currentSectionManager.cellSetting.size = CGSize(width: w, height: h)
         dm.currentSectionManager.cellSetting.autoSizeCondition = auto
         return self
     }
     
     @discardableResult
-    public func section(_ section: Int) -> Self {
+    func section(_ section: Int) -> Self {
         dm.currentSection = section
         return self
     }
     
     @discardableResult
-    public func headerSize(w: CGFloat = SCR.W, h:CGFloat, auto: [AutoSize] = []) -> Self {
+    func headerSize(w: CGFloat = SCR.W, h:CGFloat, auto: [AutoSize] = []) -> Self {
         dm.currentSectionManager.headerSetting.size = CGSize(width: w, height: h)
         dm.currentSectionManager.headerSetting.autoSizeCondition = auto
         return self
     }
     
     @discardableResult
-    public func headerItem(_ item:Any?) -> Self {
+    func headerItem(_ item:Any?) -> Self {
         dm.currentSectionManager.headerSetting.item = item
         return self
     }
     
     @discardableResult
-    public func footerSize(w: CGFloat = SCR.W, h:CGFloat, auto: [AutoSize] = []) -> Self {
+    func footerSize(w: CGFloat = SCR.W, h:CGFloat, auto: [AutoSize] = []) -> Self {
         dm.currentSectionManager.footerSetting.size = CGSize(width: w, height: h)
         dm.currentSectionManager.footerSetting.autoSizeCondition = auto
         return self
     }
     
     @discardableResult
-    public func footerItem(_ item:Any?) -> Self {
+    func footerItem(_ item:Any?) -> Self {
         dm.currentSectionManager.footerSetting.item = item
         return self
     }
     
     @discardableResult
-    public func rows(_ rows: Int, section: Int = -1) -> Self {
+    func rows(_ rows: Int, section: Int = -1) -> Self {
         if section >= 0 {
             dm.currentSection = section
         }
@@ -118,13 +118,13 @@ public extension UITableView {
     }
     
     @discardableResult
-    public func allowEditingStyle(_ style: CustomEditingStyle) -> Self {
+    func allowEditingStyle(_ style: CustomEditingStyle) -> Self {
         dm.editingStyle = style
         return self
     }
     
     @discardableResult
-    public func reload(_ data: [Any]?, multipleSections: Bool = false) -> Self {
+    func reload(_ data: [Any]?, multipleSections: Bool = false) -> Self {
         guard let tableData = data, tableData.count > 0 else {
             clearData()
             return self;
@@ -151,7 +151,7 @@ public extension UITableView {
     }
     
     @discardableResult
-    public func sectionData(_ data: [Any], append: Bool = false, reload: Bool = false) -> Self {
+    func sectionData(_ data: [Any], append: Bool = false, reload: Bool = false) -> Self {
         var sourceData = dm.currentSectionManager.sectionData
         if append {
             sourceData.append(contentsOf: data)
@@ -166,11 +166,11 @@ public extension UITableView {
         return self
     }
     
-    public func sectionData() -> [Any] {
+    func sectionData() -> [Any] {
         return dm.currentSectionManager.sectionData
     }
     
-    public func totalCount() -> Int {
+    func totalCount() -> Int {
         var result = 0
         for (_, v) in dm.sectionDict {
             result += v.rowsInSection
@@ -178,7 +178,7 @@ public extension UITableView {
         return result
     }
     
-    public func clearData(_ reload: Bool = true) {
+    func clearData(_ reload: Bool = true) {
         for (key, _) in dm.sectionDict {
             dm.sectionDict[key]?.sectionData = []
             dm.sectionDict[key]?.rowsInSection = 0
@@ -189,23 +189,23 @@ public extension UITableView {
     }
     
     
-    public func selectedAtIndexPath(_ closure:SelectedAtIndexPathClosure?) {
+    func selectedAtIndexPath(_ closure:SelectedAtIndexPathClosure?) {
         dm.selectedAtIndexPath = closure
     }
     
-    public func deletedAtIndexPath(_ closure:DeletedAtIndexPathClosure?) {
+    func deletedAtIndexPath(_ closure:DeletedAtIndexPathClosure?) {
         dm.deletedAtIndexPath = closure
     }
     
-    public func didScroll(_ closure:((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?) {
+    func didScroll(_ closure:((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?) {
         dm.didScroll = closure
     }
     
-    public func didEndDecelerating(_ closure:((_ indexPath: IndexPath?, _ item: Any?) -> Void)?) {
+    func didEndDecelerating(_ closure:((_ indexPath: IndexPath?, _ item: Any?) -> Void)?) {
         dm.didEndDecelerating = closure
     }
     
-    public func resultData() -> [Any] {
+    func resultData() -> [Any] {
         if dm.sectionDict.count > 0 {
             var results = [Any]()
             for (_, mg) in dm.sectionDict {
@@ -219,7 +219,7 @@ public extension UITableView {
         }
     }
     
-    public func extensionDelegate(_ obj: (UITableViewDataSource & UITableViewDelegate)?) {
+    func extensionDelegate(_ obj: (UITableViewDataSource & UITableViewDelegate)?) {
         dm.extensionDelegate = obj
     }
 }

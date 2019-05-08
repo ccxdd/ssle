@@ -87,7 +87,7 @@ public class MWHttpClient {
                 switch (source == target) {
                 case true:
                     guard let r = result as? T else {
-                        print("❌", "\(ResponseError.asTarget)", "❌")
+                        print("❌", "\(String(describing: ResponseError.asTarget))", "❌")
                         self.errorsReturn(err: .asTarget(jsonStr))
                         return
                     }
@@ -96,7 +96,7 @@ public class MWHttpClient {
                     // transform
                     guard let t = (result as? MWResponseProtocol)?.transform() else { return }
                     guard let r = t as? T else {
-                        print("❌", "\(ResponseError.transform) \(type(of: t)) Error!", "❌")
+                        print("❌", "\(String(describing: ResponseError.transform)) \(String(describing: type(of: t))) Error!", "❌")
                         self.errorsReturn(err: .transform(jsonStr))
                         return
                     }
@@ -257,18 +257,18 @@ private let folderName: String = "RequestAPICaches"
 private let ChaCha20Key = "1DkIe-29YdK2asd-k29JwK3DssdI1-0Y"
 
 public extension MWHttpClient {
-    public struct APICacheStruct<T: Codable>: Codable {
+    struct APICacheStruct<T: Codable>: Codable {
         var timestamp: TimeInterval = Date().timeIntervalSince1970
         var data: T?
     }
     
-    public struct EmptyResponse: Codable {}
+    struct EmptyResponse: Codable {}
     
-    public enum HudDisplayMode {
+    enum HudDisplayMode {
         case none, always
     }
     
-    public enum CachePolicy {
+    enum CachePolicy {
         //有效期<=0 -> 直接请求数据，不进行缓存
         //下面不在前置条件内的都会重新请求数据并缓存使用
         //缓存存在&在有效期内 -> 仅使用缓存，不进行请求
@@ -281,11 +281,11 @@ public extension MWHttpClient {
         case afterCache
     }
     
-    public enum MessageHintMode {
+    enum MessageHintMode {
         case none, always, callbackFirst
     }
     
-    public enum ResponseError {
+    enum ResponseError {
         case decodeModel(String)
         case asTarget(String)
         case transform(String)
@@ -315,7 +315,7 @@ public extension MWHttpClient {
         }
     }
     
-    public struct APIDetail {
+    struct APIDetail {
         var name: String = ""
         var res: Codable?
         var resp: Codable?
@@ -376,7 +376,7 @@ public extension Data {
     func encrypt(ChaCha20Key: String) -> Data? {
         let key: Array<UInt8> = ChaCha20Key.data(using: .utf8)!.bytes
         if let encrypted = try? ChaCha20(key: key, iv: Array(key[4..<16])).encrypt(bytes) {
-            return Data(bytes: encrypted)
+            return Data(encrypted)
         }
         return nil
     }
@@ -384,7 +384,7 @@ public extension Data {
     func decrypt(ChaCha20Key: String) -> Data? {
         let key: Array<UInt8> = ChaCha20Key.data(using: .utf8)!.bytes
         if let decrypted = try? ChaCha20(key: key, iv: Array(key[4..<16])).decrypt(bytes) {
-            return Data(bytes: decrypted)
+            return Data(decrypted)
         }
         return nil
     }

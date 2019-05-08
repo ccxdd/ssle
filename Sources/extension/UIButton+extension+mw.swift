@@ -12,7 +12,7 @@ import UIKit
 private var buttonAdditionKey: Void?
 
 public final class ButtonAddition {
-    var enabledFields: [UITextField]? = []
+    public var enabledFields: [UITextField]? = []
     fileprivate var enabledConditionClosure: (() -> Bool)?
     
     public func enabledCondition(_ c: @escaping () -> Bool) {
@@ -21,7 +21,7 @@ public final class ButtonAddition {
 }
 
 public extension UIButton {
-    @IBOutlet public var enabledChangeFields: [UITextField]? {
+    @IBOutlet var enabledChangeFields: [UITextField]? {
         set {
             addition.enabledFields = newValue
         }
@@ -30,7 +30,7 @@ public extension UIButton {
         }
     }
     
-    public  var addition: ButtonAddition {
+    var addition: ButtonAddition {
         guard let a = objc_getAssociatedObject(self, &buttonAdditionKey) as? ButtonAddition else {
             let addition = ButtonAddition()
             objc_setAssociatedObject(self, &buttonAdditionKey, addition, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -39,7 +39,7 @@ public extension UIButton {
         return a
     }
     
-    public func refreshEnabled() {
+    func refreshEnabled() {
         guard let fields = enabledChangeFields else { return }
         let discontentArr = fields.filter { !$0.inputValid && $0.isHidden == false && $0.superview?.isHidden == false }
         isEnabled = discontentArr.isEmpty && (addition.enabledConditionClosure?() ?? true)

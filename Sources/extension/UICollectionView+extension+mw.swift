@@ -363,15 +363,15 @@ public extension UICollectionView {
         }
     }
     
-    public var flowLayout : UICollectionViewFlowLayout? {
+    var flowLayout : UICollectionViewFlowLayout? {
         return collectionViewLayout as? UICollectionViewFlowLayout
     }
     
-    public var rowsInSection: Int {
+    var rowsInSection: Int {
         return dm.currentSectionManager.rowsInSection
     }
     
-    public var totalCount: Int {
+    var totalCount: Int {
         var result = 0
         for (_, v) in dm.sectionDict {
             result += v.rowsInSection
@@ -379,7 +379,7 @@ public extension UICollectionView {
         return result
     }
     
-    public var selectedIndexPath: IndexPath? {
+    var selectedIndexPath: IndexPath? {
         get {
             return dm.selectedIndexPath
         }
@@ -388,11 +388,11 @@ public extension UICollectionView {
         }
     }
     
-    public var timer: GCDTimer? {
+    var timer: GCDTimer? {
         return dm.timer
     }
     
-    public func registerColl(_ collectionViewCell:UICollectionViewCell.Type, category: RegisterCategory, id: String? = nil) -> () {
+    func registerColl(_ collectionViewCell:UICollectionViewCell.Type, category: RegisterCategory, id: String? = nil) -> () {
         let identifier = id ?? String(describing: collectionViewCell)
         let cellName = String(describing: collectionViewCell)
         switch category {
@@ -405,7 +405,7 @@ public extension UICollectionView {
         }
     }
     
-    public func registerHeader(_ headerClass:UICollectionViewCell.Type, category: RegisterCategory) -> () {
+    func registerHeader(_ headerClass:UICollectionViewCell.Type, category: RegisterCategory) -> () {
         let identifier = String(describing: headerClass)
         switch category {
         case .nib:
@@ -417,7 +417,7 @@ public extension UICollectionView {
         }
     }
     
-    public func registerFooter(_ footerClass:UICollectionViewCell.Type, category: RegisterCategory) -> () {
+    func registerFooter(_ footerClass:UICollectionViewCell.Type, category: RegisterCategory) -> () {
         let identifier = String(describing: footerClass)
         switch category {
         case .nib:
@@ -430,7 +430,7 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func cell(_ collectionViewCell:UICollectionViewCell.Type, category: RegisterCategory = .nib, section: Int? = nil, unique: Bool = false) -> Self {
+    func cell(_ collectionViewCell:UICollectionViewCell.Type, category: RegisterCategory = .nib, section: Int? = nil, unique: Bool = false) -> Self {
         registerColl(collectionViewCell, category: category)
         if let s = section, s >= 0 {
             dm.currentSection = s
@@ -442,7 +442,7 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func cellSize(w: @autoclosure () -> CGFloat = SCR.W, h: @autoclosure () -> CGFloat = 45, column: Int = 1, auto: [AutoSize] = []) -> Self {
+    func cellSize(w: @autoclosure () -> CGFloat = SCR.W, h: @autoclosure () -> CGFloat = 45, column: Int = 1, auto: [AutoSize] = []) -> Self {
         let inset = dm.currentSectionManager.insets
         let nw = w() - inset.left - inset.right - dm.currentSectionManager.minimumInteritemSpacing * (column - 1).tCGF
         dm.currentSectionManager.cellSetting.size = CGSize(width: nw / CGFloat(column), height: h())
@@ -451,13 +451,13 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func section(_ section: Int) -> Self {
+    func section(_ section: Int) -> Self {
         dm.currentSection = section
         return self
     }
     
     @discardableResult
-    public func replace(indexPath: IndexPath, with item: Any, reload: Bool = false) -> Self {
+    func replace(indexPath: IndexPath, with item: Any, reload: Bool = false) -> Self {
         var newSectionData = section(indexPath.section).rowsData()
         newSectionData.remove(at: indexPath.row)
         newSectionData.insert(item, at: indexPath.row)
@@ -469,12 +469,12 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func replace(row: Int, with item: Any, reload: Bool = false) -> Self {
+    func replace(row: Int, with item: Any, reload: Bool = false) -> Self {
         return replace(indexPath: IndexPath(row: row, section: dm.currentSection), with: item, reload: reload)
     }
     
     @discardableResult
-    public func header(_ headerClass:UICollectionViewCell.Type, category: RegisterCategory = .nib, section: Int? = nil, reusable: Bool = false) -> Self {
+    func header(_ headerClass:UICollectionViewCell.Type, category: RegisterCategory = .nib, section: Int? = nil, reusable: Bool = false) -> Self {
         registerHeader(headerClass, category: category)
         if let s = section, s >= 0 {
             dm.currentSection = s
@@ -486,14 +486,14 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func headerSize(w: CGFloat = SCR.W, h: CGFloat = 45, auto: [AutoSize] = []) -> Self {
+    func headerSize(w: CGFloat = SCR.W, h: CGFloat = 45, auto: [AutoSize] = []) -> Self {
         dm.currentSectionManager.headerSetting.size = CGSize(width: w, height: h)
         dm.currentSectionManager.headerSetting.autoSizeCondition = auto
         return self
     }
     
     @discardableResult
-    public func headerItem(_ item: Any?, reload: Bool = false) -> Self {
+    func headerItem(_ item: Any?, reload: Bool = false) -> Self {
         dm.currentSectionManager.headerSetting.item = item
         if reload {
             reloadSections(IndexSet(integer: dm.currentSection))
@@ -502,7 +502,7 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func footer(_ footerClass:UICollectionViewCell.Type, category: RegisterCategory = .nib, section: Int? = nil, reusable: Bool = false) -> Self {
+    func footer(_ footerClass:UICollectionViewCell.Type, category: RegisterCategory = .nib, section: Int? = nil, reusable: Bool = false) -> Self {
         registerFooter(footerClass, category: category)
         if let s = section, s >= 0 {
             dm.currentSection = s
@@ -514,14 +514,14 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func footerSize(w: CGFloat = SCR.W, h: CGFloat = 45, auto: [AutoSize] = []) -> Self {
+    func footerSize(w: CGFloat = SCR.W, h: CGFloat = 45, auto: [AutoSize] = []) -> Self {
         dm.currentSectionManager.footerSetting.size = CGSize(width: w, height: h)
         dm.currentSectionManager.footerSetting.autoSizeCondition = auto
         return self
     }
     
     @discardableResult
-    public func footerItem(_ item:Any?, reload: Bool = false) -> Self {
+    func footerItem(_ item:Any?, reload: Bool = false) -> Self {
         dm.currentSectionManager.footerSetting.item = item
         if reload {
             reloadSections(IndexSet(integer: dm.currentSection))
@@ -530,7 +530,7 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func rows(_ rows: Int? = nil) -> Self {
+    func rows(_ rows: Int? = nil) -> Self {
         guard let r = rows else {
             dm.currentSectionManager.rowsInSection = dm.currentSectionManager.sectionData.count
             return self
@@ -540,20 +540,20 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func insets(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
+    func insets(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
         dm.currentSectionManager.insets = UIEdgeInsets(top: t, left: l, bottom: b, right: r)
         return self
     }
     
     @discardableResult
-    public func lineGap(line: CGFloat = 0, interitem: CGFloat = 0) -> Self {
+    func lineGap(line: CGFloat = 0, interitem: CGFloat = 0) -> Self {
         dm.currentSectionManager.minimumLineSpacing = line
         dm.currentSectionManager.minimumInteritemSpacing = interitem
         return self
     }
     
     @discardableResult
-    public func sectionData(_ data: [Any]?, append: Bool = false, reload: Bool = false) -> Self {
+    func sectionData(_ data: [Any]?, append: Bool = false, reload: Bool = false) -> Self {
         guard let sectionData = data else {
             dm.currentSectionManager.rowsInSection = 0
             return self
@@ -573,7 +573,7 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func reusableSection<T>(data: [T]?, subData: (T) -> [Any], append: Bool = false, reload: Bool = false) -> Self {
+    func reusableSection<T>(data: [T]?, subData: (T) -> [Any], append: Bool = false, reload: Bool = false) -> Self {
         guard let sectionsData = data else {
             dm.currentSectionManager.rowsInSection = 0
             return self
@@ -604,12 +604,12 @@ public extension UICollectionView {
         return self
     }
     
-    public func rowsData() -> [Any] {
+    func rowsData() -> [Any] {
         return dm.currentSectionManager.sectionData
     }
     
     @discardableResult
-    public func copySection(form: Int = 0, to: Int, cell: Bool = true, header: Bool = true, footer: Bool = true) -> Self {
+    func copySection(form: Int = 0, to: Int, cell: Bool = true, header: Bool = true, footer: Bool = true) -> Self {
         let form = dm.sectionDict[form]
         dm.sectionDict[to] = form
         dm.currentSection = to
@@ -626,7 +626,7 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func reload<T>(_ data: [T]?, completion: NoParamClosure? = nil) -> Self {
+    func reload<T>(_ data: [T]?, completion: NoParamClosure? = nil) -> Self {
         guard let tableData = data, tableData.isEmpty == false else {
             clearData()
             return self;
@@ -641,7 +641,7 @@ public extension UICollectionView {
         return self;
     }
     
-    public func reloadSection(_ section: Int? = nil) {
+    func reloadSection(_ section: Int? = nil) {
         guard let s = section else {
             reloadSections(IndexSet(integer: dm.currentSection))
             return
@@ -649,7 +649,7 @@ public extension UICollectionView {
         reloadSections(IndexSet(integer: s))
     }
     
-    public func clearData(_ reload: Bool = true) {
+    func clearData(_ reload: Bool = true) {
         for (k, _) in dm.sectionDict {
             dm.sectionDict[k]?.sectionData.removeAll()
             dm.sectionDict[k]?.rowsInSection = 0
@@ -660,35 +660,35 @@ public extension UICollectionView {
         dm.currentSection = 0
     }
     
-    public func selectedAtIndexPath(_ closure: SelectedAtIndexPathClosure?) {
+    func selectedAtIndexPath(_ closure: SelectedAtIndexPathClosure?) {
         dm.selectedAtIndexPath = closure
     }
     
-    public func cellAtIndexPath(_ closure: cellAtIndexPathClosure?) {
+    func cellAtIndexPath(_ closure: cellAtIndexPathClosure?) {
         dm.cellIndexPathClosure = closure
     }
     
-    public func willDisplayIndexPath(_ closure: cellAtIndexPathClosure?) {
+    func willDisplayIndexPath(_ closure: cellAtIndexPathClosure?) {
         dm.willDisplayIndexPathClosure = closure
     }
     
-    public func endDisplayIndexPath(_ closure: cellAtIndexPathClosure?) {
+    func endDisplayIndexPath(_ closure: cellAtIndexPathClosure?) {
         dm.endDisplayIndexPathClosure = closure
     }
     
-    public func didScroll(_ closure:((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?) {
+    func didScroll(_ closure:((_ indexPath: IndexPath?, _ contentOffset: CGPoint) -> Void)?) {
         dm.didScroll = closure
     }
     
-    public func didEndDecelerating(_ closure:((_ indexPath: IndexPath?, _ item: Any?) -> Void)?) {
+    func didEndDecelerating(_ closure:((_ indexPath: IndexPath?, _ item: Any?) -> Void)?) {
         dm.didEndDecelerating = closure
     }
     
-    public func didEndDragging(_ closure: ((_ decelerate: Bool, _ direction: OffsetDirection, _ offsets: [CGPoint]) -> Void)?) {
+    func didEndDragging(_ closure: ((_ decelerate: Bool, _ direction: OffsetDirection, _ offsets: [CGPoint]) -> Void)?) {
         dm.didEndDragging = closure
     }
     
-    public func removeSection(_ section: Int) {
+    func removeSection(_ section: Int) {
         dm.sectionDict.removeValue(forKey: section)
         if section == 0 {
             dm.sectionDict[0] = CollectionViewSectionManager()
@@ -696,13 +696,13 @@ public extension UICollectionView {
         }
     }
     
-    public func removeAllSections() {
+    func removeAllSections() {
         dm.sectionDict.removeAll()
         dm.sectionDict[0] = CollectionViewSectionManager()
         dm.currentSection = 0
     }
     
-    public func bannerMode<T>(data: [T], interval: CGFloat = 5, circle: Bool = true, multiple: Int = 5, display: Int = 1, change: ((Int) -> Void)? = nil) {
+    func bannerMode<T>(data: [T], interval: CGFloat = 5, circle: Bool = true, multiple: Int = 5, display: Int = 1, change: ((Int) -> Void)? = nil) {
         guard data.count > 0 else { return }
         isPagingEnabled = true
         showsVerticalScrollIndicator = false
@@ -730,24 +730,24 @@ public extension UICollectionView {
         }
     }
     
-    public func bannerStop() {
+    func bannerStop() {
         dm.timer?.stop()
     }
     
-    public func bannerStart() {
+    func bannerStart() {
         guard section(0).rowsData().count > 0 else { return }
         dm.timer?.start()
     }
     
-    public func headerAt(_ section: Int = 0) -> UICollectionReusableView? {
+    func headerAt(_ section: Int = 0) -> UICollectionReusableView? {
         return supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(row: 0, section: section))
     }
     
-    public func footerAt(_ section: Int) -> UICollectionReusableView? {
+    func footerAt(_ section: Int) -> UICollectionReusableView? {
         return supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: IndexPath(row: 0, section: section))
     }
     
-    public func pointWithIdx(_ idx: Int, position: UICollectionView.ScrollPosition = .centeredHorizontally) -> CGPoint {
+    func pointWithIdx(_ idx: Int, position: UICollectionView.ScrollPosition = .centeredHorizontally) -> CGPoint {
         guard let cell = cellForItem(at: idx.row()) else { return CGPoint.zero }
         let w = cell.frame.width
         let x1 = cell.frame.minX
@@ -770,24 +770,24 @@ public extension UICollectionView {
     }
     
     @discardableResult
-    public func selectedIndexPath(reload: Bool) -> Self {
+    func selectedIndexPath(reload: Bool) -> Self {
         dm.selectedIndexPathReload = reload
         return self
     }
     
     @discardableResult
-    public func indexPath<T: UICollectionViewCell>(_ idxP: IndexPath, class: T.Type) -> T? {
+    func indexPath<T: UICollectionViewCell>(_ idxP: IndexPath, class: T.Type) -> T? {
         return cellForItem(at: idxP) as? T
     }
     
     @discardableResult
-    public func autoDeselect(_ flag: Bool) -> Self {
+    func autoDeselect(_ flag: Bool) -> Self {
         dm.isAutoDeselect = flag
         return self
     }
     
     @discardableResult
-    public func selectToggle(_ flag: Bool) -> Self {
+    func selectToggle(_ flag: Bool) -> Self {
         dm.isSelectToggle = flag
         return self
     }
@@ -795,8 +795,8 @@ public extension UICollectionView {
 
 private var CursorKey: Void?
 
-extension UICollectionView {
-    public enum DataEmptyStyle {
+public extension UICollectionView {
+    enum DataEmptyStyle {
         case none
         case image(UIImage)
         case view(UIView)
@@ -813,7 +813,7 @@ extension UICollectionView {
         }
     }
     
-    public var dataEmptyStyle: DataEmptyStyle {
+    var dataEmptyStyle: DataEmptyStyle {
         set {
             dm.dataEmptyStyle = newValue
         }
@@ -822,7 +822,7 @@ extension UICollectionView {
         }
     }
     
-    public func reloadDataEmptyStyle() {
+    func reloadDataEmptyStyle() {
         guard totalCount == 0 else {
             backgroundView = nil
             return
@@ -846,7 +846,7 @@ extension UICollectionView {
         }
     }
     
-    static public func initLayout(_ frame: CGRect = .zero, _ direction: UICollectionView.ScrollDirection = .vertical) -> UICollectionView {
+    static func initLayout(_ frame: CGRect = .zero, _ direction: UICollectionView.ScrollDirection = .vertical) -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = direction
         let collView = UICollectionView(frame: frame, collectionViewLayout: layout)

@@ -12,14 +12,14 @@ import AVFoundation
 
 public extension UIAlertController {
     
-    public enum AlertFieldType {
+    enum AlertFieldType {
         case field(String)
         case pwd(String)
         case btn(String)
         case destructive(String)
     }
     
-    public class func alert(title: String? = "", message: String?, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
+    class func alert(title: String? = "", message: String?, buttons: String..., destructive: Int = -1, closure: ((Int) -> Void)? = nil) {
         var fields: [AlertFieldType] = []
         for (i, b) in buttons.enumerated() {
             fields.append(i == destructive ? .destructive(b) : .btn(b))
@@ -29,7 +29,7 @@ public extension UIAlertController {
         }
     }
     
-    public class func sheet(title: String? = nil, message: String? = nil, buttons: [String], closure: ((Int) -> Void)? = nil) {
+    class func sheet(title: String? = nil, message: String? = nil, buttons: [String], closure: ((Int) -> Void)? = nil) {
         let sheet = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         for (idx, title) in buttons.enumerated() {
             let action = UIAlertAction(title: title, style: .default, handler: { (action) in
@@ -44,7 +44,7 @@ public extension UIAlertController {
         }
     }
     
-    public static func alertPwd(title: String? = "", message: String?, placeholder: String?, buttons: String..., destructive: Int = -1,
+    static func alertPwd(title: String? = "", message: String?, placeholder: String?, buttons: String..., destructive: Int = -1,
                                 closure: ((String, Int) -> Void)? = nil) {
         var fields: [AlertFieldType] = [.pwd(placeholder ?? "")]
         for (i, b) in buttons.enumerated() {
@@ -55,7 +55,7 @@ public extension UIAlertController {
         }
     }
     
-    public static func alertCustomize(title: String? = "", message: String?,
+    static func alertCustomize(title: String? = "", message: String?,
                                       fields: [AlertFieldType], closure: (([String], Int) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         var btnTitlesArr: [String] = []

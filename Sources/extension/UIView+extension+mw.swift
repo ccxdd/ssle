@@ -40,7 +40,7 @@ public extension UIView {
         return bdm
     }
     
-    @IBInspectable public var cornerRadius: CGFloat {
+    @IBInspectable var cornerRadius: CGFloat {
         get {
             return layer.cornerRadius
         }
@@ -50,7 +50,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var borderWidth: CGFloat {
+    @IBInspectable var borderWidth: CGFloat {
         get {
             return layer.borderWidth
         }
@@ -59,7 +59,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var borderColor: UIColor? {
+    @IBInspectable var borderColor: UIColor? {
         get {
             if let color = layer.borderColor {
                 return UIColor(cgColor: color)
@@ -72,7 +72,7 @@ public extension UIView {
         }
     }
     
-    public func addBorder(style: BorderStyle, w: CGFloat = 0.5, t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0, c: UIColor? = nil) {
+    func addBorder(style: BorderStyle, w: CGFloat = 0.5, t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0, c: UIColor? = nil) {
         let border = UIView().addTo(view: self)
         additional.borders[style]?.border?.removeFromSuperview()
         additional.borders[style]?.border = nil
@@ -90,7 +90,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tw: CGFloat {
+    @IBInspectable var tw: CGFloat {
         get {
             return additional.borders[.top]?.border?.lcm.find(.height)?.constant ?? 0
         }
@@ -103,7 +103,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tt: CGFloat {
+    @IBInspectable var tt: CGFloat {
         get {
             return additional.borders[.top]?.border?.lcm.find(.top)?.constant ?? 0
         }
@@ -116,7 +116,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tl: CGFloat {
+    @IBInspectable var tl: CGFloat {
         get {
             return additional.borders[.top]?.border?.lcm.find(.left)?.constant ?? 0
         }
@@ -129,7 +129,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tr: CGFloat {
+    @IBInspectable var tr: CGFloat {
         get {
             return additional.borders[.top]?.border?.lcm.find(.right)?.constant ?? 0
         }
@@ -142,7 +142,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tc: UIColor? {
+    @IBInspectable var tc: UIColor? {
         get {
             return additional.borders[.top]?.border?.backgroundColor
         }
@@ -155,7 +155,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var lw: CGFloat {
+    @IBInspectable var lw: CGFloat {
         get {
             return additional.borders[.left]?.border?.lcm.find(.width)?.constant ?? 0
         }
@@ -168,7 +168,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var lt: CGFloat {
+    @IBInspectable var lt: CGFloat {
         get {
             return additional.borders[.left]?.border?.lcm.find(.top)?.constant ?? 0
         }
@@ -181,7 +181,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var ll: CGFloat {
+    @IBInspectable var ll: CGFloat {
         get {
             return additional.borders[.left]?.border?.lcm.find(.left)?.constant ?? 0
         }
@@ -194,7 +194,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var lb: CGFloat {
+    @IBInspectable var lb: CGFloat {
         get {
             return additional.borders[.left]?.border?.lcm.find(.bottom)?.constant ?? 0
         }
@@ -207,7 +207,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var lc: UIColor? {
+    @IBInspectable var lc: UIColor? {
         get {
             return additional.borders[.left]?.border?.backgroundColor
         }
@@ -220,7 +220,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var bw: CGFloat {
+    @IBInspectable var bw: CGFloat {
         get {
             return additional.borders[.bottom]?.border?.lcm.find(.height)?.constant ?? 0
         }
@@ -233,7 +233,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var bl: CGFloat {
+    @IBInspectable var bl: CGFloat {
         get {
             return additional.borders[.bottom]?.border?.lcm.find(.left)?.constant ?? 0
         }
@@ -246,7 +246,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var bb: CGFloat {
+    @IBInspectable var bb: CGFloat {
         get {
             return additional.borders[.bottom]?.border?.lcm.find(.bottom)?.constant ?? 0
         }
@@ -259,7 +259,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var br: CGFloat {
+    @IBInspectable var br: CGFloat {
         get {
             return additional.borders[.bottom]?.border?.lcm.find(.right)?.constant ?? 0
         }
@@ -272,7 +272,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var bc: UIColor? {
+    @IBInspectable var bc: UIColor? {
         get {
             return additional.borders[.bottom]?.border?.backgroundColor
         }
@@ -285,7 +285,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var rw: CGFloat {
+    @IBInspectable var rw: CGFloat {
         get {
             return additional.borders[.right]?.border?.lcm.find(.width)?.constant ?? 0
         }
@@ -298,7 +298,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var rt: CGFloat {
+    @IBInspectable var rt: CGFloat {
         get {
             return additional.borders[.right]?.border?.lcm.find(.top)?.constant ?? 0
         }
@@ -311,7 +311,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var rb: CGFloat {
+    @IBInspectable var rb: CGFloat {
         get {
             return additional.borders[.right]?.border?.lcm.find(.bottom)?.constant ?? 0
         }
@@ -324,7 +324,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var rr: CGFloat {
+    @IBInspectable var rr: CGFloat {
         get {
             return additional.borders[.right]?.border?.lcm.find(.right)?.constant ?? 0
         }
@@ -337,7 +337,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var rc: UIColor? {
+    @IBInspectable var rc: UIColor? {
         get {
             return additional.borders[.right]?.border?.backgroundColor
         }
@@ -350,7 +350,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tapDismiss: Bool {
+    @IBInspectable var tapDismiss: Bool {
         get {
             return false
         }
@@ -364,7 +364,7 @@ public extension UIView {
         }
     }
     
-    @IBInspectable public var tapEndEditing: Bool {
+    @IBInspectable var tapEndEditing: Bool {
         get {
             return false
         }
@@ -377,7 +377,7 @@ public extension UIView {
         }
     }
     
-    public func addTap(taps: Int = 1, touchs: Int = 1, closure: @escaping (UITapGestureRecognizer?) -> Void) {
+    func addTap(taps: Int = 1, touchs: Int = 1, closure: @escaping (UITapGestureRecognizer?) -> Void) {
         assert((gestureRecognizers?.count ?? 0) == 0, "Many Gestures!")
         let tapGes = UITapGestureRecognizer(target: self, action: #selector(gestureTap(_:)))
         tapGes.numberOfTapsRequired = taps
@@ -387,7 +387,7 @@ public extension UIView {
         cbm.tap(t: UITapGestureRecognizer.self, c: closure)
     }
     
-    public func exeTap() {
+    func exeTap() {
         cbm.exec(c: .tapGes, p: gestureRecognizers?.last as? UITapGestureRecognizer)
     }
     
@@ -395,17 +395,17 @@ public extension UIView {
         cbm.exec(c: .tapGes, p: sender)
     }
     
-    public func addAutoLayout(view: UIView) {
+    func addAutoLayout(view: UIView) {
         addSubview(view)
         view.lcm.lead().t().b().trail()
     }
     
-    public func insertAutoLayout(view: UIView, at: Int) {
+    func insertAutoLayout(view: UIView, at: Int) {
         insertSubview(view, at: at)
         view.lcm.lead().t().b().trail()
     }
     
-    public func shadow(color: UIColor = UIColor.black, radius: CGFloat = 3, opacity: Float = 0.5, offset: CGSize = CGSize.zero) {
+    func shadow(color: UIColor = UIColor.black, radius: CGFloat = 3, opacity: Float = 0.5, offset: CGSize = CGSize.zero) {
         layer.shadowColor = color.cgColor
         layer.shadowRadius = radius
         layer.shadowOpacity = opacity
@@ -414,30 +414,30 @@ public extension UIView {
     }
     
     @discardableResult
-    public func addTo(view: UIView?) -> Self {
+    func addTo(view: UIView?) -> Self {
         view?.addSubview(self)
         return self
     }
     
     @discardableResult
-    public func insertTo(view: UIView?, at: Int) -> Self {
+    func insertTo(view: UIView?, at: Int) -> Self {
         view?.insertSubview(self, at: at)
         return self
     }
     
     @discardableResult
-    public func insertTo(view: UIView?, above: UIView) -> Self {
+    func insertTo(view: UIView?, above: UIView) -> Self {
         view?.insertSubview(self, aboveSubview: above)
         return self
     }
     
     @discardableResult
-    public func insertTo(view: UIView?, below: UIView) -> Self {
+    func insertTo(view: UIView?, below: UIView) -> Self {
         view?.insertSubview(self, belowSubview: below)
         return self
     }
     
-    public func moveDirection(_ pointArr: [CGPoint]) -> MoveDirection {
+    func moveDirection(_ pointArr: [CGPoint]) -> MoveDirection {
         guard let l = pointArr.last, let l2 = pointArr.at(pointArr.count - 2) else { return .none }
         switch (l.x - l2.x, l.y - l2.y) {
         case let (x, y) where y < 0 && abs(x) < abs(y):
@@ -453,7 +453,7 @@ public extension UIView {
         }
     }
     
-    public func screenshot(isContentSize: Bool = false) -> UIImage? {
+    func screenshot(isContentSize: Bool = false) -> UIImage? {
         guard frame.size.height > 0 && frame.size.width > 0 else { return nil }
         if isContentSize, let scrollView = asTo(UIScrollView.self) {
             UIGraphicsBeginImageContextWithOptions(scrollView.contentSize, false, UIScreen.main.scale)
@@ -479,7 +479,7 @@ public extension UIView {
         }
     }
     
-    public func gradientBg(colors: [UIColor], locations: [Float], start: CGPoint, end: CGPoint, frame: CGRect? = nil) {
+    func gradientBg(colors: [UIColor], locations: [Float], start: CGPoint, end: CGPoint, frame: CGRect? = nil) {
         let bgLayer = CAGradientLayer()
         bgLayer.frame = frame ?? bounds
         bgLayer.colors = colors.map({$0.cgColor})
@@ -489,36 +489,36 @@ public extension UIView {
         layer.insertSublayer(bgLayer, at: 0)
     }
     
-    public func gradientLayer(_ layer: CAGradientLayer) {
+    func gradientLayer(_ layer: CAGradientLayer) {
         self.layer.insertSublayer(layer, at: 0)
     }
 }
 
 public extension NSTextAttachment {
-    public var attrStr: NSMutableAttributedString {
+    var attrStr: NSMutableAttributedString {
         return NSMutableAttributedString(attributedString: NSAttributedString(attachment: self))
     }
 }
 
 public extension UIImage {
-    public enum ScaleType {
+    enum ScaleType {
         case wh(CGFloat, CGFloat)
         case w(CGFloat)
         case h(CGFloat)
         case p(CGFloat) // 0 - 1 percent
     }
     
-    public var textAttachment: NSTextAttachment {
+    var textAttachment: NSTextAttachment {
         let attachment = NSTextAttachment()
         attachment.image = self
         return attachment
     }
     
-    public var attrStr: NSMutableAttributedString {
+    var attrStr: NSMutableAttributedString {
         return textAttachment.attrStr
     }
     
-    public func scale(_ scaleType: ScaleType?, tintColor: UIColor? = nil) -> UIImage {
+    func scale(_ scaleType: ScaleType?, tintColor: UIColor? = nil) -> UIImage {
         guard let type = scaleType else { return self }
         var newImg: UIImage = self
         let w: CGFloat
@@ -547,7 +547,7 @@ public extension UIImage {
         return newImg
     }
     
-    public func saveToAlbum(_ completion: NoParamClosure? = nil) {
+    func saveToAlbum(_ completion: NoParamClosure? = nil) {
         cbm.empty(c: completion)
         UIImageWriteToSavedPhotosAlbum(self, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
@@ -565,7 +565,7 @@ public extension UIImage {
 public extension CALayer {
     /// 通过mask设置
     @discardableResult
-    public func setCorner(_ corners: UIRectCorner = .allCorners, radii: CGFloat, frame: CGRect? = nil) -> Self {
+    func setCorner(_ corners: UIRectCorner = .allCorners, radii: CGFloat, frame: CGRect? = nil) -> Self {
         let maskLayer = UIBezierPath(roundedRect: frame ?? bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radii, height: radii))
             .toShapeLayer(fillColor: .white)
         mask = maskLayer
@@ -575,44 +575,44 @@ public extension CALayer {
 
 public extension CAShapeLayer {
     @discardableResult
-    public func addTo(layer: CALayer?) -> Self {
+    func addTo(layer: CALayer?) -> Self {
         guard let l = layer else { return self }
         l.addSublayer(self)
         return self
     }
     
     @discardableResult
-    public func fill(c: UIColor?) -> Self {
+    func fill(c: UIColor?) -> Self {
         fillColor = c?.cgColor
         return self
     }
     
     @discardableResult
-    public func stroke(c: UIColor?) -> Self {
+    func stroke(c: UIColor?) -> Self {
         strokeColor = c?.cgColor
         return self
     }
     
     @discardableResult
-    public func start(v: CGFloat) -> Self {
+    func start(v: CGFloat) -> Self {
         strokeStart = v
         return self
     }
     
     @discardableResult
-    public func end(v: CGFloat) -> Self {
+    func end(v: CGFloat) -> Self {
         strokeEnd = v
         return self
     }
     
     @discardableResult
-    public func line(w: CGFloat) -> Self {
+    func line(w: CGFloat) -> Self {
         lineWidth = w
         return self
     }
     
     @discardableResult
-    public func bg(c: UIColor?) -> Self {
+    func bg(c: UIColor?) -> Self {
         backgroundColor = c?.cgColor
         return self
     }
@@ -620,56 +620,56 @@ public extension CAShapeLayer {
 
 public extension CAGradientLayer {
     @discardableResult
-    public func start(x: CGFloat, y: CGFloat) -> Self {
+    func start(x: CGFloat, y: CGFloat) -> Self {
         startPoint = CGPoint(x: x, y: y)
         return self
     }
     
     @discardableResult
-    public func end(x: CGFloat, y: CGFloat) -> Self {
+    func end(x: CGFloat, y: CGFloat) -> Self {
         endPoint = CGPoint(x: x, y: y)
         return self
     }
     
     @discardableResult
-    public func point(start: CGPoint) -> Self {
+    func point(start: CGPoint) -> Self {
         startPoint = start
         return self
     }
     
     @discardableResult
-    public func point(end: CGPoint) -> Self {
+    func point(end: CGPoint) -> Self {
         startPoint = end
         return self
     }
     
     @discardableResult
-    public func locations(_ arr: Float...) -> Self {
+    func locations(_ arr: Float...) -> Self {
         locations = arr as [NSNumber]
         return self
     }
     
     @discardableResult
-    public func colors(_ arr: UIColor...) -> Self {
+    func colors(_ arr: UIColor...) -> Self {
         colors = arr.map({$0.cgColor})
         return self
     }
     
     @discardableResult
-    public func frame(_ rect: CGRect) -> Self {
+    func frame(_ rect: CGRect) -> Self {
         frame = rect
         return self
     }
     
     @discardableResult
-    public func frame(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) -> Self {
+    func frame(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) -> Self {
         frame = CGRect(x: x, y: y, width: w, height: h)
         return self
     }
 }
 
 public extension UIBezierPath {
-    public func toShapeLayer(fillColor: UIColor? = nil, strokeColor: UIColor? = nil, lineWidth: CGFloat? = nil) -> CAShapeLayer {
+    func toShapeLayer(fillColor: UIColor? = nil, strokeColor: UIColor? = nil, lineWidth: CGFloat? = nil) -> CAShapeLayer {
         let layer = CAShapeLayer()
         layer.path = cgPath
         layer.fillColor = fillColor?.cgColor
@@ -678,13 +678,13 @@ public extension UIBezierPath {
         return layer
     }
     
-    public var toLayer: CAShapeLayer {
+    var toLayer: CAShapeLayer {
         let layer = CAShapeLayer()
         layer.path = cgPath
         return layer
     }
     
-    public convenience init(arcCenter center: CGPoint, radius: CGFloat, arcRadius: CGFloat, startAngle: CGFloat, endAngle: CGFloat, clockwise: Bool) {
+    convenience init(arcCenter center: CGPoint, radius: CGFloat, arcRadius: CGFloat, startAngle: CGFloat, endAngle: CGFloat, clockwise: Bool) {
         self.init(arcCenter: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: clockwise)
         if clockwise {
             addLine(to: center.tArcPoint(r: radius - arcRadius, pi: endAngle))
@@ -699,7 +699,7 @@ public extension UIBezierPath {
 }
 
 public extension UITextView {
-    public func allRange(attributed: Bool = false) -> NSRange {
+    func allRange(attributed: Bool = false) -> NSRange {
         if attributed {
             return NSRange(location: 0, length: self.attributedText.length)
         } else {
@@ -709,7 +709,7 @@ public extension UITextView {
 }
 
 public extension UILabel {
-    public func tapAttributed(texts: String..., completion: @escaping (Int) -> Void) {
+    func tapAttributed(texts: String..., completion: @escaping (Int) -> Void) {
         isUserInteractionEnabled = true
         addTap { [weak self] (ges) in
             guard let s = self?.attributedText?.string else { return }
@@ -723,7 +723,7 @@ public extension UILabel {
 }
 
 public extension UITapGestureRecognizer {
-    public func didTapAttributedTextIn(label: UILabel, inRangeArray targetRanges: [NSRange], completion: (Int) -> Void) {
+    func didTapAttributedTextIn(label: UILabel, inRangeArray targetRanges: [NSRange], completion: (Int) -> Void) {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)

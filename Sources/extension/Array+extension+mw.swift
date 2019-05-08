@@ -9,17 +9,17 @@
 import Foundation
 
 public extension Array {
-    public func at(_ index: Int?) -> Element? {
+    func at(_ index: Int?) -> Element? {
         guard let i = index, i < count, i >= 0 else { return nil }
         return self[i]
     }
     
-    public func range(from: Int?, to: Int?, nilSelf: Bool = false) -> [Element]? {
+    func range(from: Int?, to: Int?, nilSelf: Bool = false) -> [Element]? {
         guard let f = from, let t = to, f <= t, f >= 0, t < count else { return nilSelf ? self : nil }
         return Array(self[f...t])
     }
     
-    public func fill(num: Int?, i: Element, append: Bool = true) -> [Element] {
+    func fill(num: Int?, i: Element, append: Bool = true) -> [Element] {
         guard let c = num, c > 0, c > count else { return self }
         var newArr = Array(self)
         let difArr = Array(repeating: i, count: c - count)
@@ -32,7 +32,7 @@ public extension Array {
     }
     
     /// 二分查找
-    public func binarySearch<T: Comparable>(_ s: (Element) -> T, key: T) -> (idx: Int?, element: Element?) {
+    func binarySearch<T: Comparable>(_ s: (Element) -> T, key: T) -> (idx: Int?, element: Element?) {
         var lowerBound = 0
         var upperBound = count
         while lowerBound < upperBound {
@@ -47,27 +47,27 @@ public extension Array {
         return (nil, nil)
     }
     
-    mutating public func replace(idx: Int, element: Element) {
+    mutating func replace(idx: Int, element: Element) {
         remove(at: idx)
         insert(element, at: idx)
     }
 }
 
-extension Array where Element: Equatable {
-    mutating public func appendUnique(_ element: Element) {
-        if index(of: element) == nil {
+public extension Array where Element: Equatable {
+    mutating func appendUnique(_ element: Element) {
+        if firstIndex(of: element) == nil {
             append(element)
         }
     }
     
-    mutating public func insertUnique(_ element: Element, at: Int) {
-        if index(of: element) == nil {
+    mutating func insertUnique(_ element: Element, at: Int) {
+        if firstIndex(of: element) == nil {
             insert(element, at: at)
         }
     }
     
-    mutating public func existThenRemove(_ element: Element) {
-        if let idx = index(of: element) {
+    mutating func existThenRemove(_ element: Element) {
+        if let idx = firstIndex(of: element) {
             remove(at: idx)
         }
     }

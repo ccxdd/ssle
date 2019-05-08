@@ -71,8 +71,8 @@ public struct SCR {
     }
 }
 
-extension CGFloat {
-    public func one(_ denominator: CGFloat?) -> CGFloat {
+public extension CGFloat {
+    func one(_ denominator: CGFloat?) -> CGFloat {
         guard let d = denominator, d > 0 else { return self }
         return self / d;
     }

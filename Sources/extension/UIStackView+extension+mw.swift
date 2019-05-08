@@ -12,7 +12,7 @@ import UIKit
 private var AdditionKey: Void?
 
 public extension UIStackView {
-    public struct Row {
+    struct Row {
         var rowView: UIView?
         var contentView: UIView?
     }
@@ -28,7 +28,7 @@ public extension UIStackView {
     }
     
     @discardableResult
-    public func addRow(view: UIView?) -> Self {
+    func addRow(view: UIView?) -> Self {
         guard let v = view else { return self }
         var row = Row()
         row.rowView = UIView()
@@ -42,37 +42,37 @@ public extension UIStackView {
     }
     
     @discardableResult
-    public func inset(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
+    func inset(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
         addition.rows.at(addition.index)?.contentView?.lcm.t(t).l(l).b(b).r(r)
         return self
     }
     
     @discardableResult
-    public func content(bg: UIColor) -> Self {
+    func content(bg: UIColor) -> Self {
         addition.rows.at(addition.index)?.contentView?.backgroundColor = bg
         return self
     }
     
     @discardableResult
-    public func row(bg: UIColor) -> Self {
+    func row(bg: UIColor) -> Self {
         addition.rows.at(addition.index)?.rowView?.backgroundColor = bg
         return self
     }
     
     @discardableResult
-    public func row(height: CGFloat) -> Self {
+    func row(height: CGFloat) -> Self {
         addition.rows.at(addition.index)?.rowView?.lcm.h(height)
         return self
     }
     
     @discardableResult
-    public func content(height: CGFloat) -> Self {
+    func content(height: CGFloat) -> Self {
         addition.rows.at(addition.index)?.contentView?.lcm.h(height)
         return self
     }
     
     @discardableResult
-    public func set(row: Int) -> Self {
+    func set(row: Int) -> Self {
         if arrangedSubviews.count > row {
             addition.index = row
         }
@@ -80,7 +80,7 @@ public extension UIStackView {
     }
     
     @discardableResult
-    public func remove(row: Int) -> Self {
+    func remove(row: Int) -> Self {
         guard let v = arrangedSubviews.at(row) else { return self }
         removeArrangedSubview(v)
         addition.rows.remove(at: row)
@@ -88,25 +88,25 @@ public extension UIStackView {
     }
     
     @discardableResult
-    public func hide(_ flag: Bool) -> Self {
+    func hide(_ flag: Bool) -> Self {
         arrangedSubviews.at(addition.index)?.isHidden = flag
         return self
     }
     
-    public func viewIn(row: Int) -> UIView? {
+    func viewIn(row: Int) -> UIView? {
         return arrangedSubviews.at(row)
     }
     
-    public func labelIn(row: Int) -> UILabel? {
+    func labelIn(row: Int) -> UILabel? {
         return arrangedSubviews.at(row)?.asTo(UILabel.self)
     }
     
-    public func fieldIn(row: Int) -> UITextField? {
+    func fieldIn(row: Int) -> UITextField? {
         return arrangedSubviews.at(row)?.asTo(UITextField.self)
     }
     
     @discardableResult
-    public func section(view: @autoclosure () -> UIView?, h: @autoclosure () -> CGFloat, data: [Any]?) -> Self {
+    func section(view: @autoclosure () -> UIView?, h: @autoclosure () -> CGFloat, data: [Any]?) -> Self {
         guard let d = data else { return self }
         for (idx, i) in d.enumerated() {
             let v = view()

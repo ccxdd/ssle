@@ -52,7 +52,7 @@ public extension UITextView {
         return addition
     }
     
-    @IBOutlet public var enabledButton: UIButton? {
+    @IBOutlet var enabledButton: UIButton? {
         set {
             addition.enabledButton = newValue
         }
@@ -61,7 +61,7 @@ public extension UITextView {
         }
     }
     
-    @IBInspectable public var minLen: Int {
+    @IBInspectable var minLen: Int {
         get {
             return addition.minLen
         }
@@ -70,7 +70,7 @@ public extension UITextView {
         }
     }
     
-    @IBInspectable public var maxLen: Int {
+    @IBInspectable var maxLen: Int {
         get {
             return addition.maxLen
         }
@@ -79,7 +79,7 @@ public extension UITextView {
         }
     }
     
-    public var placeholder: String? {
+    var placeholder: String? {
         set {
             addition.placeholderLabel.text = newValue
         }
@@ -88,24 +88,24 @@ public extension UITextView {
         }
     }
     
-    public var textLength: Int {
+    var textLength: Int {
         return text.count
     }
     
-    public func didChange(closure: @escaping (String) -> Void) {
+    func didChange(closure: @escaping (String) -> Void) {
         addition.didChangeClosure = closure
     }
     
-    public var inputValid: Bool {
+    var inputValid: Bool {
         return textLength > 0 && textLength >= minLen && textLength <= maxLen
     }
     
-    @discardableResult public func min(len: Int) -> Self {
+    @discardableResult func min(len: Int) -> Self {
         addition.minLen = len
         return self
     }
     
-    @discardableResult public func max(len: Int) -> Self {
+    @discardableResult func max(len: Int) -> Self {
         addition.maxLen = len
         return self
     }

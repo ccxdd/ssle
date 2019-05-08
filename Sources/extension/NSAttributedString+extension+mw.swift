@@ -33,7 +33,7 @@ public enum AttributedStyle {
 
 public extension NSMutableAttributedString {
     @discardableResult
-    public func setAttributed(styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
+    func setAttributed(styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
         guard length > 0 else { return self }
         var attrs: [NSAttributedString.Key: Any] = [:]
         for s in styles {
@@ -73,13 +73,13 @@ public extension NSMutableAttributedString {
     }
     
     @discardableResult
-    public func prefix(_ str: String, _ styles: [AttributedStyle] = []) -> Self {
+    func prefix(_ str: String, _ styles: [AttributedStyle] = []) -> Self {
         insert(str, at: 0, styles: styles)
         return self
     }
     
     @discardableResult
-    public func suffix(_ str: String, _ styles: [AttributedStyle] = []) -> Self {
+    func suffix(_ str: String, _ styles: [AttributedStyle] = []) -> Self {
         insert(str, at: length, styles: styles)
         return self
     }
@@ -100,7 +100,7 @@ public extension NSMutableAttributedString {
     }
     
     @discardableResult
-    public func find(_ str: String, styles: [AttributedStyle] = []) -> Self {
+    func find(_ str: String, styles: [AttributedStyle] = []) -> Self {
         guard str.count > 0 else { return self }
         let range = (string as NSString).range(of: str)
         guard range.length > 0 else { return self }
@@ -109,7 +109,7 @@ public extension NSMutableAttributedString {
     }
     
     @discardableResult
-    public func replace(source: String, target: String, styles: [AttributedStyle] = []) -> Self {
+    func replace(source: String, target: String, styles: [AttributedStyle] = []) -> Self {
         guard source.count > 0 else { return self }
         let content = string
         var range = (content as NSString).range(of: source, range: NSRange(location: 0, length: content.count))
