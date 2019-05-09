@@ -369,7 +369,7 @@ public extension IBConstructible where Self: UIViewController {
             }
             return viewController
         } else {
-            guard let viewController = storyboard.instantiateViewController(withIdentifier: nibName) as? Self else {
+            guard let viewController = storyboard.instantiateViewController(withIdentifier: toStr) as? Self else {
                 fatalError("Missing view controller in \(name).storyboard")
             }
             return viewController
@@ -377,7 +377,7 @@ public extension IBConstructible where Self: UIViewController {
     }
     
     static func storyboard(sb: String, identifier: String? = nil, initial: Bool = false) -> Self {
-        let vcID = identifier ?? nibName
+        let vcID = identifier ?? toStr
         if initial {
             return UIStoryboard(name: sb, bundle: nil).instantiateInitialViewController() as! Self
         }

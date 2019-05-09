@@ -756,9 +756,9 @@ extension UIView: IBConstructible {}
 
 public extension IBConstructible where Self: UIView {
     static func fromNib(w: CGFloat = 0, h: CGFloat = 0) -> Self {
-        let xib = UINib(nibName: nibName, bundle: nil)
+        let xib = UINib(nibName: toStr, bundle: nil)
         guard let view = xib.instantiate(withOwner: nil, options: nil).first as? Self else {
-            fatalError("Missing view in \(nibName).xib")
+            fatalError("Missing view in \(toStr).xib")
         }
         let h = h > 0 ? h : view.frame.height
         let w = w > 0 ? w : view.frame.width
