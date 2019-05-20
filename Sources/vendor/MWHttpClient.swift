@@ -11,7 +11,7 @@ import Alamofire
 
 public class MWHttpClient {
     fileprivate var apiProtocol: MWRequestProtocol.Type!
-    var detail = APIDetail()
+    var detail = Detail()
     var dataRequest: DataRequest?
     #if os(iOS)
     private weak var scrollView: UIScrollView?
@@ -22,12 +22,7 @@ public class MWHttpClient {
     private var emptyResponseClosure: NoParamClosure?
     private var errorResponseClosure: GenericsClosure<ResponseError>?
     
-    private static var customizedResponseClosure: GenericesReturnClosure<String, Codable>?
     private static var customizedErrorClosure: GenericsClosure<ResponseError>?
-    
-    public static func customizdResponse(closure: GenericesReturnClosure<String, Codable>?) {
-        customizedResponseClosure = closure
-    }
     
     public static func customizdErrors(_ closure: GenericsClosure<ResponseError>?) {
         customizedErrorClosure = closure
@@ -46,7 +41,7 @@ public class MWHttpClient {
     }
     
     @discardableResult
-    public func responseSource<S, T>(_ source: S.Type, target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable, S: Codable {
+    public func responseTarget<T>(_ target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
         guard detail.apiInfo.params.url.count > 0, !cacheValidCheck(T.self, completion: completion) else {
             endResponse()
             return nil
@@ -65,42 +60,16 @@ public class MWHttpClient {
         let request = Alamofire.request(encodedURLRequest).responseString { r in
             self.endResponse()
             self.detail.resp = r.result.value
-            if r.result.isSuccess, let jsonStr = r.result.value {
-                if type(of: jsonStr) == T.self {
-                    self.successReturn(resp: jsonStr as! T, completion: completion)
-                    return
-                }
-                // Customized
-                let result: Codable
-                switch (MWHttpClient.customizedResponseClosure != nil) {
-                case true:
-                    result = MWHttpClient.customizedResponseClosure!(jsonStr)
-                case false:
-                    guard let resp = jsonStr.tModel(S.self) else {
-                        print("❌ 解析未成功", self.detail.name, self.apiProtocol.apiInfo, jsonStr, "❌")
-                        self.errorsReturn(err: .decodeModel(jsonStr))
-                        return
-                    }
-                    result = resp
-                }
-                //
-                switch (source == target) {
-                case true:
-                    guard let r = result as? T else {
-                        print("❌", "\(String(describing: ResponseError.asTarget))", "❌")
-                        self.errorsReturn(err: .asTarget(jsonStr))
-                        return
-                    }
-                    self.successReturn(resp: r, completion: completion)
-                case false:
-                    // transform
-                    guard let t = (result as? MWResponseProtocol)?.transform() else { return }
-                    guard let r = t as? T else {
-                        print("❌", "\(String(describing: ResponseError.transform)) \(String(describing: type(of: t))) Error!", "❌")
-                        self.errorsReturn(err: .transform(jsonStr))
-                        return
-                    }
-                    self.successReturn(resp: r, completion: completion)
+            if r.result.isSuccess, let respStr = r.result.value {
+                let comm = respStr.tModel(CommonResponse<T>.self)
+                switch comm?.success {
+                case true?:
+                    guard let data = comm?.data else { return }
+                    self.successReturn(resp: data, completion: completion)
+                case false?:
+                    self.errorsReturn(err: .errorMsg(comm?.code ?? 0, comm?.msg ?? ""))
+                case nil:
+                    self.errorsReturn(err: .decodeModel(respStr))
                 }
             } else { // failure
                 self.errorsReturn(err: .native(r))
@@ -111,14 +80,39 @@ public class MWHttpClient {
     }
     
     @discardableResult
-    public func response<T>(target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
-        return responseSource(target, target: target, completion: completion)
+    public func responseEmpty(completion: NoParamClosure? = nil) -> DataRequest? {
+        emptyResponseClosure = completion
+        return responseTarget(EmptyResponse.self)
     }
     
     @discardableResult
-    public func response(completion: NoParamClosure? = nil) -> DataRequest? {
-        emptyResponseClosure = completion
-        return response(target: EmptyResponse.self)
+    public func responseRaw(completion: GenericsClosure<String>? = nil) -> DataRequest? {
+        guard detail.apiInfo.params.url.count > 0, !cacheValidCheck(String.self, completion: completion) else {
+            endResponse()
+            return nil
+        }
+        let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
+        print("resquest = ", parameters)
+        // request
+        var encodedURLRequest: URLRequest!
+        do {
+            encodedURLRequest = try URLEncoding().encode(apiProtocol.urlRequest(), with: parameters)
+            encodedURLRequest.timeoutInterval = detail.timeout
+        } catch {
+            print(error)
+            return nil
+        }
+        let request = Alamofire.request(encodedURLRequest).responseString { r in
+            self.endResponse()
+            self.detail.resp = r.result.value
+            if r.result.isSuccess, let respStr = r.result.value {
+                self.successReturn(resp: respStr)
+            } else { // failure
+                self.errorsReturn(err: .native(r))
+            }
+        }
+        dataRequest = request
+        return request
     }
     
     @discardableResult
@@ -237,8 +231,11 @@ public class MWHttpClient {
     }
     
     fileprivate func errorsReturn(err: ResponseError) {
-        MWHttpClient.customizedErrorClosure?(err)
+        if detail.messageHint == .always {
+            MWHttpClient.customizedErrorClosure?(err)
+        }
         errorResponseClosure?(err)
+        print("❌", err, "❌")
     }
     
     @discardableResult
@@ -257,12 +254,19 @@ private let folderName: String = "RequestAPICaches"
 private let ChaCha20Key = "1DkIe-29YdK2asd-k29JwK3DssdI1-0Y"
 
 public extension MWHttpClient {
-    struct APICacheStruct<T: Codable>: Codable {
+    fileprivate struct APICacheStruct<T>: Codable where T: Codable {
         var timestamp: TimeInterval = Date().timeIntervalSince1970
         var data: T?
     }
     
-    struct EmptyResponse: Codable {}
+    fileprivate struct EmptyResponse: Codable {}
+    
+    fileprivate struct CommonResponse<T>: Codable where T: Codable {
+        var code: Int?
+        var msg: String?
+        var data: T?
+        var success: Bool = false
+    }
     
     enum HudDisplayMode {
         case none, always
@@ -287,26 +291,33 @@ public extension MWHttpClient {
     
     enum ResponseError {
         case decodeModel(String)
-        case asTarget(String)
-        case transform(String)
+        case errorMsg(Int, String)
         case native(DataResponse<String>)
         
-        var isNative: Bool {
+        public var isNative: Bool {
             switch self {
             case .native: return true
             default: return false
             }
         }
         
-        var jsonString: String? {
+        public var jsonString: String? {
             switch self {
-            case .decodeModel(let s), .asTarget(let s), .transform(let s):
+            case .decodeModel(let s):
                 return s
             default: return nil
             }
         }
         
-        var dataResponse: DataResponse<String>? {
+        public var errorMsg: (code: Int, msg: String)? {
+            switch self {
+            case .errorMsg(let code, let msg):
+                return (code, msg)
+            default: return nil
+            }
+        }
+        
+        public var dataResponse: DataResponse<String>? {
             switch self {
             case .native(let d):
                 return d
@@ -315,7 +326,7 @@ public extension MWHttpClient {
         }
     }
     
-    struct APIDetail {
+    struct Detail {
         var name: String = ""
         var res: Codable?
         var resp: Codable?
@@ -359,20 +370,16 @@ public extension MWRequestProtocol {
     }
 }
 
-public protocol MWResponseProtocol: Codable {
-    func transform() -> Codable
-}
-
 public enum APIInfo {
     case base(url: String, method: HTTPMethod, desc: String)
     
-    var params: (url: String, method: HTTPMethod, desc: String) {
+    public var params: (url: String, method: HTTPMethod, desc: String) {
         guard case .base(let u, let m, let d) = self else { return ("", .get, "") }
         return (u, m, d)
     }
 }
 
-public extension Data {
+fileprivate extension Data {
     func encrypt(ChaCha20Key: String) -> Data? {
         let key: Array<UInt8> = ChaCha20Key.data(using: .utf8)!.bytes
         if let encrypted = try? ChaCha20(key: key, iv: Array(key[4..<16])).encrypt(bytes) {
