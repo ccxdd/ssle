@@ -34,9 +34,7 @@ public class MWHttpClient {
         client.detail.name = "\(resStruct.self)"
         client.detail.apiInfo = resStruct.apiInfo
         client.detail.res = resParams
-        print("🚧".repetitions(20))
-        print(resStruct.self, resStruct.apiInfo)
-        print("🚧".repetitions(20))
+        print("🚚", resStruct.self, resStruct.apiInfo, "🚚")
         return client
     }
     
@@ -227,6 +225,10 @@ public class MWHttpClient {
             emptyResponseClosure?()
         } else {
             completion?(resp)
+        }
+        if showLog {
+            print("📌", detail.name, apiProtocol.apiInfo, "📌")
+            print(resp)
         }
     }
     

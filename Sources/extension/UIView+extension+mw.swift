@@ -378,7 +378,9 @@ public extension UIView {
     }
     
     func addTap(taps: Int = 1, touchs: Int = 1, closure: @escaping (UITapGestureRecognizer?) -> Void) {
-        assert((gestureRecognizers?.count ?? 0) == 0, "Many Gestures!")
+        if (gestureRecognizers?.count ?? 0) > 0 {
+            print("Many Gestures!")
+        }
         let tapGes = UITapGestureRecognizer(target: self, action: #selector(gestureTap(_:)))
         tapGes.numberOfTapsRequired = taps
         tapGes.numberOfTouchesRequired = touchs
@@ -728,7 +730,7 @@ public extension UITapGestureRecognizer {
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
         let textStorage = NSTextStorage(attributedString: label.attributedText!)
-        textStorage.addAttributes([.font: label.font], range: NSMakeRange(0, label.attributedText!.length))
+        textStorage.addAttributes([NSAttributedString.Key.font: label.font], range: NSMakeRange(0, label.attributedText!.length))
         
         // Configure layoutManager and textStorage
         layoutManager.addTextContainer(textContainer)
