@@ -11,7 +11,7 @@ import Alamofire
 
 public class MWHttpClient {
     fileprivate var apiProtocol: MWRequestProtocol.Type!
-    var detail = Detail()
+    var detail = MWDetail()
     var dataRequest: DataRequest?
     #if os(iOS)
     private weak var scrollView: UIScrollView?
@@ -21,6 +21,7 @@ public class MWHttpClient {
     private var showLog: Bool = true
     private var emptyResponseClosure: NoParamClosure?
     private var errorResponseClosure: GenericsClosure<ResponseError>?
+    private var progressClosure: GenericsClosure<Double>?
     
     private static var customizedErrorClosure: GenericsClosure<ResponseError>?
     
@@ -32,9 +33,9 @@ public class MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
         client.detail.name = "\(resStruct.self)"
-        client.detail.apiInfo = resStruct.apiInfo
+        client.detail.apiInfo = resStruct.apiCatgory
         client.detail.res = resParams
-        print("🚚", resStruct.self, resStruct.apiInfo, "🚚")
+        print("🚚", resStruct.self, resStruct.apiCatgory, "🚚")
         return client
     }
     
@@ -42,6 +43,10 @@ public class MWHttpClient {
     public func responseTarget<T>(_ target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
         guard detail.apiInfo.params.url.count > 0, !cacheValidCheck(T.self, completion: completion) else {
             endResponse()
+            return nil
+        }
+        guard case .base = apiProtocol.apiCatgory else {
+            uploadResponse(target, completion: completion)
             return nil
         }
         let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
@@ -56,22 +61,7 @@ public class MWHttpClient {
             return nil
         }
         let request = Alamofire.request(encodedURLRequest).responseString { r in
-            self.endResponse()
-            self.detail.resp = r.result.value
-            if r.result.isSuccess, let respStr = r.result.value {
-                let comm = respStr.tModel(CommonResponse<T>.self)
-                switch comm?.success {
-                case true?:
-                    guard let data = comm?.data else { return }
-                    self.successReturn(resp: data, completion: completion)
-                case false?:
-                    self.errorsReturn(err: .errorMsg(comm?.code ?? 0, comm?.msg ?? ""))
-                case nil:
-                    self.errorsReturn(err: .decodeModel(respStr))
-                }
-            } else { // failure
-                self.errorsReturn(err: .native(r))
-            }
+            self.commonResponseHandle(r, target: target, completion: completion)
         }
         dataRequest = request
         return request
@@ -101,16 +91,44 @@ public class MWHttpClient {
             return nil
         }
         let request = Alamofire.request(encodedURLRequest).responseString { r in
-            self.endResponse()
-            self.detail.resp = r.result.value
-            if r.result.isSuccess, let respStr = r.result.value {
-                self.successReturn(resp: respStr)
-            } else { // failure
-                self.errorsReturn(err: .native(r))
-            }
+            self.commonResponseHandle(r, raw: true, target: String.self, completion: completion)
         }
         dataRequest = request
         return request
+    }
+    
+    public static func upload(_ resStruct: MWRequestProtocol.Type, uploadRes: MWUploadRequest) -> MWHttpClient {
+        let client = MWHttpClient()
+        client.apiProtocol = resStruct
+        client.detail.name = "\(resStruct.self)"
+        client.detail.apiInfo = resStruct.apiCatgory
+        client.detail.res = uploadRes
+        print("🚚", resStruct.self, resStruct.apiCatgory, "🚚")
+        return client
+    }
+    
+    fileprivate func uploadResponse<T>(_ target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
+        guard let res = detail.res as? MWUploadRequest else { return }
+        Alamofire.upload(
+            multipartFormData: { multipartFormData in
+                multipartFormData.append(res.img, withName: "file", fileName: "file", mimeType: "image/jpeg")
+                multipartFormData.append(res.category.data(using: .utf8)!, withName: "category")
+        },
+            to: apiProtocol.fullURL,
+            headers: apiProtocol.headerFields,
+            encodingCompletion: { encodingResult in
+                switch encodingResult {
+                case .success(let upload, _, _):
+                    upload.uploadProgress(closure: { (p) in
+                        self.progressClosure?(p.fractionCompleted)
+                    })
+                    upload.responseString { (r ) in
+                        self.commonResponseHandle(r, target: target, completion: completion)
+                    }
+                case .failure(let encodingError):
+                    UIAlertController.alert(message: encodingError.localizedDescription, buttons: "OK")
+                }
+        })
     }
     
     @discardableResult
@@ -172,6 +190,12 @@ public class MWHttpClient {
     }
     #endif
     
+    @discardableResult
+    public func progress(_ c: GenericsClosure<Double>?) -> Self {
+        progressClosure = c
+        return self
+    }
+    
     fileprivate func endResponse() {
         detail.endTimestamp = Date().timeIntervalSinceReferenceDate
         hintTimer?.stop()
@@ -213,6 +237,29 @@ public class MWHttpClient {
         return false
     }
     
+    fileprivate func commonResponseHandle<T>(_ r: DataResponse<String>, raw: Bool = false, target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
+        endResponse()
+        detail.resp = r.value
+        if r.result.isSuccess, let respStr = r.value {
+            if raw {
+                completion?(respStr as! T)
+                return
+            }
+            let comm = respStr.tModel(CommonResponse<T>.self)
+            switch comm?.success {
+            case true?:
+                guard let data = comm?.data else { return }
+                self.successReturn(resp: data, completion: completion)
+            case false?:
+                self.errorsReturn(err: .errorMsg(comm?.code ?? 0, comm?.msg ?? ""))
+            case nil:
+                self.errorsReturn(err: .decodeModel(respStr))
+            }
+        } else { // failure
+            self.errorsReturn(err: .native(r))
+        }
+    }
+    
     fileprivate func successReturn<T: Codable>(resp: T, completion: GenericsClosure<T>? = nil, useCache: Bool = false) {
         if !useCache {
             saveCache(item: resp)
@@ -227,7 +274,7 @@ public class MWHttpClient {
             completion?(resp)
         }
         if showLog {
-            print("📌", detail.name, apiProtocol.apiInfo, "📌")
+            print("📌", detail.name, apiProtocol.apiCatgory, "📌")
             print(resp)
         }
     }
@@ -255,105 +302,114 @@ public class MWHttpClient {
 private let folderName: String = "RequestAPICaches"
 private let ChaCha20Key = "1DkIe-29YdK2asd-k29JwK3DssdI1-0Y"
 
-public extension MWHttpClient {
-    fileprivate struct APICacheStruct<T>: Codable where T: Codable {
-        var timestamp: TimeInterval = Date().timeIntervalSince1970
-        var data: T?
-    }
+fileprivate struct APICacheStruct<T>: Codable where T: Codable {
+    var timestamp: TimeInterval = Date().timeIntervalSince1970
+    var data: T?
+}
+
+fileprivate struct EmptyResponse: Codable {}
+
+fileprivate struct CommonResponse<T>: Codable where T: Codable {
+    var code: Int?
+    var msg: String?
+    var data: T?
+    var success: Bool = false
+}
+
+public enum HudDisplayMode {
+    case none, always
+}
+
+public enum CachePolicy {
+    //有效期<=0 -> 直接请求数据，不进行缓存
+    //下面不在前置条件内的都会重新请求数据并缓存使用
+    //缓存存在&在有效期内 -> 仅使用缓存，不进行请求
+    case afterReturn
+    //缓存存在&在有效期内 -> 先使用缓存，再请求刷新缓存使用
+    case afterRequest
+    //缓存存在 -> 先使用缓存，再根据缓存是有效进行请求刷新缓存使用
+    case invalidAfterRequest
+    //缓存存在 -> 不使用缓存，刷新缓存使用
+    case afterCache
+}
+
+public enum MessageHintMode {
+    case none, always, callbackFirst
+}
+
+public enum ResponseError {
+    case decodeModel(String)
+    case errorMsg(Int, String)
+    case native(DataResponse<String>)
     
-    fileprivate struct EmptyResponse: Codable {}
-    
-    fileprivate struct CommonResponse<T>: Codable where T: Codable {
-        var code: Int?
-        var msg: String?
-        var data: T?
-        var success: Bool = false
-    }
-    
-    enum HudDisplayMode {
-        case none, always
-    }
-    
-    enum CachePolicy {
-        //有效期<=0 -> 直接请求数据，不进行缓存
-        //下面不在前置条件内的都会重新请求数据并缓存使用
-        //缓存存在&在有效期内 -> 仅使用缓存，不进行请求
-        case afterReturn
-        //缓存存在&在有效期内 -> 先使用缓存，再请求刷新缓存使用
-        case afterRequest
-        //缓存存在 -> 先使用缓存，再根据缓存是有效进行请求刷新缓存使用
-        case invalidAfterRequest
-        //缓存存在 -> 不使用缓存，刷新缓存使用
-        case afterCache
-    }
-    
-    enum MessageHintMode {
-        case none, always, callbackFirst
-    }
-    
-    enum ResponseError {
-        case decodeModel(String)
-        case errorMsg(Int, String)
-        case native(DataResponse<String>)
-        
-        public var isNative: Bool {
-            switch self {
-            case .native: return true
-            default: return false
-            }
-        }
-        
-        public var jsonString: String? {
-            switch self {
-            case .decodeModel(let s):
-                return s
-            default: return nil
-            }
-        }
-        
-        public var errorMsg: (code: Int, msg: String)? {
-            switch self {
-            case .errorMsg(let code, let msg):
-                return (code, msg)
-            default: return nil
-            }
-        }
-        
-        public var dataResponse: DataResponse<String>? {
-            switch self {
-            case .native(let d):
-                return d
-            default: return nil
-            }
+    public var isNative: Bool {
+        switch self {
+        case .native: return true
+        default: return false
         }
     }
     
-    struct Detail {
-        var name: String = ""
-        var res: Codable?
-        var resp: Codable?
-        var err: Error?
-        var apiInfo: APIInfo = .base(url: "", method: .get, desc: "")
-        var cacheSeconds: TimeInterval = 0
-        var useCache = false
-        var startTimestamp = Date().timeIntervalSinceReferenceDate
-        var endTimestamp: TimeInterval = 0
-        var timeout: TimeInterval = 30
-        var responseTime: String {
-            return (endTimestamp - startTimestamp).decimal(digits: 3).string
+    public var jsonString: String? {
+        switch self {
+        case .decodeModel(let s):
+            return s
+        default: return nil
         }
-        var hudMode: HudDisplayMode = .always
-        var cachePolicy: CachePolicy = .invalidAfterRequest
-        var messageHint: MessageHintMode = .always
-        
-        var cacheFileName: String {
-            return (apiInfo.params.url + (res?.tJSONString() ?? "")).md5()
+    }
+    
+    public var errorMsg: (code: Int, msg: String)? {
+        switch self {
+        case .errorMsg(let code, let msg):
+            return (code, msg)
+        default: return nil
+        }
+    }
+    
+    public var dataResponse: DataResponse<String>? {
+        switch self {
+        case .native(let d):
+            return d
+        default: return nil
         }
     }
 }
 
+public struct MWDetail {
+    public var name: String = ""
+    public var res: Codable?
+    public var resp: Codable?
+    public var err: Error?
+    public var apiInfo: APICategory = .base(url: "", method: .get, desc: "")
+    public var cacheSeconds: TimeInterval = 0
+    public var useCache = false
+    public var startTimestamp = Date().timeIntervalSinceReferenceDate
+    public var endTimestamp: TimeInterval = 0
+    public var timeout: TimeInterval = 30
+    public var responseTime: String {
+        return (endTimestamp - startTimestamp).decimal(digits: 3).string
+    }
+    public var hudMode: HudDisplayMode = .always
+    public var cachePolicy: CachePolicy = .invalidAfterRequest
+    public var messageHint: MessageHintMode = .always
+    public var cacheFileName: String {
+        return (apiInfo.params.url + (res?.tJSONString() ?? "")).md5()
+    }
+    
+    public init() {}
+}
+
+public struct MWUploadRequest: Codable {
+    public var img: Data
+    public var category: String
+    
+    public init(img: Data, category: String) {
+        self.category = category
+        self.img = img
+    }
+}
+
 public protocol MWRequestProtocol {
-    static var apiInfo: APIInfo { get }
+    static var apiCatgory: APICategory { get }
     static var host: String { get }
     static var headerFields: [String: String] { get }
 }
@@ -364,20 +420,26 @@ public extension MWRequestProtocol {
     static var host: String { return "" }
     
     static var fullURL: String {
-        return host + apiInfo.params.url
+        return host + apiCatgory.params.url
     }
     
     static func urlRequest() throws -> URLRequest {
-        return try URLRequest(url: fullURL, method: apiInfo.params.method, headers: headerFields)
+        return try URLRequest(url: fullURL, method: apiCatgory.params.method, headers: headerFields)
     }
 }
 
-public enum APIInfo {
+public enum APICategory {
     case base(url: String, method: HTTPMethod, desc: String)
+    case upload(url: String, desc: String)
     
     public var params: (url: String, method: HTTPMethod, desc: String) {
-        guard case .base(let u, let m, let d) = self else { return ("", .get, "") }
-        return (u, m, d)
+        switch self {
+        case .base(url: let u, method: let m, desc: let d):
+            return (u, m, d)
+        case .upload(url: let u, desc: let d):
+            return (u, .post, d)
+        default: return ("", .get, "")
+        }
     }
 }
 
