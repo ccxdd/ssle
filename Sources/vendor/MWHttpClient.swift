@@ -33,19 +33,19 @@ public class MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
         client.detail.name = "\(resStruct.self)"
-        client.detail.apiInfo = resStruct.apiCatgory
+        client.detail.apiCategory = resStruct.apiCategory
         client.detail.res = resParams
-        print("🚚", resStruct.self, resStruct.apiCatgory, "🚚")
+        print("🚚", resStruct.self, resStruct.apiCategory, "🚚")
         return client
     }
     
     @discardableResult
     public func responseTarget<T>(_ target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
-        guard detail.apiInfo.params.url.count > 0, !cacheValidCheck(T.self, completion: completion) else {
+        guard detail.apiCategory.params.url.count > 0, !cacheValidCheck(T.self, completion: completion) else {
             endResponse()
             return nil
         }
-        guard case .base = apiProtocol.apiCatgory else {
+        guard case .base = apiProtocol.apiCategory else {
             uploadResponse(target, completion: completion)
             return nil
         }
@@ -75,7 +75,7 @@ public class MWHttpClient {
     
     @discardableResult
     public func responseRaw(completion: GenericsClosure<String>? = nil) -> DataRequest? {
-        guard detail.apiInfo.params.url.count > 0, !cacheValidCheck(String.self, completion: completion) else {
+        guard detail.apiCategory.params.url.count > 0, !cacheValidCheck(String.self, completion: completion) else {
             endResponse()
             return nil
         }
@@ -101,9 +101,9 @@ public class MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
         client.detail.name = "\(resStruct.self)"
-        client.detail.apiInfo = resStruct.apiCatgory
+        client.detail.apiCategory = resStruct.apiCategory
         client.detail.res = uploadRes
-        print("🚚", resStruct.self, resStruct.apiCatgory, "🚚")
+        print("🚚", resStruct.self, resStruct.apiCategory, "🚚")
         return client
     }
     
@@ -248,7 +248,10 @@ public class MWHttpClient {
             let comm = respStr.tModel(CommonResponse<T>.self)
             switch comm?.success {
             case true?:
-                guard let data = comm?.data else { return }
+                guard let data = comm?.data else {
+                    emptyResponseClosure?()
+                    return
+                }
                 self.successReturn(resp: data, completion: completion)
             case false?:
                 self.errorsReturn(err: .errorMsg(comm?.code ?? 0, comm?.msg ?? ""))
@@ -268,13 +271,9 @@ public class MWHttpClient {
         }
         detail.resp = resp
         detail.useCache = useCache
-        if emptyResponseClosure != nil {
-            emptyResponseClosure?()
-        } else {
-            completion?(resp)
-        }
+        completion?(resp)
         if showLog {
-            print("📌", detail.name, apiProtocol.apiCatgory, "📌")
+            print("📌", detail.name, apiProtocol.apiCategory, "📌")
             print(resp)
         }
     }
@@ -379,7 +378,7 @@ public struct MWDetail {
     public var res: Codable?
     public var resp: Codable?
     public var err: Error?
-    public var apiInfo: APICategory = .base(url: "", method: .get, desc: "")
+    public var apiCategory: APICategory = .base(url: "", method: .get, desc: "")
     public var cacheSeconds: TimeInterval = 0
     public var useCache = false
     public var startTimestamp = Date().timeIntervalSinceReferenceDate
@@ -392,7 +391,7 @@ public struct MWDetail {
     public var cachePolicy: CachePolicy = .invalidAfterRequest
     public var messageHint: MessageHintMode = .always
     public var cacheFileName: String {
-        return (apiInfo.params.url + (res?.tJSONString() ?? "")).md5()
+        return (apiCategory.params.url + (res?.tJSONString() ?? "")).md5()
     }
     
     public init() {}
@@ -409,7 +408,7 @@ public struct MWUploadRequest: Codable {
 }
 
 public protocol MWRequestProtocol {
-    static var apiCatgory: APICategory { get }
+    static var apiCategory: APICategory { get }
     static var host: String { get }
     static var headerFields: [String: String] { get }
 }
@@ -420,11 +419,11 @@ public extension MWRequestProtocol {
     static var host: String { return "" }
     
     static var fullURL: String {
-        return host + apiCatgory.params.url
+        return host + apiCategory.params.url
     }
     
     static func urlRequest() throws -> URLRequest {
-        return try URLRequest(url: fullURL, method: apiCatgory.params.method, headers: headerFields)
+        return try URLRequest(url: fullURL, method: apiCategory.params.method, headers: headerFields)
     }
 }
 
