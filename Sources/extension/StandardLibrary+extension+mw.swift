@@ -22,7 +22,7 @@ public extension String {
     #endif
     
     var isEmail: Bool {
-        return matchRegular("^([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$")
+        return matchRegular("[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?")
     }
     
     var isMobile: Bool {
