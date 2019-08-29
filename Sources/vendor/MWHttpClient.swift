@@ -159,7 +159,10 @@ public class MWHttpClient {
                         self.commonResponseHandle(r, target: target, completion: completion)
                     }
                 case .failure(let encodingError):
+                    self.errorsReturn(err: ResponseError.error(encodingError))
+                    #if os(iOS)
                     UIAlertController.alert(message: encodingError.localizedDescription, buttons: "OK")
+                    #endif
                 }
         })
     }
@@ -373,6 +376,7 @@ public enum ResponseError {
     case decodeModel(String)
     case errorMsg(Int, String)
     case native(DataResponse<String>)
+    case error(Error)
     
     public var isNative: Bool {
         switch self {
@@ -393,6 +397,8 @@ public enum ResponseError {
         switch self {
         case .errorMsg(let code, let msg):
             return (code, msg)
+        case .error(let err):
+            return (0, err.localizedDescription)
         default: return nil
         }
     }
