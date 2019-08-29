@@ -19,6 +19,7 @@ public class MWHttpClient {
     #endif
     private var hintTimer: GCDTimer?
     private var showLog: Bool = true
+    private var encoding: ParameterEncoding = URLEncoding.default
     private var emptyResponseClosure: NoParamClosure?
     private var errorResponseClosure: GenericsClosure<ResponseError>?
     private var progressClosure: GenericsClosure<Double>?
@@ -29,13 +30,31 @@ public class MWHttpClient {
         customizedErrorClosure = closure
     }
     
-    public static func request(_ resStruct: MWRequestProtocol.Type, _ resParams: Codable? = nil) -> MWHttpClient {
+    public static func request(_ resStruct: MWRequestProtocol.Type, _ resParams: Codable? = nil,
+                               encoding: ParameterEncoding = URLEncoding.default) -> MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
         client.detail.name = "\(resStruct.self)"
         client.detail.apiCategory = resStruct.apiCategory
         client.detail.res = resParams
+        client.encoding = encoding
         print("🚚", resStruct.self, resStruct.apiCategory, "🚚")
+        return client
+    }
+    
+    public static func request(_ url: String, method: HTTPMethod, params: Codable? = nil,
+                               encoding: ParameterEncoding = URLEncoding.default) -> MWHttpClient {
+        struct customizeReqProtocol: MWRequestProtocol {
+            static var apiCategory: APICategory = .base(url: "", method: .get, desc: "")
+        }
+        let client = MWHttpClient()
+        client.apiProtocol = customizeReqProtocol.self
+        client.apiProtocol.apiCategory = .base(url: url, method: method, desc: "")
+        client.detail.name = "CUSTOMIZE REQUEST"
+        client.detail.apiCategory = client.apiProtocol.apiCategory
+        client.detail.res = params
+        client.encoding = encoding
+        print("🚚", url, method, "🚚")
         return client
     }
     
@@ -49,17 +68,24 @@ public class MWHttpClient {
             uploadResponse(target, completion: completion)
             return nil
         }
-        let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
-        print("resquest = ", parameters)
-        // request
         var encodedURLRequest: URLRequest!
         do {
-            encodedURLRequest = try URLEncoding().encode(apiProtocol.urlRequest(), with: parameters)
-            encodedURLRequest.timeoutInterval = detail.timeout
+            if encoding is URLEncoding {
+                let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
+                print("params = ", parameters)
+                encodedURLRequest = try URLEncoding.default.encode(apiProtocol.urlRequest(), with: parameters)
+            } else {
+                var urlRequest = try apiProtocol.urlRequest()
+                if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
+                    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                }
+                urlRequest.httpBody = detail.res?.tJSONString()?.data(using: .utf8)
+            }
         } catch {
             print(error)
             return nil
         }
+        encodedURLRequest.timeoutInterval = detail.timeout
         let request = Alamofire.request(encodedURLRequest).responseString { r in
             self.commonResponseHandle(r, target: target, completion: completion)
         }
@@ -79,17 +105,24 @@ public class MWHttpClient {
             endResponse()
             return nil
         }
-        let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
-        print("resquest = ", parameters)
-        // request
         var encodedURLRequest: URLRequest!
         do {
-            encodedURLRequest = try URLEncoding().encode(apiProtocol.urlRequest(), with: parameters)
-            encodedURLRequest.timeoutInterval = detail.timeout
+            if encoding is URLEncoding {
+                let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
+                print("params = ", parameters)
+                encodedURLRequest = try URLEncoding.default.encode(apiProtocol.urlRequest(), with: parameters)
+            } else {
+                encodedURLRequest = try apiProtocol.urlRequest()
+                if encodedURLRequest.value(forHTTPHeaderField: "Content-Type") == nil {
+                    encodedURLRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                }
+                encodedURLRequest.httpBody = detail.res?.tJSONString()?.data(using: .utf8)
+            }
         } catch {
             print(error)
             return nil
         }
+        encodedURLRequest.timeoutInterval = detail.timeout
         let request = Alamofire.request(encodedURLRequest).responseString { r in
             self.commonResponseHandle(r, raw: true, target: String.self, completion: completion)
         }
@@ -408,7 +441,7 @@ public struct MWUploadRequest: Codable {
 }
 
 public protocol MWRequestProtocol {
-    static var apiCategory: APICategory { get }
+    static var apiCategory: APICategory { get set }
     static var host: String { get }
     static var headerFields: [String: String] { get }
 }
