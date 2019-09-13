@@ -72,7 +72,8 @@ public extension UIView {
         }
     }
     
-    func addBorder(style: BorderStyle, w: CGFloat = 0.5, t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0, c: UIColor? = nil) {
+    @discardableResult
+    func addBorder(style: BorderStyle, w: CGFloat = 0.5, t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0, c: UIColor? = nil) -> Self {
         let border = UIView().addTo(view: self)
         additional.borders[style]?.border?.removeFromSuperview()
         additional.borders[style]?.border = nil
@@ -88,6 +89,7 @@ public extension UIView {
         case .right:
             border.lcm.t(t).b(b).r(r).w(w)
         }
+        return self
     }
     
     @IBInspectable var tw: CGFloat {

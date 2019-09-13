@@ -98,5 +98,25 @@ public extension UILabel {
         textAlignment = a
         return self
     }
+    
+    @discardableResult
+    func lines(_ l: Int) -> Self {
+        numberOfLines = l
+        return self
+    }
+}
+
+public extension UITextField {
+    @discardableResult
+    func borderStyle(_ s: UITextField.BorderStyle) -> Self {
+        borderStyle = s
+        return self
+    }
+    
+    @discardableResult
+    func placeholder(_ t: String?) -> Self {
+        placeholder = t
+        return self
+    }
 }
 #endif
