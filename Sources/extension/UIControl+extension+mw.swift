@@ -12,7 +12,7 @@ import UIKit
 public extension UIControl {
     
     func event<T>(_ e: UIControl.Event, handle: @escaping (T) -> Void) where T: UIControl {
-        addTarget(self, action: UIButton.eventToSEL(e), for: e)
+        addTarget(self, action: UIControl.eventToSEL(e), for: e)
         cbm.controlEventDict[e.rawValue] = handle
     }
     
