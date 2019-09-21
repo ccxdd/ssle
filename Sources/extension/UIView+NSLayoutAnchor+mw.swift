@@ -16,7 +16,7 @@ public final class MWLayout {
 }
 
 public extension UIView {
-    var ls: MWLayout {
+    var mwl: MWLayout {
         guard let mwl = objc_getAssociatedObject(self, &MWLayoutKey) as? MWLayout else {
             translatesAutoresizingMaskIntoConstraints = false
             let mwl = MWLayout()
@@ -134,6 +134,12 @@ public extension MWLayout {
     @discardableResult
     func edge(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
         self.t(t).l(l).b(b).r(r)
+        return self
+    }
+    
+    @discardableResult
+    func edge(inset: UIEdgeInsets) -> Self {
+        self.t(inset.top).l(inset.left).b(inset.bottom).r(inset.right)
         return self
     }
     
