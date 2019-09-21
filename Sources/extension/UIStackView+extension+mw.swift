@@ -34,7 +34,7 @@ public extension UIStackView {
         row.rowView = UIView()
         row.contentView = v
         row.rowView?.addSubview(row.contentView!)
-        row.contentView?.lcm.edge()
+        row.contentView?.mwl.edge()
         addArrangedSubview(row.rowView!)
         addition.rows.append(row)
         addition.index = addition.rows.count - 1
@@ -43,7 +43,7 @@ public extension UIStackView {
     
     @discardableResult
     func inset(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
-        addition.rows.at(addition.index)?.contentView?.lcm.t(t).l(l).b(b).r(r)
+        addition.rows.at(addition.index)?.contentView?.mwl.edge(t: t, l: l, b: b, r: r)
         return self
     }
     
@@ -61,13 +61,13 @@ public extension UIStackView {
     
     @discardableResult
     func row(height: CGFloat) -> Self {
-        addition.rows.at(addition.index)?.rowView?.lcm.h(height)
+        addition.rows.at(addition.index)?.rowView?.mwl.h(height)
         return self
     }
     
     @discardableResult
     func content(height: CGFloat) -> Self {
-        addition.rows.at(addition.index)?.contentView?.lcm.h(height)
+        addition.rows.at(addition.index)?.contentView?.mwl.h(height)
         return self
     }
     

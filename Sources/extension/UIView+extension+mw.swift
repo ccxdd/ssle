@@ -81,24 +81,24 @@ public extension UIView {
         border.backgroundColor = c ?? UIColor.black.withAlphaComponent(0.06)
         switch style {
         case .top:
-            border.lcm.t(t).l(l).r(r).h(w)
+            border.mwl.t(t).l(l).r(r).h(w)
         case .left:
-            border.lcm.t(t).l(l).b(b).w(w)
+            border.mwl.t(t).l(l).b(b).w(w)
         case .bottom:
-            border.lcm.l(l).b(b).r(r).h(w)
+            border.mwl.l(l).b(b).r(r).h(w)
         case .right:
-            border.lcm.t(t).b(b).r(r).w(w)
+            border.mwl.t(t).b(b).r(r).w(w)
         }
         return self
     }
     
     @IBInspectable var tw: CGFloat {
         get {
-            return additional.borders[.top]?.border?.lcm.find(.height)?.constant ?? 0
+            return additional.borders[.top]?.border?.mwl.find(heightAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.top]?.border {
-                view.lcm.h(newValue)
+                view.mwl.h(newValue)
             } else {
                 addBorder(style: .top, w: newValue)
             }
@@ -107,11 +107,11 @@ public extension UIView {
     
     @IBInspectable var tt: CGFloat {
         get {
-            return additional.borders[.top]?.border?.lcm.find(.top)?.constant ?? 0
+            return additional.borders[.top]?.border?.mwl.find(topAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.top]?.border {
-                view.lcm.t(newValue)
+                view.mwl.t(newValue)
             } else {
                 addBorder(style: .top, t: newValue)
             }
@@ -120,11 +120,11 @@ public extension UIView {
     
     @IBInspectable var tl: CGFloat {
         get {
-            return additional.borders[.top]?.border?.lcm.find(.left)?.constant ?? 0
+            return additional.borders[.top]?.border?.mwl.find(leadingAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.top]?.border {
-                view.lcm.l(newValue)
+                view.mwl.l(newValue)
             } else {
                 addBorder(style: .top, l: newValue)
             }
@@ -133,11 +133,11 @@ public extension UIView {
     
     @IBInspectable var tr: CGFloat {
         get {
-            return additional.borders[.top]?.border?.lcm.find(.right)?.constant ?? 0
+            return additional.borders[.top]?.border?.mwl.find(trailingAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.top]?.border {
-                view.lcm.r(newValue)
+                view.mwl.r(newValue)
             } else {
                 addBorder(style: .top, r: newValue)
             }
@@ -159,11 +159,11 @@ public extension UIView {
     
     @IBInspectable var lw: CGFloat {
         get {
-            return additional.borders[.left]?.border?.lcm.find(.width)?.constant ?? 0
+            return additional.borders[.left]?.border?.mwl.find(widthAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.left]?.border {
-                view.lcm.w(newValue)
+                view.mwl.w(newValue)
             } else {
                 addBorder(style: .left, w: newValue)
             }
@@ -172,11 +172,11 @@ public extension UIView {
     
     @IBInspectable var lt: CGFloat {
         get {
-            return additional.borders[.left]?.border?.lcm.find(.top)?.constant ?? 0
+            return additional.borders[.left]?.border?.mwl.find(topAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.left]?.border {
-                view.lcm.t(newValue)
+                view.mwl.t(newValue)
             } else {
                 addBorder(style: .left, t: newValue)
             }
@@ -185,11 +185,11 @@ public extension UIView {
     
     @IBInspectable var ll: CGFloat {
         get {
-            return additional.borders[.left]?.border?.lcm.find(.left)?.constant ?? 0
+            return additional.borders[.left]?.border?.mwl.find(leadingAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.left]?.border {
-                view.lcm.l(newValue)
+                view.mwl.l(newValue)
             } else {
                 addBorder(style: .left, l: newValue)
             }
@@ -198,11 +198,11 @@ public extension UIView {
     
     @IBInspectable var lb: CGFloat {
         get {
-            return additional.borders[.left]?.border?.lcm.find(.bottom)?.constant ?? 0
+            return additional.borders[.left]?.border?.mwl.find(bottomAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.left]?.border {
-                view.lcm.b(newValue)
+                view.mwl.b(newValue)
             } else {
                 addBorder(style: .left, b: newValue)
             }
@@ -224,11 +224,11 @@ public extension UIView {
     
     @IBInspectable var bw: CGFloat {
         get {
-            return additional.borders[.bottom]?.border?.lcm.find(.height)?.constant ?? 0
+            return additional.borders[.bottom]?.border?.mwl.find(heightAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.bottom]?.border {
-                view.lcm.h(newValue)
+                view.mwl.h(newValue)
             } else {
                 addBorder(style: .bottom, w: newValue)
             }
@@ -237,11 +237,11 @@ public extension UIView {
     
     @IBInspectable var bl: CGFloat {
         get {
-            return additional.borders[.bottom]?.border?.lcm.find(.left)?.constant ?? 0
+            return additional.borders[.bottom]?.border?.mwl.find(leadingAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.bottom]?.border {
-                view.lcm.l(newValue)
+                view.mwl.l(newValue)
             } else {
                 addBorder(style: .bottom, l: newValue)
             }
@@ -250,11 +250,11 @@ public extension UIView {
     
     @IBInspectable var bb: CGFloat {
         get {
-            return additional.borders[.bottom]?.border?.lcm.find(.bottom)?.constant ?? 0
+            return additional.borders[.bottom]?.border?.mwl.find(bottomAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.bottom]?.border {
-                view.lcm.b(newValue)
+                view.mwl.b(newValue)
             } else {
                 addBorder(style: .bottom, b: newValue)
             }
@@ -263,11 +263,11 @@ public extension UIView {
     
     @IBInspectable var br: CGFloat {
         get {
-            return additional.borders[.bottom]?.border?.lcm.find(.right)?.constant ?? 0
+            return additional.borders[.bottom]?.border?.mwl.find(trailingAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.bottom]?.border {
-                view.lcm.r(newValue)
+                view.mwl.r(newValue)
             } else {
                 addBorder(style: .bottom, r: newValue)
             }
@@ -289,11 +289,11 @@ public extension UIView {
     
     @IBInspectable var rw: CGFloat {
         get {
-            return additional.borders[.right]?.border?.lcm.find(.width)?.constant ?? 0
+            return additional.borders[.right]?.border?.mwl.find(widthAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.right]?.border {
-                view.lcm.w(newValue)
+                view.mwl.w(newValue)
             } else {
                 addBorder(style: .right, w: newValue)
             }
@@ -302,11 +302,11 @@ public extension UIView {
     
     @IBInspectable var rt: CGFloat {
         get {
-            return additional.borders[.right]?.border?.lcm.find(.top)?.constant ?? 0
+            return additional.borders[.right]?.border?.mwl.find(topAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.right]?.border {
-                view.lcm.t(newValue)
+                view.mwl.t(newValue)
             } else {
                 addBorder(style: .right, t: newValue)
             }
@@ -315,11 +315,11 @@ public extension UIView {
     
     @IBInspectable var rb: CGFloat {
         get {
-            return additional.borders[.right]?.border?.lcm.find(.bottom)?.constant ?? 0
+            return additional.borders[.right]?.border?.mwl.find(bottomAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.right]?.border {
-                view.lcm.b(newValue)
+                view.mwl.b(newValue)
             } else {
                 addBorder(style: .right, b: newValue)
             }
@@ -328,11 +328,11 @@ public extension UIView {
     
     @IBInspectable var rr: CGFloat {
         get {
-            return additional.borders[.right]?.border?.lcm.find(.right)?.constant ?? 0
+            return additional.borders[.right]?.border?.mwl.find(trailingAnchor)?.constant ?? 0
         }
         set {
             if let view = additional.borders[.right]?.border {
-                view.lcm.r(newValue)
+                view.mwl.r(newValue)
             } else {
                 addBorder(style: .right, r: newValue)
             }
@@ -401,12 +401,12 @@ public extension UIView {
     
     func addAutoLayout(view: UIView) {
         addSubview(view)
-        view.lcm.lead().t().b().trail()
+        view.mwl.edge()
     }
     
     func insertAutoLayout(view: UIView, at: Int) {
         insertSubview(view, at: at)
-        view.lcm.lead().t().b().trail()
+        view.mwl.edge()
     }
     
     func shadow(color: UIColor = UIColor.black, radius: CGFloat = 3, opacity: Float = 0.5, offset: CGSize = CGSize.zero) {

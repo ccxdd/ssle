@@ -40,7 +40,7 @@ public extension UITextView {
             let addition = TextViewAddition()
             let lab = UILabel().addTo(view: self)
             lab.numberOfLines = 0
-            lab.lcm.t(addition.top).lead(addition.left).w(frame.width - 8)
+            lab.mwl.t(addition.top).l(addition.left).w(frame.width - 8)
             lab.font = font
             lab.textColor = UIColor.lightGray
             lab.isUserInteractionEnabled = false

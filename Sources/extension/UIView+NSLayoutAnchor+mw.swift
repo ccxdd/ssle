@@ -12,7 +12,7 @@ private var MWLayoutKey: Void?
 
 public final class MWLayout {
     weak var selfSelf: UIView!
-    fileprivate var lcArray: [String: NSLayoutConstraint] = [:]
+    fileprivate var lcDict: [String: NSLayoutConstraint] = [:]
 }
 
 public extension UIView {
@@ -37,97 +37,120 @@ public extension MWLayout {
         let s = unsafeBitCast(secondAnchor, to: Int.self)
         let key = f.tS + s.tS
         let key2 = s.tS + f.tS
-        lcArray.removeValue(forKey: key)?.isActive = false
-        lcArray.removeValue(forKey: key2)?.isActive = false
-        lcArray[key] = lc
+        lcDict.removeValue(forKey: key)?.isActive = false
+        lcDict.removeValue(forKey: key2)?.isActive = false
+        lcDict[key] = lc
         lc.isActive = true
     }
     
+    func find<T>(_ a1: NSLayoutAnchor<T>, a2: NSLayoutAnchor<T>? = nil) -> NSLayoutConstraint? where T: AnyObject {
+        let f = unsafeBitCast(a1, to: Int.self)
+        let s = unsafeBitCast(a2, to: Int.self)
+        let key = f.tS + s.tS
+        let key2 = s.tS + f.tS
+        if let l = lcDict[key] {
+            return l
+        } else {
+            return lcDict[key2]
+        }
+    }
+    
     @discardableResult
-    func l(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil) -> Self {
+    func layout<T>(_ a1: NSLayoutAnchor<T>, a2: NSLayoutAnchor<T>?, relation: NSLayoutConstraint.Relation = .equal, c: CGFloat = 0, m: CGFloat = 1) -> NSLayoutConstraint? where T: AnyObject {
+        var lc: NSLayoutConstraint?
+        switch a2 {
+        case nil:
+            if let a = a1 as? NSLayoutDimension {
+                switch relation {
+                case .equal:
+                    lc = a.constraint(equalToConstant: c)
+                case .greaterThanOrEqual:
+                    lc = a.constraint(greaterThanOrEqualToConstant: c)
+                case .lessThanOrEqual:
+                    lc = a.constraint(lessThanOrEqualToConstant: c)
+                }
+            }
+        default:
+            switch relation {
+            case .equal:
+                lc = a1.constraint(equalTo: a2!, constant: c).setM(m)
+            case .greaterThanOrEqual:
+                lc = a1.constraint(greaterThanOrEqualTo: a2!, constant: c).setM(m)
+            case .lessThanOrEqual:
+                lc = a1.constraint(lessThanOrEqualTo: a2!, constant: c).setM(m)
+            }
+        }
+        if lc != nil {
+            saveLC(firstAnchor: a1, secondAnchor: a2, lc: lc!)
+        }
+        return lc
+    }
+    
+    @discardableResult
+    func l(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? toView.leadingAnchor
-        let lc = selfSelf.leadingAnchor.constraint(equalTo: secondAnchor, constant: c)
-        saveLC(firstAnchor: selfSelf.leadingAnchor, secondAnchor: secondAnchor, lc: lc)
+        layout(selfSelf.leadingAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
-    func left(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil) -> Self {
+    func left(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? toView.leftAnchor
-        let lc = selfSelf.leftAnchor.constraint(equalTo: secondAnchor, constant: c)
-        saveLC(firstAnchor: selfSelf.leadingAnchor, secondAnchor: secondAnchor, lc: lc)
+        layout(selfSelf.leftAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
-    func r(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil) -> Self {
+    func r(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? toView.trailingAnchor
-        let lc = selfSelf.trailingAnchor.constraint(equalTo: secondAnchor, constant: -c)
-        saveLC(firstAnchor: selfSelf.trailingAnchor, secondAnchor: secondAnchor, lc: lc)
+        layout(selfSelf.trailingAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
         return self
     }
     
     @discardableResult
-    func right(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil) -> Self {
+    func right(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? toView.rightAnchor
-        let lc = selfSelf.rightAnchor.constraint(equalTo: secondAnchor, constant: -c)
-        saveLC(firstAnchor: selfSelf.rightAnchor, secondAnchor: secondAnchor, lc: lc)
+        layout(selfSelf.rightAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
-    func t(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil) -> Self {
-        let secondAnchor = anchor ?? toView.topAnchor
-        let lc = selfSelf.topAnchor.constraint(equalTo: secondAnchor, constant: c)
-        saveLC(firstAnchor: selfSelf.topAnchor, secondAnchor: secondAnchor, lc: lc)
-        return self
-    }
-    
-    @discardableResult
-    func b(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil) -> Self {
-        let secondAnchor = anchor ?? toView.bottomAnchor
-        let lc = selfSelf.bottomAnchor.constraint(equalTo: secondAnchor, constant: -c)
-        saveLC(firstAnchor: selfSelf.bottomAnchor, secondAnchor: secondAnchor, lc: lc)
-        return self
-    }
-    
-    @discardableResult
-    func midX(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutXAxisAnchor? = nil) -> Self {
+    func midX(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? toView.centerXAnchor
-        let lc = selfSelf.centerXAnchor.constraint(equalTo: secondAnchor, constant: c).setM(m)
-        saveLC(firstAnchor: selfSelf.centerXAnchor, secondAnchor: secondAnchor, lc: lc)
+        layout(selfSelf.centerXAnchor, a2: secondAnchor, relation: relation, c: c, m: m)
         return self
     }
     
     @discardableResult
-    func midY(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutYAxisAnchor? = nil) -> Self {
+    func t(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = anchor ?? toView.topAnchor
+        layout(selfSelf.topAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        return self
+    }
+    
+    @discardableResult
+    func b(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = anchor ?? toView.bottomAnchor
+        layout(selfSelf.bottomAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
+        return self
+    }
+    
+    @discardableResult
+    func midY(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? toView.centerYAnchor
-        let lc = selfSelf.centerYAnchor.constraint(equalTo: secondAnchor, constant: c).setM(m)
-        saveLC(firstAnchor: selfSelf.centerYAnchor, secondAnchor: secondAnchor, lc: lc)
+        layout(selfSelf.centerYAnchor, a2: secondAnchor, relation: relation, c: c, m: m)
         return self
     }
     
     @discardableResult
-    func w(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutDimension? = nil) -> Self {
-        if anchor == nil {
-            let lc = selfSelf.widthAnchor.constraint(equalToConstant: c).setM(m)
-            saveLC(firstAnchor: selfSelf.widthAnchor, secondAnchor: nil, lc: lc)
-        } else {
-            let lc = selfSelf.widthAnchor.constraint(equalTo: anchor!, multiplier: m, constant: c)
-            saveLC(firstAnchor: selfSelf.widthAnchor, secondAnchor: anchor, lc: lc)
-        }
+    func w(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutDimension? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        layout(selfSelf.widthAnchor, a2: anchor, relation: relation, c: c, m: m)
         return self
     }
     
     @discardableResult
-    func h(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutDimension? = nil) -> Self {
-        if anchor == nil {
-            let lc = selfSelf.heightAnchor.constraint(equalToConstant: c).setM(m)
-            saveLC(firstAnchor: selfSelf.heightAnchor, secondAnchor: nil, lc: lc)
-        } else {
-            let lc = selfSelf.heightAnchor.constraint(equalTo: anchor!, multiplier: m, constant: c)
-            saveLC(firstAnchor: selfSelf.heightAnchor, secondAnchor: anchor, lc: lc)
-        }
+    func h(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutDimension? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        layout(selfSelf.heightAnchor, a2: anchor, relation: relation, c: c, m: m)
         return self
     }
     
