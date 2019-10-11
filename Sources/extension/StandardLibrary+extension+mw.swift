@@ -13,6 +13,7 @@ import Foundation
 #endif
 import CryptoSwift
 
+//MARK: String
 public extension String {
     
     #if os(iOS)
@@ -378,18 +379,21 @@ public extension String {
     }
 }
 
+//MARK: Substring
 public extension Substring {
     var tS: String {
         return String(self)
     }
 }
 
+//MARK: NSAttributedString
 public extension NSAttributedString {
     var mutableAttrStr: NSMutableAttributedString {
         return NSMutableAttributedString(attributedString: self)
     }
 }
 
+//MARK: Data
 public extension Data {
     func hex() -> String {
         return map { String(format: "%02hhx", $0) }.joined()
@@ -461,6 +465,7 @@ public extension Data {
     }
 }
 
+//MARK: Double
 public extension Double {
     
     var tS: String {
@@ -516,6 +521,7 @@ public extension Double {
     }
 }
 
+//MARK: Float
 public extension Float {
     func random(down: Float = 0, equal: Bool = false) -> Float {
         if equal {
@@ -554,12 +560,14 @@ public extension Float {
     }
 }
 
+//MARK: TimeInterval
 public extension TimeInterval {
     var string: String {
         return String(Int(self))
     }
 }
 
+//MARK: Date
 public extension Date {
     var tS: String {
         return format("yyyy-MM-dd HH:mm:ss")
@@ -580,6 +588,7 @@ public extension Date {
     }
 }
 
+//MARK: Bool
 public extension Bool {
     func then(_ closure: () -> Void) {
         if self { closure() }
@@ -590,6 +599,7 @@ public extension Bool {
     }
 }
 
+//MARK: CGFloat
 public extension CGFloat {
     static var pi360: CGFloat {
         return CGFloat.pi * 2
@@ -674,6 +684,7 @@ public extension CGFloat {
     }
 }
 
+//MARK: CGPoint
 public extension CGPoint {
     /// 0度从东面开始算
     func tArcPoint(r: CGFloat, pi: CGFloat) -> CGPoint {
@@ -683,6 +694,7 @@ public extension CGPoint {
     }
 }
 
+//MARK: Int
 public extension Int {
     var tCGF: CGFloat {
         return CGFloat(self)
@@ -747,12 +759,14 @@ public extension Int {
     }
 }
 
+//MARK: UInt8
 public extension UInt8 {
     var tI: Int {
         return Int(self)
     }
 }
 
+//MARK: UInt
 public extension UInt {
     var tI: Int {
         return Int(self)
@@ -770,5 +784,21 @@ public extension UInt {
             }
         }
         return result
+    }
+}
+
+//MARK: FileManager
+public extension FileManager {
+    static func deleteFolder(_ paths: String..., dir: FileManager.SearchPathDirectory, in mask: FileManager.SearchPathDomainMask = .userDomainMask) {
+        let folder = FileManager.default.urls(for: dir, in: mask).first!
+        var cacheFolder = folder
+        for i in paths {
+            cacheFolder = cacheFolder.appendingPathComponent(i)
+        }
+        do {
+            try FileManager.default.removeItem(at: cacheFolder)
+        } catch let err {
+            print(err)
+        }
     }
 }
