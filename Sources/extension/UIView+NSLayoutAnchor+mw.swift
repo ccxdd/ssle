@@ -21,6 +21,7 @@ public extension UIView {
             translatesAutoresizingMaskIntoConstraints = false
             let mwl = MWLayout()
             mwl.selfSelf = self
+            objc_setAssociatedObject(self, &MWLayoutKey, mwl, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return mwl
         }
         return mwl
