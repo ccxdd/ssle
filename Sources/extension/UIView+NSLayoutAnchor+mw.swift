@@ -11,7 +11,8 @@
 private var MWLayoutKey: Void?
 
 public final class MWLayout {
-    weak var selfSelf: UIView!
+    internal weak var selfSelf: UIView!
+    internal weak var secondView: UIView?
     fileprivate var lcDict: [String: NSLayoutConstraint] = [:]
 }
 
@@ -29,7 +30,7 @@ public extension UIView {
 }
 
 public extension MWLayout {
-    private var toView: UIView {
+    fileprivate var superView: UIView {
         return selfSelf.superview!
     }
     
@@ -89,69 +90,69 @@ public extension MWLayout {
     
     @discardableResult
     func l(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.leadingAnchor
+        let secondAnchor = anchor ?? secondView?.leadingAnchor ?? superView.leadingAnchor
         layout(selfSelf.leadingAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
     func left(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.leftAnchor
+        let secondAnchor = anchor ?? secondView?.leftAnchor ?? superView.leftAnchor
         layout(selfSelf.leftAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
     func r(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.trailingAnchor
+        let secondAnchor = anchor ?? secondView?.trailingAnchor ?? superView.trailingAnchor
         layout(selfSelf.trailingAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
         return self
     }
     
     @discardableResult
     func right(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.rightAnchor
+        let secondAnchor = anchor ?? secondView?.rightAnchor ?? superView.rightAnchor
         layout(selfSelf.rightAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
     func midX(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.centerXAnchor
+        let secondAnchor = anchor ?? secondView?.centerXAnchor ?? superView.centerXAnchor
         layout(selfSelf.centerXAnchor, a2: secondAnchor, relation: relation, c: c, m: m)
         return self
     }
     
     @discardableResult
     func t(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.topAnchor
+        let secondAnchor = anchor ?? secondView?.topAnchor ?? superView.topAnchor
         layout(selfSelf.topAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     
     @discardableResult
     func b(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.bottomAnchor
+        let secondAnchor = anchor ?? secondView?.bottomAnchor ?? superView.bottomAnchor
         layout(selfSelf.bottomAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
         return self
     }
     
     @discardableResult
     func midY(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        let secondAnchor = anchor ?? toView.centerYAnchor
+        let secondAnchor = anchor ?? secondView?.centerYAnchor ?? superView.centerYAnchor
         layout(selfSelf.centerYAnchor, a2: secondAnchor, relation: relation, c: c, m: m)
         return self
     }
     
     @discardableResult
     func w(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutDimension? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        layout(selfSelf.widthAnchor, a2: anchor, relation: relation, c: c, m: m)
+        layout(selfSelf.widthAnchor, a2: anchor ?? secondView?.widthAnchor, relation: relation, c: c, m: m)
         return self
     }
     
     @discardableResult
     func h(_ c: CGFloat = 0, m: CGFloat = 1, anchor: NSLayoutDimension? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
-        layout(selfSelf.heightAnchor, a2: anchor, relation: relation, c: c, m: m)
+        layout(selfSelf.heightAnchor, a2: anchor ?? secondView?.heightAnchor, relation: relation, c: c, m: m)
         return self
     }
     
@@ -170,7 +171,7 @@ public extension MWLayout {
     @discardableResult
     func refresh(_ on: UIView? = nil, duration: TimeInterval = 0, animations: (() -> Void)? = nil,
                  completion: (() -> Void)? = nil) -> Self {
-        let refreshView = on ?? toView
+        let refreshView = on ?? superView
         if duration > 0 {
             UIView.animate(withDuration: duration, animations: {
                 animations?()
