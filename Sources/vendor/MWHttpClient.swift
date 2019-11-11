@@ -476,7 +476,6 @@ public enum APICategory {
             return (u, m, d)
         case .upload(url: let u, desc: let d):
             return (u, .post, d)
-        default: return ("", .get, "")
         }
     }
 }

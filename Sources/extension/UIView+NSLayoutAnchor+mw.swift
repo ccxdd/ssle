@@ -70,6 +70,7 @@ public extension MWLayout {
                     lc = a.constraint(greaterThanOrEqualToConstant: c)
                 case .lessThanOrEqual:
                     lc = a.constraint(lessThanOrEqualToConstant: c)
+                @unknown default: return nil
                 }
             }
         default:
@@ -80,6 +81,7 @@ public extension MWLayout {
                 lc = a1.constraint(greaterThanOrEqualTo: a2!, constant: c).setM(m)
             case .lessThanOrEqual:
                 lc = a1.constraint(lessThanOrEqualTo: a2!, constant: c).setM(m)
+            @unknown default: return nil
             }
         }
         if lc != nil {
