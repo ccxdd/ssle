@@ -160,13 +160,30 @@ public extension MWLayout {
     
     @discardableResult
     func edge(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
-        self.t(t).l(l).b(b).r(r)
+        edge(inset: UIEdgeInsets(top: t, left: l, bottom: b, right: r))
         return self
     }
     
     @discardableResult
     func edge(inset: UIEdgeInsets) -> Self {
         self.t(inset.top).l(inset.left).b(inset.bottom).r(inset.right)
+        return self
+    }
+    
+    @available(iOS 11.0, *)
+    @discardableResult
+    func safeEdge(t: CGFloat = 0, l: CGFloat = 0, b: CGFloat = 0, r: CGFloat = 0) -> Self {
+        safeEdge(inset: UIEdgeInsets(top: t, left: l, bottom: b, right: r))
+        return self
+    }
+    
+    @available(iOS 11.0, *)
+    @discardableResult
+    func safeEdge(inset: UIEdgeInsets) -> Self {
+        self.t(inset.top, anchor: superView.safeAreaLayoutGuide.topAnchor)
+            .l(inset.left, anchor: superView.safeAreaLayoutGuide.leadingAnchor)
+            .b(inset.bottom, anchor: superView.safeAreaLayoutGuide.bottomAnchor)
+            .r(inset.right, anchor: superView.safeAreaLayoutGuide.trailingAnchor)
         return self
     }
     
