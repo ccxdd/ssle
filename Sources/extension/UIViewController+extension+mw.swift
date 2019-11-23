@@ -298,7 +298,7 @@ public extension UITabBarController {
 //        return result
 //    }
     
-    override open var preferredStatusBarStyle: UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return selectedViewController?.preferredStatusBarStyle ?? .default
     }
 }
@@ -316,7 +316,7 @@ public extension UINavigationController {
 //        return result
 //    }
     
-    override open var preferredStatusBarStyle: UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return topViewController?.preferredStatusBarStyle ?? .default
     }
 }
