@@ -97,9 +97,25 @@ public extension MWLayout {
         return self
     }
     
+    @available (iOS 11.0, *)
+    @discardableResult
+    func safeL(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = secondView?.safeAreaLayoutGuide.leadingAnchor ?? superView.safeAreaLayoutGuide.leadingAnchor
+        layout(selfSelf.leadingAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        return self
+    }
+    
     @discardableResult
     func left(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? secondView?.leftAnchor ?? superView.leftAnchor
+        layout(selfSelf.leftAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        return self
+    }
+    
+    @available (iOS 11.0, *)
+    @discardableResult
+    func safeLeft(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = secondView?.safeAreaLayoutGuide.leftAnchor ?? superView.safeAreaLayoutGuide.leftAnchor
         layout(selfSelf.leftAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
@@ -111,9 +127,25 @@ public extension MWLayout {
         return self
     }
     
+    @available (iOS 11.0, *)
+    @discardableResult
+    func safeR(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = secondView?.safeAreaLayoutGuide.trailingAnchor ?? superView.safeAreaLayoutGuide.trailingAnchor
+        layout(selfSelf.trailingAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        return self
+    }
+    
     @discardableResult
     func right(_ c: CGFloat = 0, anchor: NSLayoutXAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? secondView?.rightAnchor ?? superView.rightAnchor
+        layout(selfSelf.rightAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        return self
+    }
+    
+    @available (iOS 11.0, *)
+    @discardableResult
+    func safeRight(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = secondView?.safeAreaLayoutGuide.rightAnchor ?? superView.safeAreaLayoutGuide.rightAnchor
         layout(selfSelf.rightAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
@@ -132,10 +164,26 @@ public extension MWLayout {
         return self
     }
     
+    @available (iOS 11.0, *)
+    @discardableResult
+    func safeT(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = secondView?.safeAreaLayoutGuide.topAnchor ?? superView.safeAreaLayoutGuide.topAnchor
+        layout(selfSelf.topAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        return self
+    }
+    
     @discardableResult
     func b(_ c: CGFloat = 0, anchor: NSLayoutYAxisAnchor? = nil, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = anchor ?? secondView?.bottomAnchor ?? superView.bottomAnchor
         layout(selfSelf.bottomAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
+        return self
+    }
+    
+    @available (iOS 11.0, *)
+    @discardableResult
+    func safeB(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
+        let secondAnchor = secondView?.safeAreaLayoutGuide.bottomAnchor ?? superView.safeAreaLayoutGuide.bottomAnchor
+        layout(selfSelf.bottomAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
         return self
     }
     

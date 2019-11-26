@@ -564,6 +564,14 @@ public extension UIImage {
             cbm.exec(c: .empty, p: 0)
         }
     }
+    
+    func tImageView(_ frame: CGRect? = nil) -> UIImageView {
+        let imgV = UIImageView(image: self)
+        if let f = frame {
+            imgV.frame = f
+        }
+        return imgV
+    }
 }
 
 public extension CALayer {
