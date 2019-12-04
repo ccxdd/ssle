@@ -28,6 +28,18 @@ public extension UIView {
         layer.borderWidth = w
         return self
     }
+    
+    @discardableResult
+    func isHidden(_ f: Bool) -> Self {
+        isHidden = f
+        return self
+    }
+    
+    @discardableResult
+    func isUserInteraction(_ f: Bool) -> Self {
+        isUserInteractionEnabled = f
+        return self
+    }
 }
 
 public extension UIButton {
@@ -116,6 +128,12 @@ public extension UITextField {
     @discardableResult
     func placeholder(_ t: String?) -> Self {
         placeholder = t
+        return self
+    }
+    
+    @discardableResult
+    func isSecureText(_ f: Bool) -> Self {
+        isSecureTextEntry = f
         return self
     }
 }

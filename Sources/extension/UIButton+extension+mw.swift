@@ -23,6 +23,15 @@ public final class ButtonAddition {
 public extension UIButton {
     @IBOutlet var enabledChangeFields: [UITextField]? {
         set {
+            if newValue == nil {
+                for f in addition.enabledFields ?? [] {
+                    f.enabledButton = nil
+                }
+            } else {
+                for f in newValue! {
+                    f.enabledButton = self
+                }
+            }
             addition.enabledFields = newValue
         }
         get {

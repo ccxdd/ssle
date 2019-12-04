@@ -131,7 +131,7 @@ public extension MWLayout {
     @discardableResult
     func safeR(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = secondView?.safeAreaLayoutGuide.trailingAnchor ?? superView.safeAreaLayoutGuide.trailingAnchor
-        layout(selfSelf.trailingAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        layout(selfSelf.trailingAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
         return self
     }
     
@@ -183,7 +183,7 @@ public extension MWLayout {
     @discardableResult
     func safeB(_ c: CGFloat = 0, relation: NSLayoutConstraint.Relation = .equal) -> Self {
         let secondAnchor = secondView?.safeAreaLayoutGuide.bottomAnchor ?? superView.safeAreaLayoutGuide.bottomAnchor
-        layout(selfSelf.bottomAnchor, a2: secondAnchor, relation: relation, c: c, m: 1)
+        layout(selfSelf.bottomAnchor, a2: secondAnchor, relation: relation, c: -c, m: 1)
         return self
     }
     
