@@ -40,10 +40,12 @@ public extension UIView {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        superview?.touchesBegan(touches, with: event)
         vts.tapTime = event?.timestamp ?? 0
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        superview?.touchesEnded(touches, with: event)
         let r = vts.tapTime - (event?.timestamp ?? 0)
         guard let t = touches.first, frame.contains(t.location(in: self)) else { return }
         let p = t.location(in: self)
