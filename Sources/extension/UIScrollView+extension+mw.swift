@@ -94,7 +94,7 @@ public extension UIScrollView {
         })
     }
     
-    func endHeaderRefresh(reloadEmptyStyle: Bool = false) {
+    func endHeaderRefresh(reloadEmptyStyle: Bool = true) {
         guard let refreshCtrl = headerRefreshCtrl, refreshCtrl.status != .normal else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { 
             endAnimation()
@@ -142,6 +142,11 @@ public extension UIScrollView {
             return scrollView.totalCount == 0
         default: return true
         }
+    }
+    
+    func showIndicator(v: Bool, h: Bool) {
+        showsVerticalScrollIndicator = v
+        showsHorizontalScrollIndicator = h
     }
 }
 
