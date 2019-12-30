@@ -319,7 +319,10 @@ public class MWHttpClient {
             MWHttpClient.customizedErrorClosure?(err)
         }
         errorResponseClosure?(err)
-        print("❌", err, "❌")
+        print("❌", detail.name, apiProtocol.apiCategory, "❌")
+        if showLog {
+            print("err:", err)
+        }
     }
     
     @discardableResult
@@ -476,6 +479,7 @@ public enum APICategory {
             return (u, m, d)
         case .upload(url: let u, desc: let d):
             return (u, .post, d)
+        default: return ("", .get, "")
         }
     }
 }
