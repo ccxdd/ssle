@@ -44,7 +44,7 @@ public extension UIScrollView {
             ctrl = c as! RefreshControl
         }
         addSubview(ctrl)
-        ctrl.mwl.t(-ctrl.ctrlHeight).midX().w().h(ctrl.ctrlHeight)
+        ctrl.mwl.t(-ctrl.ctrlHeight).midX().w(anchor: widthAnchor).h(ctrl.ctrlHeight)
         alwaysBounceVertical = true
         headerRefreshCtrl = ctrl
         headerRefreshCtrl?.callback = closure
@@ -67,7 +67,7 @@ public extension UIScrollView {
         }
         addSubview(ctrl)
         ctrl.type = .footer
-        ctrl.mwl.b(ctrl.ctrlHeight).midX().w().h(ctrl.ctrlHeight)
+        ctrl.mwl.b(ctrl.ctrlHeight).midX().w(anchor: widthAnchor).h(ctrl.ctrlHeight)
         ctrl.isHidden = true
         alwaysBounceVertical = true
         footerRefreshCtrl = ctrl
@@ -76,7 +76,7 @@ public extension UIScrollView {
     
     func startHeaderRefresh(_ mode: RefreshControl.Mode = .always) {
         switch mode {
-        case .always:break
+        case .always: break
         case .empty:
             if isEmpty == false { return }
         case let .condition(need):
