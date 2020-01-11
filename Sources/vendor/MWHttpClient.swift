@@ -30,6 +30,7 @@ public class MWHttpClient {
         customizedErrorClosure = closure
     }
     
+    //MARK: request MWRequestProtocol
     public static func request(_ resStruct: MWRequestProtocol.Type, _ resParams: Codable? = nil,
                                encoding: ParameterEncoding = URLEncoding.default) -> MWHttpClient {
         let client = MWHttpClient()
@@ -42,6 +43,7 @@ public class MWHttpClient {
         return client
     }
     
+    //MARK: request url:method:params:encoding:
     public static func request(_ url: String, method: HTTPMethod, params: Codable? = nil,
                                encoding: ParameterEncoding = URLEncoding.default) -> MWHttpClient {
         struct customizeReqProtocol: MWRequestProtocol {
@@ -58,6 +60,7 @@ public class MWHttpClient {
         return client
     }
     
+    //MARK: responseTarget
     @discardableResult
     public func responseTarget<T>(_ target: T.Type, completion: GenericsClosure<T>? = nil) -> DataRequest? where T: Codable {
         guard detail.apiCategory.params.url.count > 0, !cacheValidCheck(T.self, completion: completion) else {
@@ -93,12 +96,14 @@ public class MWHttpClient {
         return request
     }
     
+    //MARK: responseEmpty
     @discardableResult
     public func responseEmpty(completion: NoParamClosure? = nil) -> DataRequest? {
         emptyResponseClosure = completion
         return responseTarget(EmptyResponse.self)
     }
     
+    //MARK: responseRaw
     @discardableResult
     public func responseRaw(completion: GenericsClosure<String>? = nil) -> DataRequest? {
         guard detail.apiCategory.params.url.count > 0, !cacheValidCheck(String.self, completion: completion) else {
@@ -130,6 +135,7 @@ public class MWHttpClient {
         return request
     }
     
+    //MARK: upload
     public static func upload(_ resStruct: MWRequestProtocol.Type, uploadRes: MWUploadRequest) -> MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
@@ -140,6 +146,7 @@ public class MWHttpClient {
         return client
     }
     
+    //MARK: uploadResponse
     fileprivate func uploadResponse<T>(_ target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
         guard let res = detail.res as? MWUploadRequest else { return }
         Alamofire.upload(
@@ -167,28 +174,33 @@ public class MWHttpClient {
         })
     }
     
+    //MARK: error
     @discardableResult
     public func error(_ completion: GenericsClosure<ResponseError>? = nil) -> Self {
         errorResponseClosure = completion
         return self
     }
     
+    //MARK: cancel
     public func cancel() {
         dataRequest?.cancel()
     }
     
+    //MARK: hud
     @discardableResult
     public func hud(_ mode: HudDisplayMode) -> Self {
         detail.hudMode = mode
         return self
     }
     
+    //MARK: msg
     @discardableResult
     public func msg(_ mode: MessageHintMode) -> Self {
         detail.messageHint = mode
         return self
     }
     
+    //MARK: cache
     @discardableResult
     public func cache(_ sec: TimeInterval, _ policy: CachePolicy = .invalidAfterRequest) -> Self {
         guard sec > 0 else { return self }
@@ -197,6 +209,7 @@ public class MWHttpClient {
         return self
     }
     
+    //MARK: log
     @discardableResult
     public func log(_ isShow: Bool) -> Self {
         showLog = isShow
@@ -204,6 +217,7 @@ public class MWHttpClient {
     }
     
     #if os(iOS)
+    //MARK: ctrl
     @discardableResult
     public func ctrl(_ c: UIControl?) -> Self {
         control = c
@@ -212,6 +226,7 @@ public class MWHttpClient {
     }
     #endif
     
+    //MARK: timeout
     @discardableResult
     public func timeout(_ t: TimeInterval) -> Self {
         detail.timeout = t
@@ -219,6 +234,7 @@ public class MWHttpClient {
     }
     
     #if os(iOS)
+    //MARK: scrollView
     @discardableResult
     public func scrollView(_ v: UIScrollView) -> Self {
         scrollView = v
@@ -226,12 +242,14 @@ public class MWHttpClient {
     }
     #endif
     
+    //MARK: progress
     @discardableResult
     public func progress(_ c: GenericsClosure<Double>?) -> Self {
         progressClosure = c
         return self
     }
     
+    //MARK: endResponse
     fileprivate func endResponse() {
         detail.endTimestamp = Date().timeIntervalSinceReferenceDate
         hintTimer?.stop()
@@ -246,6 +264,7 @@ public class MWHttpClient {
         #endif
     }
     
+    //MARK: saveCache
     fileprivate func saveCache<T>(item: T) where T: Codable {
         guard detail.cacheSeconds > 0 else { return }
         var saveItem = APICacheStruct<T>()
@@ -255,6 +274,7 @@ public class MWHttpClient {
         }
     }
     
+    //MARK: cacheValidCheck
     fileprivate func cacheValidCheck<T>(_ respModel: T.Type, completion: GenericsClosure<T>? = nil) -> Bool where T: Codable {
         guard detail.cacheSeconds > 0 else { return false }
         if let loadItem = Data.load(paths: folderName, detail.cacheFileName)?.decrypt(ChaCha20Key: ChaCha20Key)?.tModel(APICacheStruct<T>.self) {
@@ -273,6 +293,7 @@ public class MWHttpClient {
         return false
     }
     
+    //MARK: commonResponseHandle
     fileprivate func commonResponseHandle<T>(_ r: DataResponse<String>, raw: Bool = false, target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
         endResponse()
         detail.resp = r.value
@@ -299,6 +320,7 @@ public class MWHttpClient {
         }
     }
     
+    //MARK: successReturn
     fileprivate func successReturn<T: Codable>(resp: T, completion: GenericsClosure<T>? = nil, useCache: Bool = false) {
         if !useCache {
             saveCache(item: resp)
@@ -314,6 +336,7 @@ public class MWHttpClient {
         }
     }
     
+    //MARK: errorsReturn
     fileprivate func errorsReturn(err: ResponseError) {
         if detail.messageHint == .always {
             MWHttpClient.customizedErrorClosure?(err)
@@ -325,6 +348,7 @@ public class MWHttpClient {
         }
     }
     
+    //MARK: clearCache
     @discardableResult
     public func clearCache() -> Self {
         var dirUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
