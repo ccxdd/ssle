@@ -32,20 +32,20 @@ public class MWHttpClient {
     
     //MARK: request MWRequestProtocol
     public static func request(_ resStruct: MWRequestProtocol.Type, _ resParams: Codable? = nil,
-                               encoding: ParameterEncoding = URLEncoding.default) -> MWHttpClient {
+                               encoding: MWEncoding = .url) -> MWHttpClient {
         let client = MWHttpClient()
         client.apiProtocol = resStruct
         client.detail.name = "\(resStruct.self)"
         client.detail.apiCategory = resStruct.apiCategory
         client.detail.res = resParams
-        client.encoding = encoding
+        client.encoding = encoding == .url ? URLEncoding.default : JSONEncoding.default
         print("🚚", resStruct.self, resStruct.apiCategory, "🚚")
         return client
     }
     
     //MARK: request url:method:params:encoding:
     public static func request(_ url: String, method: HTTPMethod, params: Codable? = nil,
-                               encoding: ParameterEncoding = URLEncoding.default) -> MWHttpClient {
+                               encoding: MWEncoding = .url) -> MWHttpClient {
         struct customizeReqProtocol: MWRequestProtocol {
             static var apiCategory: APICategory = .base(url: "", method: .get, desc: "")
         }
@@ -55,7 +55,7 @@ public class MWHttpClient {
         client.detail.name = "CUSTOMIZE REQUEST"
         client.detail.apiCategory = client.apiProtocol.apiCategory
         client.detail.res = params
-        client.encoding = encoding
+        client.encoding = encoding == .url ? URLEncoding.default : JSONEncoding.default
         print("🚚", url, method, "🚚")
         return client
     }
@@ -78,11 +78,11 @@ public class MWHttpClient {
                 print("params = ", parameters)
                 encodedURLRequest = try URLEncoding.default.encode(apiProtocol.urlRequest(), with: parameters)
             } else {
-                var urlRequest = try apiProtocol.urlRequest()
-                if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-                    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                encodedURLRequest = try apiProtocol.urlRequest()
+                if encodedURLRequest.value(forHTTPHeaderField: "Content-Type") == nil {
+                    encodedURLRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 }
-                urlRequest.httpBody = detail.res?.tJSONString()?.data(using: .utf8)
+                encodedURLRequest.httpBody = detail.res?.tJSONString()?.data(using: .utf8)
             }
         } catch {
             print(error)
@@ -106,33 +106,7 @@ public class MWHttpClient {
     //MARK: responseRaw
     @discardableResult
     public func responseRaw(completion: GenericsClosure<String>? = nil) -> DataRequest? {
-        guard detail.apiCategory.params.url.count > 0, !cacheValidCheck(String.self, completion: completion) else {
-            endResponse()
-            return nil
-        }
-        var encodedURLRequest: URLRequest!
-        do {
-            if encoding is URLEncoding {
-                let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
-                print("params = ", parameters)
-                encodedURLRequest = try URLEncoding.default.encode(apiProtocol.urlRequest(), with: parameters)
-            } else {
-                encodedURLRequest = try apiProtocol.urlRequest()
-                if encodedURLRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-                    encodedURLRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                }
-                encodedURLRequest.httpBody = detail.res?.tJSONString()?.data(using: .utf8)
-            }
-        } catch {
-            print(error)
-            return nil
-        }
-        encodedURLRequest.timeoutInterval = detail.timeout
-        let request = Alamofire.request(encodedURLRequest).responseString { r in
-            self.commonResponseHandle(r, raw: true, target: String.self, completion: completion)
-        }
-        dataRequest = request
-        return request
+        return responseTarget(String.self, completion: completion)
     }
     
     //MARK: upload
@@ -172,6 +146,104 @@ public class MWHttpClient {
                     #endif
                 }
         })
+    }
+    
+    //MARK: cacheValidCheck
+    fileprivate func cacheValidCheck<T>(_ respModel: T.Type, completion: GenericsClosure<T>? = nil) -> Bool where T: Codable {
+        guard detail.cacheSeconds > 0 else { return false }
+        if let loadItem = Data.load(paths: folderName, detail.cacheFileName)?.decrypt(ChaCha20Key: ChaCha20Key)?.tModel(APICacheStruct<T>.self) {
+            let isValid = (Date().timeIntervalSince1970 - loadItem.timestamp) < detail.cacheSeconds
+            switch detail.cachePolicy {
+            case .invalidAfterRequest:
+                successReturn(resp: loadItem.data!, completion: completion, useCache: true)
+                return isValid
+            case .afterReturn where isValid, .afterRequest where isValid:
+                successReturn(resp: loadItem.data!, completion: completion, useCache: true)
+                return detail.cachePolicy == .afterReturn
+            case .afterCache: break
+            default: break
+            }
+        }
+        return false
+    }
+    
+    //MARK: commonResponseHandle
+    fileprivate func commonResponseHandle<T>(_ r: DataResponse<String>, raw: Bool = false, target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
+        endResponse()
+        detail.resp = r.value
+        if r.result.isSuccess, let respStr = r.value {
+            if respStr is T {
+                successReturn(resp: respStr as! T, completion: completion)
+            } else if let model = respStr.tModel(T.self) {
+                successReturn(resp: model, completion: completion)
+            } else {
+                errorsReturn(err: .decodeModel(respStr))
+            }
+        } else { // failure
+            self.errorsReturn(err: .native(r))
+        }
+    }
+    
+    //MARK: successReturn
+    fileprivate func successReturn<T: Codable>(resp: T, completion: GenericsClosure<T>? = nil, useCache: Bool = false) {
+        if !useCache {
+            saveCache(item: resp)
+        } else {
+            print("♻️ Use Cache ♻️")
+        }
+        detail.resp = resp
+        detail.useCache = useCache
+        completion?(resp)
+        if showLog {
+            print("📌", detail.name, apiProtocol.apiCategory, "📌")
+            print(resp)
+        }
+    }
+    
+    //MARK: errorsReturn
+    fileprivate func errorsReturn(err: ResponseError) {
+        if detail.messageHint == .always {
+            MWHttpClient.customizedErrorClosure?(err)
+        }
+        errorResponseClosure?(err)
+        print("❌", err, "❌")
+    }
+    
+    //MARK: clearCache
+    @discardableResult
+    public func clearCache() -> Self {
+        var dirUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
+        dirUrl.appendPathComponent(folderName)
+        dirUrl.appendPathComponent(detail.cacheFileName)
+        if FileManager.default.fileExists(atPath: dirUrl.path) {
+            try? FileManager.default.removeItem(at: dirUrl)
+        }
+        return self
+    }
+    
+    //MARK: endResponse
+    fileprivate func endResponse() {
+        detail.endTimestamp = Date().timeIntervalSinceReferenceDate
+        hintTimer?.stop()
+        #if os(iOS)
+        if scrollView?.headerRefreshCtrl?.isRefreshing == true {
+            scrollView?.endHeaderRefresh()
+        }
+        if scrollView?.footerRefreshCtrl?.isRefreshing == true {
+            scrollView?.endFooterRefresh()
+        }
+        control?.isUserInteractionEnabled = true
+        #endif
+    }
+    
+    //MARK: saveCache
+    fileprivate func saveCache<T>(item: T) where T: Codable {
+        guard detail.cacheSeconds > 0 else { return }
+        var saveItem = APICacheStruct<T>()
+        saveItem.data = item
+        if let data = saveItem.tJSONString()?.data(using: .utf8)?.encrypt(ChaCha20Key: ChaCha20Key) {
+            _ = data.save(paths: folderName, detail.cacheFileName)
+        }
     }
     
     //MARK: error
@@ -246,117 +318,6 @@ public class MWHttpClient {
     @discardableResult
     public func progress(_ c: GenericsClosure<Double>?) -> Self {
         progressClosure = c
-        return self
-    }
-    
-    //MARK: endResponse
-    fileprivate func endResponse() {
-        detail.endTimestamp = Date().timeIntervalSinceReferenceDate
-        hintTimer?.stop()
-        #if os(iOS)
-        if scrollView?.headerRefreshCtrl?.isRefreshing == true {
-            scrollView?.endHeaderRefresh()
-        }
-        if scrollView?.footerRefreshCtrl?.isRefreshing == true {
-            scrollView?.endFooterRefresh()
-        }
-        control?.isUserInteractionEnabled = true
-        #endif
-    }
-    
-    //MARK: saveCache
-    fileprivate func saveCache<T>(item: T) where T: Codable {
-        guard detail.cacheSeconds > 0 else { return }
-        var saveItem = APICacheStruct<T>()
-        saveItem.data = item
-        if let data = saveItem.tJSONString()?.data(using: .utf8)?.encrypt(ChaCha20Key: ChaCha20Key) {
-            _ = data.save(paths: folderName, detail.cacheFileName)
-        }
-    }
-    
-    //MARK: cacheValidCheck
-    fileprivate func cacheValidCheck<T>(_ respModel: T.Type, completion: GenericsClosure<T>? = nil) -> Bool where T: Codable {
-        guard detail.cacheSeconds > 0 else { return false }
-        if let loadItem = Data.load(paths: folderName, detail.cacheFileName)?.decrypt(ChaCha20Key: ChaCha20Key)?.tModel(APICacheStruct<T>.self) {
-            let isValid = (Date().timeIntervalSince1970 - loadItem.timestamp) < detail.cacheSeconds
-            switch detail.cachePolicy {
-            case .invalidAfterRequest:
-                successReturn(resp: loadItem.data!, completion: completion, useCache: true)
-                return isValid
-            case .afterReturn where isValid, .afterRequest where isValid:
-                successReturn(resp: loadItem.data!, completion: completion, useCache: true)
-                return detail.cachePolicy == .afterReturn
-            case .afterCache: break
-            default: break
-            }
-        }
-        return false
-    }
-    
-    //MARK: commonResponseHandle
-    fileprivate func commonResponseHandle<T>(_ r: DataResponse<String>, raw: Bool = false, target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
-        endResponse()
-        detail.resp = r.value
-        if r.result.isSuccess, let respStr = r.value {
-            if raw {
-                completion?(respStr as! T)
-                return
-            }
-            let comm = respStr.tModel(CommonResponse<T>.self)
-            switch comm?.success {
-            case true?:
-                guard let data = comm?.data else {
-                    emptyResponseClosure?()
-                    return
-                }
-                self.successReturn(resp: data, completion: completion)
-            case false?:
-                self.errorsReturn(err: .errorMsg(comm?.code ?? 0, comm?.msg ?? ""))
-            case nil:
-                self.errorsReturn(err: .decodeModel(respStr))
-            }
-        } else { // failure
-            self.errorsReturn(err: .native(r))
-        }
-    }
-    
-    //MARK: successReturn
-    fileprivate func successReturn<T: Codable>(resp: T, completion: GenericsClosure<T>? = nil, useCache: Bool = false) {
-        if !useCache {
-            saveCache(item: resp)
-        } else {
-            print("♻️ Use Cache ♻️")
-        }
-        detail.resp = resp
-        detail.useCache = useCache
-        completion?(resp)
-        if showLog {
-            print("📌", detail.name, apiProtocol.apiCategory, "📌")
-            print(resp)
-        }
-    }
-    
-    //MARK: errorsReturn
-    fileprivate func errorsReturn(err: ResponseError) {
-        if detail.messageHint == .always {
-            MWHttpClient.customizedErrorClosure?(err)
-        }
-        errorResponseClosure?(err)
-        print("❌", detail.name, apiProtocol.apiCategory, "❌")
-        if showLog {
-            print("err:", err)
-        }
-    }
-    
-    //MARK: clearCache
-    @discardableResult
-    public func clearCache() -> Self {
-        var dirUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
-        dirUrl.appendPathComponent(folderName)
-        dirUrl.appendPathComponent(detail.cacheFileName)
-        if FileManager.default.fileExists(atPath: dirUrl.path) {
-            try? FileManager.default.removeItem(at: dirUrl)
-        }
         return self
     }
 }
@@ -506,6 +467,13 @@ public enum APICategory {
         default: return ("", .get, "")
         }
     }
+}
+
+public enum MWEncoding {
+    /// JSONEncoding
+    case json
+    /// URLEncoding
+    case url
 }
 
 fileprivate extension Data {
