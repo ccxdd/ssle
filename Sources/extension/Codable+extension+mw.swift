@@ -25,13 +25,15 @@ public extension Encodable {
 }
 
 public extension Data {
-    func tModel<T>(_ model: T.Type) -> T? where T: Decodable {
+    func tModel<T>(_ model: T.Type, log: Bool = false) -> T? where T: Decodable {
         let decoder = JSONDecoder()
         do {
             let result = try decoder.decode(model, from: self)
             return result
         } catch {
-            print("❌", error, "❌")
+            if log {
+                print("❌", error, "❌")
+            }
             return nil
         }
     }
@@ -49,7 +51,7 @@ public extension Data {
 }
 
 public extension String {
-    func tModel<T>(_ model: T.Type) -> T? where T: Decodable {
+    func tModel<T>(_ model: T.Type, log: Bool = false) -> T? where T: Decodable {
         return data(using: .utf8)?.tModel(model)
     }
 }
