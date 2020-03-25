@@ -25,7 +25,7 @@ public extension NSViewController {
 }
 
 public extension NSAlert {
-    static func alert(msg: String, text: String, buttons: [String] = [], style: NSAlert.Style = .informational,
+    static func alert(msg: String, text: String = "", buttons: [String] = [], style: NSAlert.Style = .informational,
                       window: NSWindow? = nil, runModal: Bool = false,
                       callback: GenericsClosure<NSApplication.ModalResponse>? = nil) {
         let alert = NSAlert()
