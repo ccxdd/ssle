@@ -168,14 +168,28 @@ public class MWHttpClient {
     }
     
     //MARK: commonResponseHandle
-    fileprivate func commonResponseHandle<T>(_ r: DataResponse<String>, raw: Bool = false, target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
+    fileprivate func commonResponseHandle<T>(_ r: DataResponse<String>, target: T.Type, completion: GenericsClosure<T>? = nil) where T: Codable {
         endResponse()
         detail.resp = r.value
         if r.result.isSuccess, let respStr = r.value {
-            if respStr is T {
+            if respStr is T { // Raw
                 successReturn(resp: respStr as! T, completion: completion)
             } else if let model = respStr.tModel(T.self) {
-                successReturn(resp: model, completion: completion)
+                switch model {
+                case is MWResponseProtocol:
+                    let mwResp = (model as! MWResponseProtocol)
+                    if mwResp.mwSuccess {
+                        if mwResp.mwResponseData != nil {
+                            successReturn(resp: model, completion: completion)
+                        } else {
+                            emptyResponseClosure?()
+                        }
+                    } else {
+                        errorsReturn(err: .errorMsg(mwResp.mwCode, mwResp.mwMsg))
+                    }
+                default:
+                    successReturn(resp: model, completion: completion)
+                }
             } else {
                 errorsReturn(err: .decodeModel(respStr))
             }
@@ -332,13 +346,6 @@ fileprivate struct APICacheStruct<T>: Codable where T: Codable {
 
 fileprivate struct EmptyResponse: Codable {}
 
-fileprivate struct CommonResponse<T>: Codable where T: Codable {
-    var code: Int?
-    var msg: String?
-    var data: T?
-    var success: Bool = false
-}
-
 public enum HudDisplayMode {
     case none, always
 }
@@ -454,6 +461,20 @@ public extension MWRequestProtocol {
     }
 }
 
+public protocol MWResponseProtocol: Codable {
+    var mwSuccess: Bool { get }
+    var mwMsg: String { get }
+    var mwCode: Int { get }
+    var mwResponseData: Codable? { get }
+}
+
+public extension MWResponseProtocol {
+    var mwSuccess: Bool { return true }
+    var mwMsg: String { return "" }
+    var mwCode: Int { return 0 }
+    var mwResponseData: Codable? { return nil }
+}
+
 public enum APICategory {
     case base(url: String, method: HTTPMethod, desc: String)
     case upload(url: String, desc: String)
@@ -493,3 +514,4 @@ fileprivate extension Data {
         return nil
     }
 }
+
