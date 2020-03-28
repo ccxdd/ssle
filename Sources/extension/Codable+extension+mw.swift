@@ -52,6 +52,6 @@ public extension Data {
 
 public extension String {
     func tModel<T>(_ model: T.Type, log: Bool = false) -> T? where T: Decodable {
-        return data(using: .utf8)?.tModel(model)
+        return data(using: .utf8)?.tModel(model, log: log)
     }
 }
