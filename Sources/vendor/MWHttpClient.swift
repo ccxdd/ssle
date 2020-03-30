@@ -20,7 +20,6 @@ public class MWHttpClient {
     private var hintTimer: GCDTimer?
     private var showLog: Bool = true
     private var encoding: ParameterEncoding = URLEncoding.default
-    private var emptyResponseClosure: NoParamClosure?
     private var errorResponseClosure: GenericsClosure<ResponseError>?
     private var progressClosure: GenericsClosure<Double>?
     
@@ -94,13 +93,6 @@ public class MWHttpClient {
         }
         dataRequest = request
         return request
-    }
-    
-    //MARK: responseEmpty
-    @discardableResult
-    public func responseEmpty(completion: NoParamClosure? = nil) -> DataRequest? {
-        emptyResponseClosure = completion
-        return responseTarget(EmptyResponse.self)
     }
     
     //MARK: responseRaw
@@ -179,11 +171,7 @@ public class MWHttpClient {
                 case is MWResponseProtocol:
                     let mwResp = (model as! MWResponseProtocol)
                     if mwResp.mwSuccess {
-                        if mwResp.mwResponseData != nil {
-                            successReturn(resp: model, completion: completion)
-                        } else {
-                            emptyResponseClosure?()
-                        }
+                        successReturn(resp: model, completion: completion)
                     } else {
                         errorsReturn(err: .errorMsg(mwResp.mwCode, mwResp.mwMsg))
                     }

@@ -67,8 +67,8 @@ Pod::Spec.new do |s|
 
   #  When using multiple platforms
   s.swift_version = "5.0"
-  s.ios.deployment_target = "9.0"
-  s.osx.deployment_target = "10.10"
+  s.ios.deployment_target = "10.0"
+  s.osx.deployment_target = "10.12"
   # s.watchos.deployment_target = "3.0"
   s.cocoapods_version = '>= 1.6.0'
 
@@ -132,7 +132,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency 'CryptoSwift', '~> 0.14'
-  s.dependency 'Alamofire', '~> 4.8.1'
+  s.dependency 'CryptoSwift', '~> 1.3.0'
+  s.dependency 'Alamofire', '~> 5.0.5'
 
 end
