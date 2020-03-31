@@ -182,7 +182,7 @@ public class MWHttpClient {
                 errorsReturn(err: .decodeModel(respStr))
             }
         } else { // failure
-            self.errorsReturn(err: .native(r))
+            errorsReturn(err: .native(r))
         }
     }
     
@@ -453,14 +453,12 @@ public protocol MWResponseProtocol: Codable {
     var mwSuccess: Bool { get }
     var mwMsg: String { get }
     var mwCode: Int { get }
-    var mwResponseData: Codable? { get }
 }
 
 public extension MWResponseProtocol {
     var mwSuccess: Bool { return true }
     var mwMsg: String { return "" }
     var mwCode: Int { return 0 }
-    var mwResponseData: Codable? { return nil }
 }
 
 public enum APICategory {
