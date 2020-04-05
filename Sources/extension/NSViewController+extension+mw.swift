@@ -39,7 +39,7 @@ public extension NSAlert {
             let resp = alert.runModal()
             callback?(resp)
         } else {
-            guard let win = NSApplication.shared.windows.first else { return }
+            guard let win = NSApplication.shared.keyWindow else { return }
             alert.beginSheetModal(for: window ?? win) { resp in
                 callback?(resp)
             }
