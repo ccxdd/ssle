@@ -6,20 +6,30 @@
 //  Copyright © 2017年 陈晓东. All rights reserved.
 //
 
-#if os(iOS)
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 public enum AttributedStyle {
     /// system
     case fs(CGFloat)
     /// boldSystem
     case fb(CGFloat)
+    #if os(iOS)
     /// italicSystemFont
     case fi(CGFloat)
+    #endif
     case fname(String, CGFloat)
     /// UIFont
+    #if os(iOS)
     case font(UIFont)
     case c(UIColor)
+    #elseif os(macOS)
+    case font(NSFont)
+    case c(NSColor)
+    #endif
     case cHex(Int)
     /// baselineOffset
     case bl(CGFloat)
@@ -39,19 +49,37 @@ public extension NSMutableAttributedString {
         for s in styles {
             switch s {
             case .fb(let size):
+                #if os(iOS)
                 attrs[NSAttributedString.Key.font] = UIFont.boldSystemFont(ofSize: size)
+                #elseif os(macOS)
+                attrs[NSAttributedString.Key.font] = NSFont.boldSystemFont(ofSize: size)
+                #endif
             case .fs(let size):
+                #if os(iOS)
                 attrs[NSAttributedString.Key.font] = UIFont.systemFont(ofSize: size)
+                #elseif os(macOS)
+                attrs[NSAttributedString.Key.font] = NSFont.systemFont(ofSize: size)
+                #endif
+            #if os(iOS)
             case .fi(let size):
                 attrs[NSAttributedString.Key.font] = UIFont.italicSystemFont(ofSize: size)
+            #endif
             case .fname(let name, let size):
+                #if os(iOS)
                 attrs[NSAttributedString.Key.font] = UIFont(name: name, size: size)
+                #elseif os(macOS)
+                attrs[NSAttributedString.Key.font] = NSFont(name: name, size: size)
+                #endif
             case .font(let font):
                 attrs[NSAttributedString.Key.font] = font
             case .c(let c):
                 attrs[NSAttributedString.Key.foregroundColor] = c
             case .cHex(let hex):
+                #if os(iOS)
                 attrs[NSAttributedString.Key.foregroundColor] = UIColor(hex: hex)
+                #elseif os(macOS)
+                attrs[NSAttributedString.Key.foregroundColor] = NSColor(hex: hex)
+                #endif
             case .bl(let f):
                 attrs[NSAttributedString.Key.baselineOffset] = NSNumber(value: Double(f))
             case .lps(let f, let f2, let align):
@@ -125,4 +153,3 @@ public extension NSMutableAttributedString {
         return self
     }
 }
-#endif
