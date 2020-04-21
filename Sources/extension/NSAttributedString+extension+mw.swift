@@ -42,9 +42,22 @@ public enum AttributedStyle {
 }
 
 public extension NSMutableAttributedString {
+    
     @discardableResult
-    func setAttributed(styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
+    func addAttributed(_ styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
         guard length > 0 else { return self }
+        addAttributes(attributesFrom(styles: styles), range: range ?? NSMakeRange(0, length))
+        return self
+    }
+    
+    @discardableResult
+    func setAttributed(_ styles: [AttributedStyle], range: NSRange? = nil) -> NSMutableAttributedString {
+        guard length > 0 else { return self }
+        setAttributes(attributesFrom(styles: styles), range: range ?? NSMakeRange(0, length))
+        return self
+    }
+    
+    fileprivate func attributesFrom(styles: [AttributedStyle]) -> [NSAttributedString.Key: Any] {
         var attrs: [NSAttributedString.Key: Any] = [:]
         for s in styles {
             switch s {
@@ -96,8 +109,7 @@ public extension NSMutableAttributedString {
                 attrs[NSAttributedString.Key.kern] = len
             }
         }
-        setAttributes(attrs, range: range ?? NSMakeRange(0, length))
-        return self
+        return attrs
     }
     
     @discardableResult
@@ -115,7 +127,7 @@ public extension NSMutableAttributedString {
     @discardableResult
     func insert(_ str: String, at: Int, styles: [AttributedStyle] = []) -> Self {
         guard str.count > 0 else { return self }
-        let attrStr = str.attrStr.setAttributed(styles: styles)
+        let attrStr = str.attrStr.setAttributed(styles)
         insert(attrStr, at: at)
         return self
     }
@@ -132,7 +144,7 @@ public extension NSMutableAttributedString {
         guard str.count > 0 else { return self }
         let range = (string as NSString).range(of: str)
         guard range.length > 0 else { return self }
-        setAttributed(styles: styles, range: range)
+        setAttributed(styles, range: range)
         return self
     }
     
@@ -143,7 +155,7 @@ public extension NSMutableAttributedString {
         var range = (content as NSString).range(of: source, range: NSRange(location: 0, length: content.count))
         while range.length > 0 {
             if styles.count > 0 {
-                replaceCharacters(in: range, with: target.attrStr.setAttributed(styles: styles))
+                replaceCharacters(in: range, with: target.attrStr.setAttributed(styles))
             } else {
                 replaceCharacters(in: range, with: target)
             }
