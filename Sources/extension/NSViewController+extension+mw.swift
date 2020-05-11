@@ -12,8 +12,11 @@ import Cocoa
 public extension NSViewController {
     
     /// toWindow
-    func toWindow() -> NSWindow {
+    func toWindow(size: CGSize? = nil) -> NSWindow {
         let win = NSWindow(contentViewController: self)
+        if size != nil {
+            win.setContentSize(size!)
+        }
         return win
     }
     
@@ -39,7 +42,7 @@ public extension NSAlert {
             let resp = alert.runModal()
             callback?(resp)
         } else {
-            guard let win = NSApplication.shared.keyWindow else { return }
+            guard let win = NSApplication.shared.windows.first else { return }
             alert.beginSheetModal(for: window ?? win) { resp in
                 callback?(resp)
             }
