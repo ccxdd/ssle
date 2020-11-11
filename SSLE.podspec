@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SSLE"
-  s.version      = "0.0.40"
+  s.version      = "0.0.42"
   s.summary      = "Swift Extension."
 
   # This description is used to generate tags and improve search results.
@@ -66,7 +66,7 @@ Pod::Spec.new do |s|
   # s.platform     = :ios, "5.0"
 
   #  When using multiple platforms
-  s.swift_version = "5.0"
+  s.swift_version = "5.2"
   s.ios.deployment_target = "10.0"
   s.osx.deployment_target = "10.12"
   # s.watchos.deployment_target = "3.0"
@@ -132,7 +132,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency 'CryptoSwift', '~> 1.3.0'
-  s.dependency 'Alamofire', '~> 5.0.5'
+  s.dependency 'CryptoSwift', '~> 1.3.1'
+  #s.dependency 'Alamofire', '~> 5.2.2'
 
 end
