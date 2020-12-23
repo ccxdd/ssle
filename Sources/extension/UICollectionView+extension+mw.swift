@@ -849,6 +849,7 @@ public extension UICollectionView {
     static func initLayout(_ frame: CGRect = .zero, _ direction: UICollectionView.ScrollDirection = .vertical) -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = direction
+        layout.estimatedItemSize = .zero
         let collView = UICollectionView(frame: frame, collectionViewLayout: layout)
         return collView
     }

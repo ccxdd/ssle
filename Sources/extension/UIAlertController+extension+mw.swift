@@ -29,18 +29,24 @@ public extension UIAlertController {
         }
     }
     
-    class func sheet(title: String? = nil, message: String? = nil, buttons: [String], closure: ((Int) -> Void)? = nil) {
-        let sheet = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+    class func sheet(title: String? = nil, message: String? = nil, buttons: [String], popoverSender: UIView? = nil, closure: ((Int) -> Void)? = nil) {
+        let sheetVC = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         for (idx, title) in buttons.enumerated() {
             let action = UIAlertAction(title: title, style: .default, handler: { (action) in
                 closure?(idx)
             })
-            sheet.addAction(action)
+            sheetVC.addAction(action)
         }
         let cancelAct = UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil)
-        sheet.addAction(cancelAct)
+        sheetVC.addAction(cancelAct)
+        if let popSender = popoverSender {
+            if let popoverController = sheetVC.popoverPresentationController {
+                popoverController.sourceView = popSender
+                popoverController.sourceRect = CGRect(x: popSender.bounds.midX, y: popSender.bounds.midY, width: 0, height: 0)
+            }
+        }
         DispatchQueue.main.async {
-            UIViewController.currentVC?.present(vc: sheet)
+            UIViewController.currentVC?.present(vc: sheetVC)
         }
     }
     

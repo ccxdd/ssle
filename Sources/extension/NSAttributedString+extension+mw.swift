@@ -12,11 +12,31 @@ import UIKit
 import AppKit
 #endif
 
+#if os(iOS)
+typealias MWFont = UIFont
+#elseif os(macOS)
+typealias MWFont = NSFont
+#endif
+
 public enum AttributedStyle {
+    /// ultraLight
+    case ful(CGFloat)
+    /// thin
+    case ft(CGFloat)
     /// system
     case fs(CGFloat)
     /// boldSystem
     case fb(CGFloat)
+    /// medium
+    case fm(CGFloat)
+    /// light
+    case fl(CGFloat)
+    /// semibold
+    case fsb(CGFloat)
+    /// heavy
+    case fh(CGFloat)
+    /// black
+    case fbl(CGFloat)
     #if os(iOS)
     /// italicSystemFont
     case fi(CGFloat)
@@ -61,28 +81,30 @@ public extension NSMutableAttributedString {
         var attrs: [NSAttributedString.Key: Any] = [:]
         for s in styles {
             switch s {
-            case .fb(let size):
-                #if os(iOS)
-                attrs[NSAttributedString.Key.font] = UIFont.boldSystemFont(ofSize: size)
-                #elseif os(macOS)
-                attrs[NSAttributedString.Key.font] = NSFont.boldSystemFont(ofSize: size)
-                #endif
+            case .ful(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .ultraLight)
+            case .ft(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .thin)
+            case .fl(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .light)
             case .fs(let size):
-                #if os(iOS)
-                attrs[NSAttributedString.Key.font] = UIFont.systemFont(ofSize: size)
-                #elseif os(macOS)
-                attrs[NSAttributedString.Key.font] = NSFont.systemFont(ofSize: size)
-                #endif
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .regular)
+            case .fm(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .medium)
+            case .fsb(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .semibold)
+            case .fb(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .bold)
+            case .fh(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .heavy)
+            case .fbl(let size):
+                attrs[NSAttributedString.Key.font] = MWFont.systemFont(ofSize: size, weight: .black)
             #if os(iOS)
             case .fi(let size):
-                attrs[NSAttributedString.Key.font] = UIFont.italicSystemFont(ofSize: size)
+                attrs[NSAttributedString.Key.font] = MWFont.italicSystemFont(ofSize: size)
             #endif
             case .fname(let name, let size):
-                #if os(iOS)
-                attrs[NSAttributedString.Key.font] = UIFont(name: name, size: size)
-                #elseif os(macOS)
-                attrs[NSAttributedString.Key.font] = NSFont(name: name, size: size)
-                #endif
+                attrs[NSAttributedString.Key.font] = MWFont(name: name, size: size)
             case .font(let font):
                 attrs[NSAttributedString.Key.font] = font
             case .c(let c):

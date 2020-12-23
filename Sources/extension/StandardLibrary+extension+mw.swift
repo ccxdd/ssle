@@ -129,11 +129,13 @@ public extension String {
         return NSMutableAttributedString(string: self)
     }
     
+    @discardableResult
     func prefix(_ str: String?) -> String {
         guard let text = str else { return self }
         return text + self
     }
     
+    @discardableResult
     func suffix(_ str: String?) -> String {
         guard let text = str else { return self }
         return self + text
@@ -153,6 +155,10 @@ public extension String {
                 let c = r.replacingOccurrences(of: start, with: "").replacingOccurrences(of: s, with: "")
                 return (r, newRange, c)
             }
+        }
+        if ends.count == 0 {
+            let resultStr = endSource as String
+            return (resultStr, NSMakeRange(startRange.location, resultStr.count), resultStr.replacingOccurrences(of: start, with: ""))
         }
         return zero
     }

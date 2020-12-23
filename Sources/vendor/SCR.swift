@@ -15,11 +15,21 @@ public struct SCR {
     public static let B = UIScreen.main.bounds
     
     public static var navigationBarHeight: CGFloat {
-        return iPhoneX ? 88 : 64
+        switch (SCR.W, SCR.H) {
+        case (768, 1024), (1024, 768): // iPad mini
+            return 70
+        default:
+            return iPhoneX ? 88 : 64
+        }
     }
     
     public static var tabBarHeight: CGFloat {
-        return iPhoneX ? 83 : 49
+        switch (SCR.W, SCR.H) {
+        case (768, 1024), (1024, 768): // iPad mini
+            return 50
+        default:
+            return iPhoneX ? 83 : 49
+        }
     }
     
     public static var statusBarHeight: CGFloat {
@@ -68,6 +78,14 @@ public struct SCR {
     public static func W(_ multiplier: CGFloat?) -> CGFloat {
         guard let d = multiplier else { return 0 }
         return SCR.W * d
+    }
+    
+    public static var iPhoneDevice: Bool {
+        switch (B.width, B.height) {
+        case (320...428, 568...926), (568...926, 320...428):
+            return true
+        default: return false
+        }
     }
 }
 

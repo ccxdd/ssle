@@ -17,7 +17,7 @@ private final class TextFieldAddition: NSObject {
     var maxValue: String?
     var decimalLen: Int = -1
     var regularPattern: String?
-    var didChangeClosure: ((String) -> Void)?
+    var didChangeClosure: ((UITextField, String) -> Void)?
     var inputCategory: UITextField.InputCategory = .none
     weak var enabledButton: UIButton?
     
@@ -55,7 +55,7 @@ private final class TextFieldAddition: NSObject {
         if isDelete {
             sender.deleteBackward()
         }
-        didChangeClosure?(sender.text ?? "")
+        didChangeClosure?(sender, sender.text ?? "")
         enabledButton?.refreshEnabled()
     }
 }
@@ -142,7 +142,7 @@ public extension UITextField {
         }
     }
     
-    func didChange(closure: @escaping (String) -> Void) {
+    func didChange(closure: @escaping (UITextField, String) -> Void) {
         addition.didChangeClosure = closure
     }
     
@@ -194,7 +194,7 @@ public extension UITextField {
     }
     
     func executeChangeClosure() {
-        addition.didChangeClosure?(text ?? "")
+        addition.didChangeClosure?(self, text ?? "")
     }
 }
 #endif

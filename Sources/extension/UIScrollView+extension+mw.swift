@@ -44,7 +44,9 @@ public extension UIScrollView {
             ctrl = c as! RefreshControl
         }
         addSubview(ctrl)
+        ctrl.vc = UIViewController.currentVC
         ctrl.mwl.t(-ctrl.ctrlHeight).midX().w(anchor: widthAnchor).h(ctrl.ctrlHeight)
+        //ctrl.frame = CGRect(x: frame.origin.x, y: frame.origin.y - ctrl.ctrlHeight, width: frame.width, height: ctrl.ctrlHeight)
         alwaysBounceVertical = true
         headerRefreshCtrl = ctrl
         headerRefreshCtrl?.callback = closure
@@ -84,13 +86,14 @@ public extension UIScrollView {
         }
         guard let refreshCtrl = headerRefreshCtrl, refreshCtrl.status != .refreshing else { return }
         refreshCtrl.status = .refreshing
-        refreshCtrl.initialInsetTop = contentInset.top
-        let h = self.contentInset.top + refreshCtrl.ctrlHeight
-        UIView.animate(withDuration: 0.3, animations: {
-            self.contentInset.top = h
-            self.contentOffset.y = -h
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            self?.contentInset.top = refreshCtrl.ctrlHeight
+            if refreshCtrl.firstLoad == false {
+                self?.contentOffset.y += -refreshCtrl.ctrlHeight
+            }
         }, completion: { (end) in
             refreshCtrl.callback?()
+            refreshCtrl.firstLoad = false
         })
     }
     
@@ -100,14 +103,13 @@ public extension UIScrollView {
             endAnimation()
         }
         func endAnimation() {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.contentInset.top = refreshCtrl.initialInsetTop ?? 0
-                self.contentOffset.y = 0
-            }, completion: { (end) in
+            UIView.animate(withDuration: 0.3, animations: { [weak self] in
+                self?.contentInset.top = 0
+            }, completion: { [weak self] (end) in
                 refreshCtrl.status = .normal
-                refreshCtrl.initialInsetTop = nil
+                self?.contentInset.top = 0
                 if reloadEmptyStyle {
-                    self.asTo(UICollectionView.self)?.reloadDataEmptyStyle()
+                    self?.asTo(UICollectionView.self)?.reloadDataEmptyStyle()
                 }
             })
         }
@@ -115,23 +117,18 @@ public extension UIScrollView {
     
     func startFooterRefresh() {
         guard let refreshCtrl = footerRefreshCtrl, refreshCtrl.status != .refreshing else { return }
-        DispatchQueue.main.async {
-            refreshCtrl.status = .prepare
-            refreshCtrl.initialInsetBottom = refreshCtrl.initialInsetBottom ?? self.contentInset.bottom
-            UIView.animate(withDuration: 0.3) {
-                let y = self.contentSize.height - self.frame.height + refreshCtrl.ctrlHeight + self.contentInset.bottom
-                self.contentOffset.y = y
-                self.contentInset.bottom = refreshCtrl.ctrlHeight + self.contentInset.bottom
-            }
+        refreshCtrl.status = .prepare
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.contentInset.bottom = refreshCtrl.ctrlHeight
         }
     }
     
     func endFooterRefresh() {
         guard let refreshCtrl = footerRefreshCtrl, refreshCtrl.status != .normal else { return }
-        contentInset.bottom = refreshCtrl.initialInsetBottom ?? 0
-        contentOffset.y += contentSize.height > frame.height ? refreshCtrl.frame.height : 0
         refreshCtrl.status = .normal
-        refreshCtrl.initialInsetBottom = nil
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.contentInset.bottom = 0
+        }
     }
     
     var isEmpty: Bool {
@@ -190,9 +187,9 @@ open class RefreshControl: UIView {
     
     public weak var scrollView: UIScrollView!
     fileprivate var type: RefreshControl.Category = .header
+    fileprivate weak var vc: UIViewController?
+    fileprivate var firstLoad: Bool = true
     fileprivate var callback: (() -> Void)?
-    fileprivate var initialInsetTop: CGFloat?
-    fileprivate var initialInsetBottom: CGFloat?
     
     public var status = RefreshControl.Status.normal {
         willSet {
@@ -221,35 +218,36 @@ open class RefreshControl: UIView {
             guard let offset = change?[.newKey] as? CGPoint, status != .refreshing, isHidden == false else { return }
             switch (type, scrollView.isDragging, status) {
             case (.header, true, _):
-                if offset.y < -(scrollView.contentInset.top + ctrlHeight) {
+                if offset.y < -(ctrlHeight + navBarHeight()) {
                     status = .prepare
                 } else {
                     status = .normal
                 }
             case (.header, false, .prepare):
                 status = .refreshing
-                guard initialInsetTop == nil else { return }
-                initialInsetTop = scrollView.contentInset.top
-                let h = scrollView.contentInset.top + ctrlHeight
-                scrollView.contentInset.top = h
-                scrollView.contentOffset.y = offset.y > -h ? -h : offset.y
+                scrollView.contentInset.top = ctrlHeight
                 callback?()
             case (.footer, true, _):
-                if offset.y + scrollView.frame.height > scrollView.contentSize.height + scrollView.contentInset.bottom + ctrlHeight {
-                    status = .prepare
-                } else {
-                    status = .normal
+                switch scrollView.contentSize.height > scrollView.frame.height {
+                case true:
+                    if offset.y + scrollView.frame.height > scrollView.contentSize.height + ctrlHeight {
+                        status = .prepare
+                    } else {
+                        status = .normal
+                    }
+                case false:
+                    if offset.y >= 0  {
+                        status = .prepare
+                    } else {
+                        status = .normal
+                    }
                 }
             case (.footer, false, .prepare):
                 status = .refreshing
+                scrollView.contentInset.bottom = ctrlHeight
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                     self?.callback?()
                 }
-                guard initialInsetBottom == nil else { return }
-                initialInsetBottom = scrollView.contentInset.bottom
-                scrollView.contentInset.bottom = ctrlHeight + scrollView.contentInset.bottom
-                let maxOffsetY = scrollView.contentSize.height - scrollView.frame.height + scrollView.contentInset.bottom
-                scrollView.contentOffset.y = max(offset.y, maxOffsetY)
             default: break
             }
         default:
@@ -269,6 +267,13 @@ open class RefreshControl: UIView {
             newSuperview?.addObserver(self, forKeyPath: #keyPath(UIScrollView.contentSize), options: .new, context: nil)
             scrollView = newSuperview as? UIScrollView
         }
+    }
+    
+    func navBarHeight() -> CGFloat {
+        if vc?.navigationController != nil {
+            return SCR.navigationBarHeight
+        }
+        return 0
     }
 }
 #endif
