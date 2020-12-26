@@ -70,7 +70,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "10.0"
   s.osx.deployment_target = "10.12"
   # s.watchos.deployment_target = "3.0"
-  s.cocoapods_version = '>= 1.6.0'
+  s.cocoapods_version = '>= 1.10.0'
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -133,6 +133,6 @@ Pod::Spec.new do |s|
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   s.dependency 'CryptoSwift', '~> 1.3.1'
-  #s.dependency 'Alamofire', '~> 5.2.2'
+  s.dependency 'Alamofire', '~> 5.4.0'
 
 end
