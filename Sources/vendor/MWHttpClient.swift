@@ -79,7 +79,7 @@ public class MWHttpClient {
     fileprivate func encodeURLRequest() -> URLRequest? {
         var request: URLRequest
         do {
-            let parameters: [String: String] = Mirror.tSS(detail.res) ?? [:]
+            let parameters = Mirror.tSS(detail.res)
             let pactRequest: URLRequest
             logArr.append("params =  \(parameters)")
             if let rProtocol = requestProtocol {
@@ -120,6 +120,8 @@ public class MWHttpClient {
             self.responseHeaderClosure?(dataResp.response?.allHeaderFields)
             if let r = dataResp.value {
                 self.successReturn(resp: r, completion: completion)
+            } else if dataResp.data != nil {
+                self.errorsReturn(err: .decodeModel(json: dataResp.data?.tS, msg: dataResp.description))
             } else if let err = dataResp.error {
                 self.errorsReturn(err: .AFError(err))
             }
@@ -350,14 +352,14 @@ public enum MessageHintMode {
 }
 
 public enum ResponseError {
-    case decodeModel(String)
+    case decodeModel(json: String?, msg: String)
     case errorMsg(Int, String)
     case AFError(AFError)
     case error(Error)
     
     var jsonString: String? {
         switch self {
-        case .decodeModel(let s):
+        case .decodeModel(let s, let errMsg):
             return s
         default: return nil
         }
@@ -371,6 +373,8 @@ public enum ResponseError {
             return (0, err.localizedDescription)
         case .AFError(let afErr):
             return (0, afErr.localizedDescription)
+        case .decodeModel(let jsonString, let errMsg):
+            return (0, errMsg)
         default: return nil
         }
     }
