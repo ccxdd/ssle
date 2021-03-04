@@ -54,6 +54,9 @@ public extension Mirror {
     /// to Key: String, Value: String
     static func tSS(_ obj: Any?) -> [String: String]? {
         guard let t = obj else { return nil }
+        if t is [String: String] {
+            return t as! [String: String]
+        }
         let mirror = Mirror(reflecting: t)
         var resultDict: [String: String] = [:]
         for i in mirror.children {
