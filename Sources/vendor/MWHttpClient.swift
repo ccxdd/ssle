@@ -353,11 +353,11 @@ public enum MessageHintMode {
 
 public enum ResponseError {
     case decodeModel(json: String?, msg: String)
-    case errorMsg(Int, String)
+    case codeMsg(Int, String)
     case AFError(AFError)
     case error(Error)
     
-    var jsonString: String? {
+    public var jsonString: String? {
         switch self {
         case .decodeModel(let s, let errMsg):
             return s
@@ -365,9 +365,9 @@ public enum ResponseError {
         }
     }
     
-    var errorMsg: (code: Int, msg: String)? {
+    public var errorMsg: (code: Int, msg: String)? {
         switch self {
-        case .errorMsg(let code, let msg):
+        case .codeMsg(let code, let msg):
             return (code, msg)
         case .error(let err):
             return (0, err.localizedDescription)
