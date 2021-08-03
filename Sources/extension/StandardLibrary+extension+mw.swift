@@ -487,10 +487,11 @@ public extension Double {
     }
     
     /// 设置 numberStyle 会有","分隔符
-    func decimal(digits: Int, roundingMode: NumberFormatter.RoundingMode = .floor, separator: String = ",") -> (num: Double, string: String, fmtString: String) {
+    func decimal(digits: Int, minDigits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor, separator: String = ",") -> (num: Double, string: String, fmtString: String) {
         let numFmt = NumberFormatter()
         numFmt.numberStyle = .decimal
         numFmt.maximumFractionDigits = digits
+        numFmt.minimumFractionDigits = minDigits
         numFmt.roundingMode = roundingMode
         numFmt.groupingSeparator = separator
         let fmtStr = numFmt.string(from: NSNumber(value: self))!
@@ -655,8 +656,8 @@ public extension CGFloat {
         return description
     }
     
-    func decimal(digits: Int, roundingMode: NumberFormatter.RoundingMode = .floor, separator: String = ",") -> (num: CGFloat, string: String, fmtString: String) {
-        let result = tD.decimal(digits: digits, roundingMode: roundingMode, separator: separator)
+    func decimal(digits: Int, minDigits: Int = 0, roundingMode: NumberFormatter.RoundingMode = .floor, separator: String = ",") -> (num: CGFloat, string: String, fmtString: String) {
+        let result = tD.decimal(digits: digits, minDigits: minDigits, roundingMode: roundingMode, separator: separator)
         return (result.num.tCGF, result.string, result.fmtString)
     }
     
