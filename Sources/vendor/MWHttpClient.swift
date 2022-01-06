@@ -79,7 +79,7 @@ public class MWHttpClient {
     fileprivate func encodeURLRequest() -> URLRequest? {
         var request: URLRequest
         do {
-            let parameters = Mirror.tSS(detail.res)
+            let parameters = Mirror.tSA(detail.res)
             let pactRequest: URLRequest
             logArr.append("params =  \(parameters)")
             if let rProtocol = requestProtocol {
