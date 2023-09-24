@@ -20,7 +20,7 @@ public extension Mirror {
         var resultDict: [String: Any] = [:]
         for i in mirror.children {
             switch i.value {
-            case is String, is Int, is Bool, is Float, is Double, is CGFloat:
+            case is String, is Int, is Bool, is Float, is Double, is CGFloat, is Array<Any>:
                 resultDict[i.label!] = i.value
                 #if os(iOS)
             case is UILabel:
